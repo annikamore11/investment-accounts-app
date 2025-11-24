@@ -1,0 +1,76 @@
+// sections/AboutYou/index.js
+
+import AboutIntro from './AboutIntro'
+import EmploymentStatus from './Employment'
+import Employer401k from './Employer401k'
+import AgeRange from './AgeRange'
+import BankAccount from './BankAccount'
+import BankType from './BankType'
+import AboutSummary from './AboutSummary'
+
+export const aboutConfig = {
+  id: 'aboutYou',
+  title: 'About You',
+  multipleSteps: true,
+  
+  // Dynamic steps based on user's journey data
+  getSteps: (journeyData) => {
+    const steps = [AboutIntro, EmploymentStatus]
+    
+    // Only show 401k question if employed at company
+    if (journeyData.employment === 'employed-company') {
+      steps.push(Employer401k)
+    }
+    
+    steps.push(AgeRange)
+    steps.push(BankAccount)
+    
+    // Only show bank type if they have a bank account
+    if (journeyData.hasBankAccount === true) {
+      steps.push(BankType)
+    }
+    
+    steps.push(AboutSummary)
+    
+    return steps
+  },
+  
+  // Validation before section can be marked complete
+  canComplete: (journeyData) => {
+    // Must have employment and age
+    if (!journeyData.employment || !journeyData.age) {
+      return false
+    }
+    
+    // If employed at company, must answer 401k question
+    if (journeyData.employment === 'employed-company' && journeyData.hasEmployer401k === null) {
+      return false
+    }
+    
+    // Must answer bank account question
+    if (journeyData.hasBankAccount === null) {
+      return false
+    }
+    
+    // If has bank account, must select type
+    if (journeyData.hasBankAccount === true && !journeyData.bankType) {
+      return false
+    }
+    
+    return true
+  },
+  
+  // No onComplete logic needed - just move to next section
+  onComplete: null
+}
+
+// Keep the array export for backwards compatibility if needed
+export const aboutSteps = [
+  AboutIntro,
+  EmploymentStatus,
+  Employer401k,
+  AgeRange,
+  BankAccount,
+  BankType,
+  AboutSummary
+]
