@@ -46,7 +46,21 @@ const JourneyFlow = () => {
     // Emergency Fund Data
     hasEmergencyFund: null,
     emergencyFundGoal: '',
+    emergencyFundCurrentAmount: '',
     emergencyFundAccountType: '',
+    emergencyFundInstitution: '',
+    existingEmergencyFundInstitution: '',
+    existingEmergencyFundType: '',
+    existingEmergencyFundAmount: '',
+
+    // Add this: Track last step for each section
+    lastStepInSection: {
+      welcome: 0,
+      aboutYou: 0,
+      budget: 0,
+      emergencyFund: 0,
+      retirement: 0,
+    },
     
     // Section completion
     sectionCompletion: {
@@ -68,6 +82,19 @@ const JourneyFlow = () => {
     emergencyFundConfig,
     retirementConfig
   ]
+
+  // When section changes, show intro
+  useEffect(() => {
+    if (currentSection === 'about' && !introComplete) {
+      setShowSectionIntro(true)
+      
+      // Hide intro after 2.5 seconds and mark complete
+      setTimeout(() => {
+        setShowSectionIntro(false)
+        setIntroComplete(true)
+      }, 2500)
+    }
+  }, [currentSection])
 
   // Load progress on mount
   useEffect(() => {
@@ -143,6 +170,7 @@ const JourneyFlow = () => {
   }
 
   // Next step - CLEAN implementation
+  // Next step - CLEAN implementation
   const nextStep = () => {
     const section = getCurrentSection()
     const steps = getCurrentSteps()
@@ -151,7 +179,17 @@ const JourneyFlow = () => {
 
     if (currentStepInSection < steps.length - 1) {
       // Next step in section
-      setCurrentStepInSection(prev => prev + 1)
+      const newStep = currentStepInSection + 1
+      setCurrentStepInSection(newStep)
+      
+      // Save last step for this section
+      setJourneyData(prev => ({
+        ...prev,
+        lastStepInSection: {
+          ...prev.lastStepInSection,
+          [currentSection]: newStep
+        }
+      }))
     } else {
       // Section complete
       setJourneyData(prev => ({
@@ -159,33 +197,50 @@ const JourneyFlow = () => {
         sectionCompletion: {
           ...prev.sectionCompletion,
           [currentSection]: true
+        },
+        lastStepInSection: {
+          ...prev.lastStepInSection,
+          [currentSection]: currentStepInSection
         }
       }))
       
       // Move to next section
       const currentIndex = sectionConfigs.findIndex(s => s.id === currentSection)
       if (currentIndex < sectionConfigs.length - 1) {
-        setCurrentSection(sectionConfigs[currentIndex + 1].id)
-        setCurrentStepInSection(0)
+        const nextSectionId = sectionConfigs[currentIndex + 1].id
+        setCurrentSection(nextSectionId)
+        setCurrentStepInSection(journeyData.lastStepInSection[nextSectionId] || 0)
       }
     }
     
     scrollToTop()
   }
-
+  // Previous step
   // Previous step
   const prevStep = () => {
     if (currentStepInSection > 0) {
-      setCurrentStepInSection(prev => prev - 1)
+      const newStep = currentStepInSection - 1
+      setCurrentStepInSection(newStep)
+      
+      // Save last step for this section
+      setJourneyData(prev => ({
+        ...prev,
+        lastStepInSection: {
+          ...prev.lastStepInSection,
+          [currentSection]: newStep
+        }
+      }))
     } else {
       const currentIndex = sectionConfigs.findIndex(s => s.id === currentSection)
       if (currentIndex > 0) {
         const prevSection = sectionConfigs[currentIndex - 1]
-        setCurrentSection(prevSection.id)
+        const prevSectionId = prevSection.id
+        setCurrentSection(prevSectionId)
         const prevSteps = typeof prevSection.getSteps === 'function'
           ? prevSection.getSteps(journeyData)
           : prevSection.steps || []
-        setCurrentStepInSection(Math.max(0, prevSteps.length - 1))
+        const lastStep = journeyData.lastStepInSection[prevSectionId] || Math.max(0, prevSteps.length - 1)
+        setCurrentStepInSection(lastStep)
       }
     }
     scrollToTop()
@@ -199,7 +254,8 @@ const JourneyFlow = () => {
   // Go to section
   const goToSection = (sectionId) => {
     setCurrentSection(sectionId)
-    setCurrentStepInSection(0)
+    // Use last visited step instead of always 0, with safety check
+    setCurrentStepInSection(journeyData.lastStepInSection?.[sectionId] || 0)
     scrollToTop()
   }
 
@@ -208,7 +264,7 @@ const JourneyFlow = () => {
     const progress = (currentStep / totalSteps) * 100
 
     return (
-      <div className={`mb-6 mt-10 md:mt-0
+      <div className={`mb-6 mt-6 md:mt-0
         ${isSidebarOpen
           ? 'w-full'
           : 'max-w-6xl mx-auto'
@@ -301,6 +357,9 @@ const JourneyFlow = () => {
                     {isCompleted && !isActive && (
                       <Check className="w-5 h-5 text-primary-100 flex-shrink-0" />
                     )}
+                    {isCompleted && isActive && (
+                      <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
+                    )}
                   </button>
                 )
               })}
@@ -312,10 +371,19 @@ const JourneyFlow = () => {
             <div ref={mainContentRef} className="h-[calc(100vh-4rem)] overflow-y-auto">
               <div className={` px-8 py-8 min-h-full
               ${isSidebarOpen
-                ? 'max-w-6xl static-background'
+                ? 'w-full static-background mx-auto'
                 : 'w-full static-background'
               }
               `}>
+                {/* Hamburger button - positioned at top of content */}
+                {!isSidebarOpen && (
+                  <button
+                    onClick={() => setIsSidebarOpen(true)}
+                    className="absolute md:top-7 bg-zinc-950 shadow-lg p-3 rounded-lg hover:bg-gray-700 transition-transform duration-300 z-50"
+                  >
+                    <Menu className="w-6 h-6 text-primary-100" />
+                  </button>
+                )}
                 {/* Progress Bar - Only show for multi-step sections */}
                 {getCurrentSection()?.multipleSteps && getCurrentSteps().length > 1 && (
                   <SectionProgressBar 
@@ -337,7 +405,7 @@ const JourneyFlow = () => {
       </div>
 
       {/* Hamburger button - hide when footer visible */}
-      {!isSidebarOpen && (
+      {/* {!isSidebarOpen && (
         <button
           onClick={() => setIsSidebarOpen(true)}
           className="fixed top-20 left-4 bg-zinc-950 shadow-lg rounded-lg p-3 hover:bg-gray-700 transition-transform duration-300"
@@ -345,7 +413,7 @@ const JourneyFlow = () => {
         >
           <Menu className="w-6 h-6 text-primary-100" />
         </button>
-      )}
+      )} */}
     </>
   )
 }

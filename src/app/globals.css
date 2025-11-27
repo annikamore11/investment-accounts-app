@@ -67,6 +67,9 @@
   font-display: swap;
 }
 
+.animate-fadeIn-transition {
+  animation: fadeInCard .6s ease-out forwards;
+}
 
 .animate-fadeIn {
   animation: fadeIn 0.5s ease-out;
@@ -278,6 +281,7 @@
     overflow-x: hidden;
     max-width: 100%;
     background-color: transparent;
+    overflow-y: scroll;
   }
 
   body {
@@ -287,6 +291,7 @@
     background-attachment: fixed;
     background-color: transparent;
     min-height: 100%;
+    scrollbar-gutter: stable;
   }
 
   h1, h2, h3, h4, h5, h6 {

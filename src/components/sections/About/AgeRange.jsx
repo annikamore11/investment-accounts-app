@@ -3,13 +3,16 @@ import { Calendar, Check } from 'lucide-react'
 
 const AgeRange = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const [age, setAge] = useState(journeyData.age || '')
+  const [isExiting, setIsExiting] = useState(false)
 
   const handleNext = () => {
     updateJourneyData('age', age)
-    // Small delay to let state update
+    // Start exit animation
+    setIsExiting(true)
+    // Navigate after animation completes
     setTimeout(() => {
       nextStep()
-    }, 50)
+    }, 500)
   }
 
   const ageOptions = [
@@ -32,20 +35,23 @@ const AgeRange = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   ]
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className={`w-full max-w-4xl mx-auto transition-all duration-500 ${
+      isExiting ? '-translate-x-full opacity-0' : 'translate-x-0 opacity-100'
+    }`}>
       {/* Header Section */}
       <div className="text-center mt-10 mb-6 lg:mb-10">
         
         <h1 className="text-3xl md:text-4xl font-bold text-primary-100 mb-3">
           Age Range
         </h1>
-        
-        <p className="text-lg text-primary-200 max-w-4xl mx-auto">
-          Our site is geared towards beginners. Age helps us recommend the right investment timelines.
-        </p>
+       
       </div>
 
-      <div className="bg-primary-100 rounded-2xl shadow-xl p-8 md:p-12">
+      <div className="bg-primary-100 rounded-2xl mx-auto shadow-xl p-8 md:p-12">
+
+         <p className="text-xl text-primary-700 max-w-4xl mx-auto text-center mb-6">
+          Our site is geared towards beginners. Age helps us recommend the right investment timelines.
+        </p>
         {/* Info Box */}
         <div className="bg-purple-100 border border-purple-300 rounded-xl p-4 mb-6">
           <p className="text-sm text-purple-900">
@@ -78,14 +84,15 @@ const AgeRange = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
           <button
             onClick={prevStep}
             className="btn-journey-back"
+            disabled={isExiting}
           >
             ← Back
           </button>
           <button
             onClick={handleNext}
-            disabled={!age}
+            disabled={!age || isExiting}
             className={`flex-1 ${
-              age
+              age && !isExiting
                 ? 'btn-journey-next'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}

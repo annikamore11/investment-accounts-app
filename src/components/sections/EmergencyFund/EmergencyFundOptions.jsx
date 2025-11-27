@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TrendingUp, Shield, Check, ChevronDown, ChevronUp } from 'lucide-react'
+import { TrendingUp, Shield, Check, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react'
 
 const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const hasEmergencyFund = journeyData.hasEmergencyFund
@@ -9,11 +9,12 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
   // Expandable sections state
   const [expandedSection, setExpandedSection] = useState(null)
   
-  // Calculate interest comparison
+  // Calculate interest comparison - using 5% as example rate
   const years = 5
+  const exampleRate = 0.05
   const bankValue = emergencyFundGoal
-  const spaxxValue = emergencyFundGoal * Math.pow(1.05, years)
-  const difference = spaxxValue - bankValue
+  const moneyMarketValue = emergencyFundGoal * Math.pow(1 + exampleRate, years)
+  const difference = moneyMarketValue - bankValue
 
   const toggleSection = (section) => {
     setExpandedSection(expandedSection === section ? null : section)
@@ -29,36 +30,37 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
 
   const educationSections = [
     {
-      id: 'spaxx',
-      title: 'Fidelity Money Market Funds (like SPAXX)',
+      id: 'money-market',
+      title: 'Money Market Funds',
       content: {
-        what: 'A type of mutual fund that invests in very safe, short-term securities like US Treasury bills.',
-        safety: 'Just as safe as a bank. Protected by SIPC insurance (similar to FDIC).',
-        access: 'Can transfer to your bank account in 1-2 business days.',
-        interest: 'Currently earning around 5% per year.',
-        fees: 'No fees, no minimums, no penalties.'
+        what: 'Mutual funds that invest in very safe, short-term securities like US Treasury bills. Available at brokerages like Fidelity (SPAXX), Vanguard (VMFXX), Schwab (SWVXX), and others.',
+        safety: 'Generally considered very safe. Protected by SIPC insurance at brokerages (similar to FDIC at banks).',
+        access: 'Typically can transfer to your bank account in 1-2 business days.',
+        interest: 'Interest rates vary. As of late 2024, many were earning 3-5% annually, but rates change frequently.',
+        fees: 'Most major brokerages offer options with no fees and no minimums.',
+        convenience: 'Keep your emergency fund, retirement accounts (IRA, Roth IRA), and other investments all in one place. Makes it easier to see your full financial picture and transfer money between accounts.'
+      }
+    },
+    {
+      id: 'high-yield-savings',
+      title: 'High-Yield Savings Accounts',
+      content: {
+        what: 'Savings accounts at online banks that offer higher interest rates than traditional banks. Examples include Ally, Marcus, Discover, etc.',
+        safety: 'Very safe. FDIC insured up to $250,000.',
+        access: 'Usually instant or same-day access.',
+        interest: 'Rates vary, typically 3-5% annually as of late 2024.',
+        note: 'Good alternative to money market funds with similar rates. However, separate from your investment and retirement accounts.'
       }
     },
     {
       id: 'bank',
-      title: 'Regular Bank Accounts',
+      title: 'Traditional Bank Accounts',
       content: {
-        what: 'Traditional checking or savings account at your bank.',
+        what: 'Regular checking or savings account at a traditional bank.',
         safety: 'Very safe. FDIC insured up to $250,000.',
         access: 'Instant access anytime.',
-        interest: 'Usually 0% - 0.5% per year.',
-        downside: 'Money loses value to inflation. Too easy to spend.'
-      }
-    },
-    {
-      id: 'other',
-      title: 'Other Brokerages',
-      content: {
-        what: 'Money market funds at Vanguard, Schwab, E*TRADE, etc.',
-        safety: 'Just as safe as Fidelity. SIPC protected.',
-        access: '1-2 business days to transfer to bank.',
-        interest: 'Similar rates around 4-5% per year.',
-        note: 'All good options - we just know Fidelity best for beginners.'
+        interest: 'Usually 0% - 1% per year at most traditional banks.',
+        considerations: 'Lower interest means money may lose value to inflation over time. However, offers maximum convenience and accessibility. Separate from investment accounts.'
       }
     }
   ]
@@ -70,26 +72,25 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
           {hasEmergencyFund ? "You're All Set!" : "Where to Keep Your Emergency Fund"}
         </h1>
         <p className="text-lg text-primary-200 max-w-4xl mx-auto">
-          {hasEmergencyFund ? "Great job!" : "Choose the best option for you"}
+          {hasEmergencyFund ? "Great job!" : "Explore your options"}
         </p>
       </div>
 
       <div className="bg-primary-100 rounded-xl shadow-xl p-8 md:p-12">
         
+        {/* Disclaimer */}
+        <div className="bg-yellow-50 border-2 border-yellow-600 rounded-xl p-4 mb-6 flex items-start space-x-3">
+          <AlertCircle className="w-5 h-5 text-yellow-700 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm text-yellow-900">
+              <strong>Educational Information Only:</strong> This information is for educational purposes and is not financial advice. 
+              Interest rates vary and are not guaranteed. We are not affiliated with any financial institutions mentioned. 
+              Research multiple options and consider consulting a financial advisor before making decisions.
+            </p>
+          </div>
+        </div>
 
         <div>
-            {/* Goal Recap */}
-            <div className="bg-gray-50 border border-primary-400 rounded-xl p-4 mb-6">
-                <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-sm text-gray-600 mb-1">Your Goal</p>
-                    <p className="text-3xl font-bold text-gray-900">
-                    ${emergencyFundGoal.toLocaleString()}
-                    </p>
-                </div>
-                <Shield className="w-10 h-10 text-gray-400" />
-                </div>
-            </div>
 
             {/* Education Dropdowns */}
             <div className="mb-6">
@@ -102,7 +103,6 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
                         className="w-full p-4 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-between"
                     >
                         <div className="flex items-center space-x-3">
-                        <span className="text-2xl">{section.emoji}</span>
                         <span className="font-semibold text-gray-900">{section.title}</span>
                         </div>
                         {expandedSection === section.id ? (
@@ -117,7 +117,7 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
                         <div className="space-y-2 text-sm text-gray-700">
                             {Object.entries(section.content).map(([key, value]) => (
                             <p key={key}>
-                                <strong className="text-gray-900 capitalize">{key}:</strong> {value}
+                                <strong className="text-gray-900 capitalize">{key.replace('-', ' ')}:</strong> {value}
                             </p>
                             ))}
                         </div>
@@ -128,72 +128,45 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
             </div>
         </div>
 
-        {/* Comparison */}
-        <div className="bg-gray-50 border border-primary-400 rounded-lg p-4 mb-6">
-            <h3 className="font-semibold text-gray-900 mb-3">Your ${emergencyFundGoal.toLocaleString()} After 5 Years:</h3>
-            
-            <div className="grid grid-cols-3 gap-3 text-center">
-            <div>
-                <p className="text-xs text-gray-600 mb-1">Bank (0% - 1%)</p>
-                <p className="text-lg font-bold text-gray-900">
-                ${bankValue.toLocaleString()}
-                </p>
-            </div>
-            
-            <div className="bg-green-50 border border-primary-400 rounded p-2">
-                <p className="text-xs text-gray-600 mb-1">Money Market (3% - 5%)</p>
-                <p className="text-lg font-bold text-green-700">
-                ${spaxxValue.toLocaleString(undefined, {maximumFractionDigits: 0})}
-                </p>
-            </div>
-
-            <div>
-                <p className="text-xs text-gray-600 mb-1">Difference</p>
-                <p className="text-lg font-bold text-green-700">
-                +${difference.toLocaleString(undefined, {maximumFractionDigits: 0})}
-                </p>
-            </div>
-            </div>
-        </div>
-
+       
         {/* Selection */}
         <div className="mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-3">Where do you want to keep it?</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-3">What type of account interests you?</h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             <button
-                onClick={() => setSelectedOption('fidelity')}
+                onClick={() => setSelectedOption('money-market')}
                 className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
-                selectedOption === 'fidelity'
+                selectedOption === 'money-market'
                     ? 'border-accent-green-600 bg-accent-green-50 shadow-sm'
                     : 'border-primary-400 hover:border-primary-600 hover:bg-gray-100 bg-primary-50'
                 }`}
             >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-2">
                 <div>
-                    <p className="font-bold text-gray-900">Fidelity (SPAXX)</p>
-                    <p className="text-sm text-gray-600">We'll walk you through setup</p>
+                    <p className="font-bold text-gray-900">Money Market Fund</p>
+                    <p className="text-sm text-gray-600">We can show setup steps</p>
                 </div>
-                {selectedOption === 'fidelity' && (
+                {selectedOption === 'money-market' && (
                     <Check className="w-6 h-6 text-accent-green-600" />
                 )}
                 </div>
             </button>
 
             <button
-                onClick={() => setSelectedOption('other-broker')}
+                onClick={() => setSelectedOption('high-yield-savings')}
                 className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
-                selectedOption === 'other-broker'
+                selectedOption === 'high-yield-savings'
                     ? 'border-accent-green-600 bg-accent-green-50 shadow-sm'
                     : 'border-primary-400 hover:border-primary-600 hover:bg-gray-100 bg-primary-50'
                 }`}
             >
                 <div className="flex items-center justify-between">
                 <div>
-                    <p className="font-bold text-gray-900">Other Brokerage</p>
-                    <p className="text-sm text-gray-600">Vanguard, Schwab, etc.</p>
+                    <p className="font-bold text-gray-900">High-Yield Savings</p>
+                    <p className="text-sm text-gray-600">Online banks</p>
                 </div>
-                {selectedOption === 'other-broker' && (
+                {selectedOption === 'high-yield-savings' && (
                     <Check className="w-6 h-6 text-accent-green-600" />
                 )}
                 </div>
@@ -209,8 +182,8 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
             >
                 <div className="flex items-center justify-between">
                 <div>
-                    <p className="font-bold text-gray-900">Regular Bank Account</p>
-                    <p className="text-sm text-gray-600">Not recommended</p>
+                    <p className="font-bold text-gray-900">Traditional Bank</p>
+                    <p className="text-sm text-gray-600">Lower rates, max convenience</p>
                 </div>
                 {selectedOption === 'bank' && (
                     <Check className="w-6 h-6 text-accent-green-600" />
@@ -220,25 +193,38 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
             </div>
         </div>
 
-        {/* Warning for bank selection */}
-        {selectedOption === 'bank' && (
-            <div className="bg-purple-50 border border-purple-700 rounded-lg p-4 mb-6">
-            <p className="text-sm text-purple-900 mb-2">
-                <strong>Heads up:</strong> You'll miss out on ~${difference.toLocaleString(undefined, {maximumFractionDigits: 0})} over 5 years by keeping it in a low to no interest account.
+        {/* Info for money market selection */}
+        {selectedOption === 'money-market' && (
+            <div className="bg-blue-50 border border-blue-400 rounded-lg p-4 mb-6">
+            <p className="text-sm text-blue-900 mb-2">
+                Money market funds at brokerages let you keep your emergency fund alongside your retirement accounts (IRA, Roth IRA) and other investments. 
             </p>
-            <p className="text-sm text-purple-900 font-semibold">
-                Consider a high-yield option instead.
+            <p className='text-sm text-blue-900'>
+              <strong>Note:</strong> We know Fidelity best and can help you set up an account there using SPAXX money market fund!
             </p>
             </div>
         )}
-        {/* Warning for other brokerage selection */}
-        {selectedOption === 'other-broker' && (
-            <div className="bg-purple-50 border border-purple-700 rounded-lg p-4 mb-6">
-            <p className="text-sm text-purple-900 mb-2">
-                <strong>Heads up:</strong> We won't be able to walk you through setting up an account with a different brokerage at the moment. 
+
+        {/* Info for bank selection */}
+        {selectedOption === 'bank' && (
+            <div className="bg-blue-50 border border-blue-400 rounded-lg p-4 mb-6">
+            <p className="text-sm text-blue-900 mb-2">
+                <strong>Note:</strong> Traditional bank accounts typically offer lower interest rates (0-1% annually). 
+                Based on the example above, you might miss out on potential growth compared to higher-yield options.
             </p>
-            <p className="text-sm text-purple-900 font-semibold">
-                If you would like step by step help, consider Fidelity or contact your brokerage of choice.
+            <p className="text-sm text-blue-900">
+                However, they offer maximum convenience and instant access. Consider exploring higher-yield options if growth is important to you.
+            </p>
+            </div>
+        )}
+        {/* Info for high-yield savings selection */}
+        {selectedOption === 'high-yield-savings' && (
+            <div className="bg-blue-50 border border-blue-400 rounded-lg p-4 mb-6">
+            <p className="text-sm text-blue-900 mb-2">
+                High-yield savings accounts typically offer competitive rates while maintaining FDIC insurance and easy access.
+            </p>
+            <p className="text-sm text-blue-900">
+                <strong>Note: </strong>We don't provide specific setup guidance for these accounts at this time.
             </p>
             </div>
         )}
@@ -256,7 +242,7 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
                     selectedOption ? 'btn-journey-next' : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
                 >
-                {selectedOption === 'fidelity' ? 'Show Me How to Set Up →' : 'Continue →'}
+                {selectedOption === 'money-market' ? 'See Setup Guide →' : 'Continue →'}
                 </button>
             </div>
         </div>

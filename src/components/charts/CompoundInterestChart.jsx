@@ -8,8 +8,8 @@ const generateChartData = (principal, rate, years) => {
   for (let year = 0; year <= years; year++) {
     data.push({
       year: `Year ${year}`,
-      Bank: principal,
-      SPAXX: Math.round(principal * Math.pow(1 + rate, year))
+      'Traditional Bank': principal,
+      'Money Market Fund': Math.round(principal * Math.pow(1 + rate, year))
     })
   }
   return data
@@ -22,10 +22,10 @@ const CustomTooltip = ({ active, payload }) => {
       <div className="bg-primary-50 border border-gray-400 rounded-lg p-3 shadow-lg">
         <p className="font-semibold text-gray-900 mb-1">{payload[0].payload.year}</p>
         <p className="text-sm text-gray-700">
-          Bank: <strong>${payload[0].value.toLocaleString()}</strong>
+          Traditional Bank: <strong>${payload[0].value.toLocaleString()}</strong>
         </p>
         <p className="text-sm text-green-700">
-          SPAXX: <strong>${payload[1].value.toLocaleString()}</strong>
+          Money Market Fund: <strong>${payload[1].value.toLocaleString()}</strong>
         </p>
         <p className="text-xs text-gray-500 mt-1">
           Difference: ${(payload[1].value - payload[0].value).toLocaleString()}
@@ -39,12 +39,21 @@ const CustomTooltip = ({ active, payload }) => {
 const CompoundInterestChart = ({ principal = 10000, rate = 0.05, years = 5 }) => {
   const chartData = generateChartData(principal, rate, years)
   const finalBank = principal
-  const finalSPAXX = Math.round(principal * Math.pow(1 + rate, years))
-  const difference = finalSPAXX - finalBank
+  const finalMoneyMarket = Math.round(principal * Math.pow(1 + rate, years))
+  const difference = finalMoneyMarket - finalBank
 
   return (
     <div className="bg-primary-50 border border-gray-400 rounded-lg p-6">
-      <p className="font-semibold text-gray-900 mb-4">The Difference Over {years} Years:</p>
+      <div className="bg-yellow-50 border border-yellow-400 rounded-lg p-3 mb-4">
+        <p className="text-xs text-yellow-900">
+          <strong>Hypothetical Example:</strong> This assumes a constant {(rate * 100).toFixed(1)}% annual interest rate. 
+          Actual rates vary and are not guaranteed.
+        </p>
+      </div>
+      
+      <p className="font-semibold text-gray-900 mb-4">
+        Example Comparison Over {years} Years (at {(rate * 100).toFixed(1)}% annual rate):
+      </p>
       
       <ResponsiveContainer width="100%" height={250}>
         <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
@@ -66,7 +75,7 @@ const CompoundInterestChart = ({ principal = 10000, rate = 0.05, years = 5 }) =>
           />
           <Line 
             type="monotone" 
-            dataKey="Bank" 
+            dataKey="Traditional Bank" 
             stroke="#9ca3af" 
             strokeWidth={2}
             dot={{ fill: '#9ca3af', r: 4 }}
@@ -74,7 +83,7 @@ const CompoundInterestChart = ({ principal = 10000, rate = 0.05, years = 5 }) =>
           />
           <Line 
             type="monotone" 
-            dataKey="SPAXX" 
+            dataKey="Money Market Fund" 
             stroke="#16a34a" 
             strokeWidth={2}
             dot={{ fill: '#16a34a', r: 4 }}
@@ -85,11 +94,12 @@ const CompoundInterestChart = ({ principal = 10000, rate = 0.05, years = 5 }) =>
       
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-700">
-          Starting with <strong>${principal.toLocaleString()}</strong>
+          Starting amount: <strong>${principal.toLocaleString()}</strong>
         </p>
         <p className="text-lg font-bold text-green-700 mt-1">
-          That's ${difference.toLocaleString()} in free money with SPAXX!
+          That's a potential growth of ${difference.toLocaleString()} in free money!
         </p>
+       
       </div>
     </div>
   )

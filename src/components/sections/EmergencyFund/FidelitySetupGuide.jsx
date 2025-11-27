@@ -1,25 +1,14 @@
 import React, { useState } from 'react'
-import { CheckCircle, Circle, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ExternalLink, ChevronLeft, ChevronRight, X, Info } from 'lucide-react'
 
 const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
-  const [completedSteps, setCompletedSteps] = useState({
-    step1: false,
-    step2: false,
-    step3: false,
-    step4: false,
-    step5: false,
-  })
 
-  const emergencyFundGoal = journeyData.emergencyFundGoal || 0
-  const bankType = journeyData.bankType || 'unknown' // 'major', 'regional', 'credit-union', 'online', 'unknown'
-  console.log(bankType)
+  const emergencyFundCurrentAmount = journeyData.emergencyFundCurrentAmount || 0
+  const bankType = journeyData.bankType || 'unknown'
 
-  const toggleComplete = (stepId) => {
-    setCompletedSteps(prev => ({ ...prev, [stepId]: !prev[stepId] }))
-  }
-
-  const allStepsComplete = Object.values(completedSteps).every(v => v === true)
+  const [showDisclaimer, setShowDisclaimer] = useState(true)
+  const [showBankNotice, setShowBankNotice] = useState(true)
 
   // Bank-specific instructions
   const getBankLinkInstructions = () => {
@@ -32,10 +21,10 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
         'Log in with your online banking credentials',
         'Instant verification - you\'re done!'
       ],
-      tips: [
-        'Your bank supports instant verification',
-        'Use the same login you use for online banking',
-        'Connection is secure and encrypted'
+      notes: [
+        'Your bank supports instant verification through Plaid',
+        'The connection is secure and encrypted',
+        'You won\'t need to enter routing or account numbers manually'
       ]
     }
 
@@ -44,33 +33,16 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
         'Log in to Fidelity',
         'Go to "Accounts & Trade" → "Transfers"',
         'Click "Link a Bank Account"',
-        'Try searching for your bank first - it might be listed',
+        'Try searching for your bank first',
         'If not found, select "Manual Entry"',
         'Enter your routing number (9 digits) and account number',
         'Fidelity will send 2 small deposits to verify (1-2 business days)',
         'Return to confirm the deposit amounts'
       ],
-      tips: [
-        'Find routing/account numbers on a check or in your bank app',
-        'Verification takes 1-2 days with manual entry',
-        'Keep an eye on your bank account for the small deposits'
-      ]
-    }
-
-    const creditUnions = {
-      instructions: [
-        'Log in to Fidelity',
-        'Go to "Accounts & Trade" → "Transfers"',
-        'Click "Link a Bank Account"',
-        'Search for your credit union by name',
-        'If found, log in with your online banking credentials',
-        'If not found, select "Manual Entry" and enter routing/account numbers',
-        'Manual entry requires 2 small deposit verification (1-2 days)'
-      ],
-      tips: [
-        'Many credit unions support instant verification',
-        'Have your routing/account numbers ready just in case',
-        'Manual verification takes 1-2 business days'
+      notes: [
+        'Find routing/account numbers on a check or in your bank\'s app',
+        'The two small deposits are usually under $1 each',
+        'Once verified, you can use this account for unlimited transfers'
       ]
     }
 
@@ -83,10 +55,10 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
         'Most online banks support instant login verification',
         'If not, use manual entry with routing/account numbers'
       ],
-      tips: [
-        'Online banks usually verify instantly',
-        'Have login credentials ready',
-        'Some may require manual entry'
+      notes: [
+        'Most online banks verify instantly',
+        'Have your bank login credentials ready',
+        'Manual verification takes 1-2 business days if needed'
       ]
     }
 
@@ -96,14 +68,14 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
         'Go to "Accounts & Trade" → "Transfers"',
         'Click "Link a Bank Account"',
         'Search for your bank by name',
-        'If found, log in with your online banking credentials (instant)',
+        'If found, log in with your online banking credentials',
         'If not found, select "Manual Entry"',
-        'Enter routing and account numbers for manual verification (1-2 days)'
+        'Enter routing and account numbers for verification'
       ],
-      tips: [
+      notes: [
         'Try searching first - many banks support instant verification',
-        'Have routing/account numbers ready as backup',
-        'Manual verification takes 1-2 business days'
+        'Manual verification takes 1-2 business days',
+        'You only need to do this once'
       ]
     }
 
@@ -112,8 +84,6 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
         return majorBanks
       case 'regional':
         return regionalBanks
-      case 'business':
-        return creditUnions
       case 'online':
         return onlineBanks
       default:
@@ -132,20 +102,27 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
         'Government-issued ID (driver\'s license or passport)',
         bankType === 'large' 
           ? 'Your online banking login (for instant verification)'
-          : bankType === 'regional' || bankType === 'credit-union'
+          : bankType === 'regional'
             ? 'Bank routing and account numbers (likely needed)'
             : 'Bank login OR routing/account numbers',
         'Current address and contact info',
         'Employment details (employer name and address)',
         'Email and phone number'
       ],
-      tips: [
-        'Gather everything before you start',
-        'Takes about 10 minutes once you have it all',
-        bankType === 'large'
-          ? 'Your bank supports instant verification - no routing numbers needed!'
-          : 'Keep your bank info handy for step 3'
-      ],
+      notes: 
+        bankType === 'regional'
+          ? [
+              'Account opening may take a bit longer with smaller regional banks',
+              'You\'ll get approval in a couple business days in most cases',
+              'Have all documents ready before starting',
+              'We will never ask you for bank details or personal identification (This is handled by your bank and Fidelity)'
+            ]
+          : [
+              'Account opening takes about 10 minutes',
+              'You\'ll get instant approval in most cases',
+              'Have all documents ready before starting',
+              'We will never ask you for bank details or personal identification (This is handled by your bank and Fidelity)'
+            ],
       url: null
     },
     {
@@ -153,15 +130,15 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
       title: 'Open a Fidelity Account',
       instructions: [
         'Go to Fidelity.com and click "Open an Account"',
-        'Select "Brokerage Account" (Individual/Nonretirement)',
-        'Fill in your info (name, address, SSN, employment)',
-        'Choose "Cash" as core position',
-        'Submit - instant approval'
+        'Select "Brokerage Account"',
+        'Fill in your personal information',
+        'When asked about "Core Position", select "Fidelity Government Money Market Fund (SPAXX)"',
+        'Review and submit your application'
       ],
-      tips: [
-        'Use legal name from ID',
-        'Have SSN ready',
-        'Free account, no minimums'
+      notes: [
+        'SPAXX as your core position means your cash automatically earns interest',
+        'This is where your emergency fund will sit and grow',
+        'There are no fees or minimums for this account'
       ],
       url: 'https://www.fidelity.com/open-account/overview'
     },
@@ -169,46 +146,32 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
       id: 'step3',
       title: 'Link Your Bank',
       instructions: bankLinkStep.instructions,
-      tips: bankLinkStep.tips,
+      notes: bankLinkStep.notes,
       url: null
     },
     {
       id: 'step4',
       title: 'Transfer Money',
       instructions: [
-        bankType === 'regional' || bankType === 'credit-union'
-          ? 'Wait for bank verification if using manual entry (1-2 days)'
-          : 'Once your bank is linked, go to "Accounts & Trade" → "Transfers"',
-        'Select "Deposit" from linked bank',
-        `Enter amount: $${emergencyFundGoal.toLocaleString()}`,
-        'Choose "One-time transfer"',
-        'Submit (arrives in 1-3 days)'
+        ...(bankType === 'regional'
+          ? [
+              'Wait for bank verification if using manual entry (1-2 days)',
+              'Once your bank is linked, go to "Transfers" in the top left corner'
+            ]
+          : [
+              'Once your bank is linked, go to "Transfers" in the top left corner'
+            ]),
+        'Select "EFT to or from a bank"',
+        'Select your bank in the "From" box',
+        'Select "Individual" in the "To" box',
+        'Choose "One-time transfer" for now',
+        `Enter amount: $${emergencyFundCurrentAmount.toLocaleString()}`,
+        'Submit (money arrives in 1-3 business days)'
       ],
-      tips: [
-        'Start with what you have',
+      notes: [
         'Transfers are free and unlimited',
-        'Money sits in cash until next step',
-        bankType === 'regional' || bankType === 'credit-union'
-          ? 'Total wait time: 2-4 days for manual verification + transfer'
-          : 'Usually arrives in 1-3 business days'
-      ],
-      url: null
-    },
-    {
-      id: 'step5',
-      title: 'Buy SPAXX',
-      instructions: [
-        'Once your transfer clears, go to "Accounts & Trade" → "Trade"',
-        'Search "SPAXX" and select it',
-        'Click "Buy"',
-        'Enter your full cash balance amount',
-        'Review and place order'
-      ],
-      tips: [
-        'No fees, no minimums',
-        'Sell anytime',
-        'Interest paid monthly',
-        'Not a stock - stable money market fund'
+        'Start with whatever amount you have - you can always add more later',
+        'Your money will automatically go into SPAXX and start earning interest'
       ],
       url: null
     }
@@ -229,27 +192,50 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto px-4 md:px-0">
       <div className="text-center mt-10 mb-6 lg:mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold text-primary-100 mb-3">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary-100 mb-3">
           Fidelity Setup Guide
         </h1>
-        <p className="text-lg text-primary-200 max-w-4xl mx-auto">
-          5 simple steps to get your money earning 5%
+        <p className="text-base md:text-lg text-primary-200 max-w-4xl mx-auto">
+          4 simple steps to get your emergency fund earning interest
         </p>
       </div>
 
-      <div className="bg-primary-100 rounded-xl shadow-xl p-8 md:p-12">
-        
+      <div className="bg-primary-100 rounded-xl shadow-xl p-4 md:p-8 lg:p-12">
+        {showDisclaimer && (
+          <div className="bg-yellow-50 border-2 border-yellow-600 rounded-xl p-4 mb-6 relative">
+            <button
+              onClick={() => setShowDisclaimer(false)}
+              className="absolute top-2 right-2 p-1 hover:bg-yellow-100 rounded transition-colors"
+              aria-label="Dismiss"
+            >
+              <X className="w-4 h-4 text-yellow-700" />
+            </button>
+            <p className="text-sm text-yellow-900 pr-8">
+              <strong>Disclaimer:</strong> This is educational information only, not financial advice. 
+              We are not affiliated with Fidelity and receive no compensation. 
+              Please research multiple options and consider consulting a financial advisor before making decisions.
+            </p>
+          </div>
+        )}
+
         {/* Bank Type Notice */}
-        {bankType !== 'unknown' && (
-          <div className="bg-blue-50 border border-blue-300 rounded-lg p-3 mb-6">
-            <p className="text-sm text-blue-900">
+        {bankType !== 'unknown' && showBankNotice && (
+          <div className="bg-blue-50 border border-blue-300 rounded-lg p-3 mb-6 relative">
+            <button
+              onClick={() => setShowBankNotice(false)}
+              className="absolute top-2 right-2 p-1 hover:bg-blue-100 rounded transition-colors"
+              aria-label="Dismiss"
+            >
+              <X className="w-4 h-4 text-blue-700" />
+            </button>
+            <p className="text-sm text-blue-900 pr-8">
               {bankType === 'large' && (
                 <><strong>Good news!</strong> Your bank supports instant verification - this will be quick!</>
               )}
-              {(bankType === 'regional') && (
-                <><strong>Heads up:</strong> You indicated you use a regional bank or credit union. Your bank may require manual verification, which takes 1-2 extra days.</>
+              {bankType === 'regional' && (
+                <><strong>Heads up:</strong> Your bank may require manual verification, which takes 1-2 extra days.</>
               )}
               {bankType === 'online' && (
                 <><strong>Note:</strong> Most online banks support instant verification!</>
@@ -263,44 +249,37 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
           <div className="flex items-center justify-between">
             {steps.map((step, index) => {
               const isActive = index === currentStepIndex
-              const isCompleted = completedSteps[step.id]
               const isPast = index < currentStepIndex
               
-              // Step labels
-              const labels = ['Prepare', 'Open Account', 'Link Bank', 'Transfer', 'Buy SPAXX']
+              const labels = ['Prepare', 'Open Account', 'Link Bank', 'Transfer']
               
               return (
                 <div key={step.id} className="flex-1 relative">
                   <div className="flex flex-col items-center">
-                    {/* Circle */}
                     <button
                       onClick={() => setCurrentStepIndex(index)}
                       className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all relative z-10 ${
-                        isCompleted
-                          ? 'bg-green-600 text-white'
-                          : isActive
-                            ? 'bg-accent-green-600 text-white ring-4 ring-green-200'
-                            : isPast
-                              ? 'bg-gray-400 text-white'
-                              : 'bg-gray-200 text-gray-500'
+                        isActive
+                          ? 'bg-accent-green-600 text-white ring-4 ring-green-200'
+                          : isPast
+                            ? 'bg-green-400 text-white'
+                            : 'bg-gray-200 text-gray-500'
                       }`}
                     >
-                      {isCompleted ? '✓' : index + 1}
+                      {index + 1}
                     </button>
                     
-                    {/* Label */}
-                    <span className={`text-xs mt-2 text-center font-medium ${
+                    <span className={`text-xs mt-2 text-center font-medium hidden md:block ${
                       isActive ? 'text-gray-900' : 'text-gray-600'
                     }`}>
                       {labels[index]}
                     </span>
                   </div>
                   
-                  {/* Connecting Line */}
                   {index < steps.length - 1 && (
                     <div className="absolute top-5 left-1/2 w-full h-0.5 -z-0">
                       <div className={`h-full ${
-                        isPast || isCompleted ? 'bg-green-600' : 'bg-gray-300'
+                        isPast ? 'bg-green-400' : 'bg-gray-300'
                       }`} />
                     </div>
                   )}
@@ -312,23 +291,10 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
 
         {/* Step Content */}
         <div className="mb-6">
-          {/* Step Header */}
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">{currentStep.title}</h2>
-            <button
-              onClick={() => toggleComplete(currentStep.id)}
-              className="flex-shrink-0"
-            >
-              {completedSteps[currentStep.id] ? (
-                <CheckCircle className="w-8 h-8 text-green-600" />
-              ) : (
-                <Circle className="w-8 h-8 text-gray-400 hover:text-gray-600" />
-              )}
-            </button>
-          </div>
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{currentStep.title}</h2>
 
           {/* Instructions */}
-          <div className="bg-white border border-gray-300 rounded-lg p-6 mb-4">
+          <div className="bg-white border border-gray-300 rounded-lg p-4 md:p-6 mb-4">
             <h3 className="font-semibold text-gray-900 mb-3">
               {currentStepIndex === 0 ? 'What to gather:' : 'Instructions:'}
             </h3>
@@ -336,26 +302,30 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
               {currentStep.instructions.map((instruction, i) => (
                 <li key={i} className="flex items-start space-x-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center text-sm font-semibold">
-                    {currentStepIndex === 0 ? '•' : i + 1}
+                    {i + 1}
                   </span>
-                  <span className="text-gray-700">{instruction}</span>
+                  <span className="text-gray-700 text-sm md:text-base">{instruction}</span>
                 </li>
               ))}
             </ol>
           </div>
 
-          {/* Tips */}
-          {currentStep.tips && currentStep.tips.length > 0 && (
-            <div className="bg-gray-50 border border-gray-300 rounded-lg p-4 mb-4">
-              <h4 className="font-semibold text-gray-900 mb-2">💡 Tips:</h4>
-              <ul className="space-y-1">
-                {currentStep.tips.map((tip, i) => (
-                  <li key={i} className="text-sm text-gray-700 flex items-start">
-                    <span className="mr-2">•</span>
-                    <span>{tip}</span>
-                  </li>
-                ))}
-              </ul>
+          {/* Helpful Notes */}
+          {currentStep.notes && currentStep.notes.length > 0 && (
+            <div className="bg-blue-50 border border-blue-300 rounded-lg p-4 mb-4">
+              <div className="flex items-start space-x-2">
+                <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-blue-900 mb-2">Helpful Notes:</h4>
+                  <ul className="space-y-1">
+                    {currentStep.notes.map((note, i) => (
+                      <li key={i} className="text-sm text-blue-800">
+                        • {note}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
           )}
 
@@ -385,7 +355,7 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
             }`}
           >
             <ChevronLeft className="w-5 h-5" />
-            <span>Previous</span>
+            <span className="hidden md:inline">Previous</span>
           </button>
 
           <div className="flex items-center space-x-2">
@@ -396,7 +366,7 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
                 className={`w-3 h-3 rounded-full transition-colors ${
                   index === currentStepIndex
                     ? 'bg-green-600'
-                    : completedSteps[step.id]
+                    : index < currentStepIndex
                       ? 'bg-green-400'
                       : 'bg-gray-300'
                 }`}
@@ -413,19 +383,10 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
                 : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
             }`}
           >
-            <span>Next</span>
+            <span className="hidden md:inline">Next</span>
             <ChevronRight className="w-5 h-5" />
           </button>
         </div>
-
-        {/* Completion Message */}
-        {allStepsComplete && (
-          <div className="bg-green-50 border border-green-300 rounded-lg p-4 mb-6">
-            <p className="text-green-800 font-semibold">
-              ✓ All steps complete! Your ${emergencyFundGoal.toLocaleString()} is now earning ~5% in SPAXX.
-            </p>
-          </div>
-        )}
 
         {/* Help */}
         <div className="bg-gray-50 border border-gray-300 rounded-lg p-3 mb-6">
@@ -440,7 +401,7 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
             ← Back
           </button>
           <button onClick={nextStep} className="flex-1 btn-journey-next">
-            {allStepsComplete ? 'Continue to Retirement →' : 'Skip for Now →'}
+            Continue to Next Section →
           </button>
         </div>
       </div>

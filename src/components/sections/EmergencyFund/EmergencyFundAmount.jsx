@@ -35,7 +35,7 @@ const EmergencyFundAmount = ({ journeyData, updateJourneyData, nextStep, prevSte
             Your monthly expenses: ${monthlyExpenses.toLocaleString()}
           </p>
           <p className="text-3xl font-bold text-accent-purple-900 mb-2">
-            Recommended: ${minRecommended.toLocaleString()} - ${maxRecommended.toLocaleString()}
+            Common Guideline: ${minRecommended.toLocaleString()} - ${maxRecommended.toLocaleString()}
           </p>
           <p className="text-sm text-accent-purple-700">That's 3-6 months of expenses</p>
         </div>
@@ -49,66 +49,34 @@ const EmergencyFundAmount = ({ journeyData, updateJourneyData, nextStep, prevSte
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <button
               onClick={() => setHasEmergencyFund(true)}
-              className={`w-full p-5 rounded-xl border-2 transition-all text-left flex items-start space-x-4 ${
+              className={`w-full p-4 md:p-5 rounded-xl border-2 transition-all text-left ${
                 hasEmergencyFund === true
                   ? 'border-accent-green-600 bg-accent-green-50 shadow-sm'
                   : 'border-primary-400 hover:border-primary-600 hover:bg-gray-100 bg-primary-50'
               }`}
             >
-              <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
-                hasEmergencyFund === true
-                  ? 'text-green-600 bg-accent-green-100'
-                  : 'text-gray-600'
-              }`}
-              >
-                <Sprout className="w-5 h-5" />
+              <div className="font-semibold text-gray-900 mb-1">
+                Yes
               </div>
-              <div className="flex-1">
-                <div className="font-semibold text-gray-900 mb-1">
-                    Yes
-                    </div>
-                    <div className="text-sm text-gray-600">
-                    I have 3-6 months saved in a high-yield account
-                    </div>
-                </div>
-                {hasEmergencyFund === true && (
-                    <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center">
-                    <Check className="w-5 h-5 text-accent-green-600" />
-                    </div>
-                )}
-              
+              <div className="text-sm text-gray-600">
+                I have 3-6 months saved or am actively saving in a high-yield or money market account
+              </div>
             </button>
 
             <button
               onClick={() => setHasEmergencyFund(false)}
-              className={`w-full p-5 rounded-xl border-2 transition-all text-left flex items-start space-x-4 ${
+              className={`w-full p-4 md:p-5 rounded-xl border-2 transition-all text-left ${
                 hasEmergencyFund === false
                   ? 'border-accent-green-600 bg-accent-green-50 shadow-sm'
                   : 'border-primary-400 hover:border-primary-600 hover:bg-gray-100 bg-primary-50'
               }`}
             >
-              <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
-                hasEmergencyFund === false
-                  ? 'text-green-600 bg-accent-green-100'
-                  : 'text-gray-600'
-              }`}
-              >
-                <Handshake className="w-5 h-5" />
+              <div className="font-semibold text-gray-900 mb-1">
+                No
               </div>
-              <div className="flex-1">
-                <div className="font-semibold text-gray-900 mb-1">
-                    No
-                    </div>
-                    <div className="text-sm text-gray-600">
-                    I need help setting one up/ I would like to learn more
-                    </div>
-                </div>
-                {hasEmergencyFund === false && (
-                    <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center">
-                    <Check className="w-5 h-5 text-accent-green-600" />
-                    </div>
-                )}
-              
+              <div className="text-sm text-gray-600">
+                I need help setting one up or want to learn more
+              </div>
             </button>
 
           </div>

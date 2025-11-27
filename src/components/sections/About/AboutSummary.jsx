@@ -1,7 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { CheckCircle, Briefcase, Calendar, Landmark, Building } from 'lucide-react'
 
 const AboutSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
+  const [isExiting, setIsExiting] = useState(false)
+  
   
   // Format employment status for display
   const getEmploymentLabel = (employment) => {
@@ -26,11 +28,16 @@ const AboutSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
   }
 
   const handleNext = () => {
-    nextStep()
+    setIsExiting(true)
+    setTimeout(() => {
+      nextStep()
+    }, 700)
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className={`w-full max-w-4xl mx-auto transition-all duration-500 ${
+      isExiting ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
+    }`}>
 
       <div className="bg-white rounded-xl shadow-xl p-8 md:p-12 border-2 border-gray-200">
         
@@ -141,11 +148,13 @@ const AboutSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
           <button
             onClick={prevStep}
             className="btn-journey-back"
+            disabled={isExiting}
           >
             ← Back
           </button>
           <button
             onClick={handleNext}
+            disabled={isExiting}
             className="flex-1 btn-journey-next"
           >
             Continue to Next Section →

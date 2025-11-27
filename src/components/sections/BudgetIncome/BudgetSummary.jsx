@@ -25,14 +25,7 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
 
   return (
     <div className="w-full max-w-6xl mx-auto">
-      <div className="text-center mt-10 mb-6 lg:mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold text-primary-100 mb-3">
-          Your Financial Snapshot
-        </h1>
-        <p className="text-lg text-primary-200 max-w-4xl mx-auto">
-          Here's what we learned about your finances
-        </p>
-      </div>
+      
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         

@@ -3,6 +3,7 @@ import { Briefcase, Check } from 'lucide-react'
 
 const EmploymentStatus = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const [employment, setEmployment] = useState(journeyData.employment || '')
+  const [isExiting, setIsExiting] = useState(false)
 
   const handleNext = () => {
     updateJourneyData('employment', employment)
@@ -12,13 +13,12 @@ const EmploymentStatus = ({ journeyData, updateJourneyData, nextStep, prevStep }
       updateJourneyData('hasEmployer401k', false)
     }
     
-    
-  
-    
-    // Small delay to let state update
+    // Start exit animation
+    setIsExiting(true)
+    // Navigate after animation completes
     setTimeout(() => {
       nextStep()
-    }, 50)
+    }, 500)
   }
 
   const employmentOptions = [
@@ -30,14 +30,17 @@ const EmploymentStatus = ({ journeyData, updateJourneyData, nextStep, prevStep }
 
   return (
     
-    <div className="w-full max-w-4xl mx-auto">
-      
+    <div className={`w-full max-w-4xl mx-auto transition-all duration-500 ${
+      isExiting ? '-translate-x-full opacity-0' : 'translate-x-0 opacity-100'
+    }`}>
+       
       {/* Header Section */}
       <div className="text-center mt-10 mb-6 lg:mb-10">
         
-        <h1 className="text-3xl md:text-4xl font-bold text-primary-100 mb-3">
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-3" style={{ textShadow: '0 0 30px rgba(255, 255, 255, 0.5)' }}>
           Employment Status
         </h1>
+
       </div>
       <div className="bg-primary-100 rounded-2xl shadow-lg p-8 md:p-10 ">
         
@@ -70,14 +73,15 @@ const EmploymentStatus = ({ journeyData, updateJourneyData, nextStep, prevStep }
           <button
             onClick={prevStep}
             className="btn-journey-back"
+            disabled={isExiting}
           >
             ← Back
           </button>
           <button
             onClick={handleNext}
-            disabled={!employment}
+            disabled={!employment || isExiting}
             className={`flex-1 ${
-              employment
+              employment && !isExiting
                 ? 'btn-journey-next'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}

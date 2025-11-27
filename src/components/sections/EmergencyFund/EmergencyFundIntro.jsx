@@ -77,8 +77,8 @@ const EmergencyFundIntro = ({ journeyData, nextStep, prevStep }) => {
             </div>
             
             <div className="bg-green-50 border border-gray-400 rounded-lg p-4">
-              <p className="font-bold text-gray-900 mb-2">Money Market Fund (SPAXX)</p>
-              <p className="text-sm text-gray-700 mb-2">Interest: <strong>~ 3.5% - 5%</strong></p>
+              <p className="font-bold text-gray-900 mb-2">Money Market Funds or High Yield Accounts</p>
+              <p className="text-sm text-gray-700 mb-2">Interest: <strong>Typically 3.5% - 5%</strong></p>
               <p className="text-sm text-gray-600">
                 Just as safe, grows your money
               </p>
