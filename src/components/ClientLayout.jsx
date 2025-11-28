@@ -1,7 +1,5 @@
 'use client'
 
-'use client'
-
 import { AuthProvider } from '../context/AuthContext'
 import Navbar from './NavBar'
 import AnimatedFooter from './Footer'
