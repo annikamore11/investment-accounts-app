@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 
-const JourneyFlow = dynamic(() => import('@/components/JourneyFlow'), {
+const JourneyFlow = dynamic(() => import('@/components/journey/JourneyFlow'), {
   ssr: false,
   loading: () => <div className="min-h-screen flex items-center justify-center">Loading...</div>
 })

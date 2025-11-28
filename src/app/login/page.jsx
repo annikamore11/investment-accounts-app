@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense } from 'react'
-import Login from '@/components/Login'
+import Login from '@/components/user/Login'
 
 function LoginContent() {
   return <Login />
