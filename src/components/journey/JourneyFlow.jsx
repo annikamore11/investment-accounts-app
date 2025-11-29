@@ -46,6 +46,11 @@ const INITIAL_JOURNEY_DATA = {
   existingEmergencyFundType: '',
   existingEmergencyFundAmount: '',
 
+  // Retirement Data
+  matchPercent: '',
+  salaryMatchLimit: '',
+  userContribution: '',
+
   // Track last step for each section
   lastStepInSection: {
     welcome: 0,
@@ -378,8 +383,7 @@ const JourneyFlow = () => {
             <div className="p-6 px-10">
               <button
                 onClick={() => {
-                  setShowResetConfirm(true),
-                  scrollToTop()
+                  setShowResetConfirm(true)
                 }}
                 className="w-full px-4 py-2 text-sm text-primary-100 hover:text-red-900 rounded-lg transition-colors"
               >

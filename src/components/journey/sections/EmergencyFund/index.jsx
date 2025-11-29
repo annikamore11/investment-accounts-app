@@ -23,6 +23,7 @@ export const emergencyFundConfig = {
     if (journeyData.hasEmergencyFund === false) {
       steps.push(SelectEmergencyAmount)
       steps.push(EmergencyFundOptions)
+    }
     
 
       if (journeyData.emergencyFundAccountType === 'bank' || journeyData.emergencyFundAccountType === 'high-yield-savings') {
@@ -31,7 +32,7 @@ export const emergencyFundConfig = {
           steps.push(FidelitySetupGuide)
           steps.push(EmergencyFundSummary)
       }
-    }
+    
     
     
     return steps
