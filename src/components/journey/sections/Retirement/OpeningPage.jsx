@@ -4,8 +4,9 @@ import { Check } from 'lucide-react'
 const RetirementIntro = ({ nextStep }) => {
   const bullets = [
     'Ensure that you are receiving your full company match in your 401(k)',
-    'Open an IRA',
-    'Save 15% of your salary towards retirement'
+    'Save 15% of your salary towards retirement',
+    'Utilize Roth and invest properly',
+    'Open an IRA'
   ]
 
   return (

@@ -2,11 +2,18 @@
 import Employer401kFollowup from './401k'
 import RetirementIntro from './OpeningPage'
 import Has401KMatch from './Has401kMatch'
+import RetirementOutcomes from './Outcome'
+import RothIRAInfo from './RothIRAInfo'
 
 export const retirementConfig = {
   id: 'retirement',
   title: 'Retirement Accounts',
   multipleSteps: true,
+
+  subSections: [
+    { id: '401k', title: '401(k)', component: Has401KMatch },
+    { id: 'roth', title: 'Roth IRA', component: RothIRAInfo }
+  ],
 
   // Define which steps show based on previous journey data
   getSteps: (journeyData) => {
@@ -20,7 +27,9 @@ export const retirementConfig = {
       steps.push(Employer401kFollowup)
       if (journeyData.hasEmployerMatch === true) {
         steps.push(Has401KMatch)
+        
       }
+      steps.push(RetirementOutcomes)
     }
 
     return steps
@@ -46,5 +55,6 @@ export const retirementConfig = {
 export const retirementSteps = [
     RetirementIntro,
     Employer401kFollowup,
-    Has401KMatch
+    Has401KMatch,
+    RetirementOutcomes
 ]
