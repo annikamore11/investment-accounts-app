@@ -1,15 +1,20 @@
 import React, { useState } from 'react'
 import { Percent, Info } from 'lucide-react'
+import Link from 'next/link'
+
+
 
 const Has401kMatch = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const [matchPercent, setMatchPercent] = useState(journeyData.matchPercent || '')
   const [salaryMatchLimit, setSalaryMatchLimit] = useState(journeyData.salaryMatchLimit || '')
   const [userContribution, setUserContribution] = useState(journeyData.userContribution || '')
 
+  
+
   const handleNext = () => {
-    updateJourneyData('matchPercent', matchPercent)
-    updateJourneyData('salaryMatchLimit', salaryMatchLimit)
-    updateJourneyData('userContribution', userContribution)
+    updateJourneyData('matchPercent', Number(matchPercent))
+    updateJourneyData('salaryMatchLimit', Number(salaryMatchLimit))
+    updateJourneyData('userContribution', Number(userContribution))
     nextStep()
   }
 
@@ -31,14 +36,13 @@ const Has401kMatch = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
         {/* Step 1 */}
         <div>
           <label className="block text-lg font-medium text-gray-800 mb-2">
-            How much does your company match your contributions?
+            How much does your company match what you put in?
           </label>
           <p className="text-sm text-gray-600 mb-3">
-            Example: If your company matches <strong>50%</strong>, they’ll contribute 50 cents for every dollar you put in.
-          </p>
+            Example: A 50% match means your employer adds 50 cents for every $1 you contribute.          </p>
           <div className="relative">
             <input
-              type="number"
+              type="text"
               placeholder="e.g. 50"
               value={matchPercent}
               onChange={(e) => setMatchPercent(e.target.value)}
@@ -51,14 +55,13 @@ const Has401kMatch = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
         {/* Step 2 */}
         <div>
           <label className="block text-lg font-medium text-gray-800 mb-2">
-            What’s the maximum percent of your salary they’ll match?
+            What’s the highest percent of your salary they’ll match?          
           </label>
           <p className="text-sm text-gray-600 mb-3">
-            Example: If your company matches up to <strong>6%</strong>, that means they’ll only match contributions on the first 6% of your salary.
-          </p>
+            Example: If the match stops at 6%, they only match the first 6% you contribute.          </p>
           <div className="relative">
             <input
-              type="number"
+              type="text"
               placeholder="e.g. 6"
               value={salaryMatchLimit}
               onChange={(e) => setSalaryMatchLimit(e.target.value)}
@@ -71,14 +74,13 @@ const Has401kMatch = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
         {/* Step 3 */}
         <div>
           <label className="block text-lg font-medium text-gray-800 mb-2">
-            What percent of your salary do you currently contribute?
+            What percent of your salary are you contributing right now?
           </label>
           <p className="text-sm text-gray-600 mb-3">
-            Example: If you contribute 5% of your salary to your 401(k), enter “5” below.
-          </p>
+            Example: If you put in 6% of your salary, enter “6”.          </p>
           <div className="relative">
             <input
-              type="number"
+              type="text"
               placeholder="e.g. 5"
               value={userContribution}
               onChange={(e) => setUserContribution(e.target.value)}
@@ -97,9 +99,25 @@ const Has401kMatch = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
 
         {/* Navigation Buttons */}
         <div className="flex gap-4">
-          <button onClick={prevStep} className="btn-journey-back">
+          <button onClick={prevStep} className="btn-journey-back flex-none">
             ← Back
           </button>
+          <Link
+              href="/"
+              className="btn-more-information"
+            >
+              What's a company match?
+          </Link>
+          {/* <button 
+            type = "button"
+            onClick={(e) => {
+              e.stopPropagation(); // prevent parent handlers
+              navigate("/dashboard")
+            }}  
+            className="btn-more-information"
+          >
+            What's a company match?
+          </button> */}
           <button
             onClick={handleNext}
             disabled={!matchPercent || !salaryMatchLimit || !userContribution}
