@@ -33,15 +33,9 @@ const Employer401kFollowup = ({ journeyData, updateJourneyData, nextStep, prevSt
         </h1>
         {/* <p className="text-lg text-primary-200 max-w-3xl mx-auto">
           {has401k
-<<<<<<< HEAD
-            ? 'Does your employer match your 401(k) contributions?'
-            : "Let's move forward by setting up your first investment accounts."}
-        </p>
-=======
             ? 'You indicated that you have a 401k. Does your employer have a 401k match?.'
             : 'Let’s move forward by setting up your first investment accounts.'}
         </p> */}
->>>>>>> 3a0e16a49dcd07ee03dcc164f03e42c188ca2cf3
       </div>
 
       <div className="bg-primary-100 rounded-2xl shadow-xl p-8 md:p-12">
@@ -64,57 +58,24 @@ const Employer401kFollowup = ({ journeyData, updateJourneyData, nextStep, prevSt
         {/* CASE 2: Has 401k — Ask About Match */}
         {has401k && (
           <>
-<<<<<<< HEAD
-=======
             <div className="text-center mb-4">
             <h1 className="text-xl">You indicated that you have a 401k. Does your employer have a 401k match?</h1>
             </div>
 
-            <div className="mb-4">
-                {/* empty space or future content */}
-            </div>
-            <div className="bg-purple-100 border border-purple-300 rounded-xl p-4 mb-6">
-              <p className="text-sm text-purple-900">
-                <strong>Why this matters:</strong> Many employers match part of your contributions.
-                Knowing this helps us recommend how much to contribute and where else to invest.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-            {[ 
-                { value: true, label: 'Yes' }, 
-                { value: false, label: 'No' }, 
-                { value: 'explain', label: 'What is a 401(k) match?' } 
-            ].map(option => (
-                <button
-                key={option.value}
-                onClick={() => setHasMatch(option.value)}
-                className={`flex items-center justify-center px-8 py-2 rounded-xl border text-center text-lg font-medium transition-all duration-200
-                    ${hasMatch === option.value
-                    ? 'border-accent-green-600 bg-accent-green-50 shadow-md'
-                    : 'border-accent-green-600 hover:border-accent-gray-400 hover:bg-gray-50'
-                    }`}
-                >
-                <span className="text-gray-800">{option.label}</span>
-                {hasMatch === option.value && (
-                    <Check className="w-5 h-5 text-accent-green-600 ml-2" />
-                )}
-                </button>
-            ))}
-            </div>
->>>>>>> 3a0e16a49dcd07ee03dcc164f03e42c188ca2cf3
+            
 
             {/* Not sure? Learn more section */}
             <button
               onClick={() => setShowExplanation(!showExplanation)}
-              className="w-full mb-4 flex items-center justify-between px-4 py-3 bg-accent-green-50 border border-accent-green-300 rounded-lg hover:bg-accent-green-100 transition-colors"
+              className="w-full mb-4 flex items-center justify-between px-4 py-3 bg-accent-purple-100 border border-purple-300 rounded-lg hover:bg-purple-200 transition-colors"
             >
-              <span className="font-semibold text-accent-green-900 flex items-center gap-2">
+              <span className="font-semibold text-accent-purple-900 flex items-center gap-2">
                 What is a 401k match?
               </span>
               {showExplanation ? (
-                <ChevronUp className="w-5 h-5 text-accent-green-700" />
+                <ChevronUp className="w-5 h-5 text-accent-purple-700" />
               ) : (
-                <ChevronDown className="w-5 h-5 text-accent-green-700" />
+                <ChevronDown className="w-5 h-5 text-accent-purple-700" />
               )}
             </button>
 
@@ -145,9 +106,9 @@ const Employer401kFollowup = ({ journeyData, updateJourneyData, nextStep, prevSt
                   </p>
                 </div>
 
-                <div className="bg-accent-green-50 border border-accent-green-300 p-4 rounded-lg mb-5">
-                  <p className="font-semibold text-accent-green-900 mb-2">⚠️ Important Rule:</p>
-                  <p className="text-sm text-gray-700">
+                <div className="bg-accent-purple-50 border border-accent-purple-300 p-4 rounded-lg mb-5">
+                  <p className="font-semibold text-accent-purple-900 mb-2">Important Rule:</p>
+                  <p className="text-sm text-purple-900">
                     You must contribute at least the match percentage to get the free money. If your company matches 5% and you only contribute 3%, you're leaving money on the table.
                   </p>
                 </div>
@@ -190,7 +151,7 @@ const Employer401kFollowup = ({ journeyData, updateJourneyData, nextStep, prevSt
                     </table>
                   </div>
                   <p className="text-xs text-gray-600 mt-3">
-                    💡 To get the full match (3%), you need to contribute at least 6%. Anything above 6% doesn't get matched, but still grows your retirement savings.
+                    To get the full match (3%), you need to contribute at least 6%. Anything above 6% doesn't get matched, but still grows your retirement savings.
                   </p>
                 </div>
 
