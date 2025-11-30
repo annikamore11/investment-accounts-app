@@ -382,10 +382,8 @@ const JourneyFlow = () => {
             {/* Start Over Button at bottom of sidebar */}
             <div className="p-6 px-10">
               <button
-                onClick={() => {
-                  setShowResetConfirm(true)
-                }}
-                className="w-full px-4 py-2 text-sm text-primary-100 hover:text-red-900 rounded-lg transition-colors"
+                onClick={() => setShowResetConfirm(true)}
+                className="w-full px-4 py-2 text-xl font-bold text-primary-100 hover:text-red-400 rounded-lg transition-colors font-Gloock" // or whatever your h2 font class is
               >
                 Start Over
               </button>

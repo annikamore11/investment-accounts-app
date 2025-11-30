@@ -1,7 +1,7 @@
 import React from 'react'
 import { Shield, TrendingUp, AlertTriangle } from 'lucide-react'
 import CompoundInterestChart from '@/components/charts/CompoundInterestChart'
-
+import GlossaryTerm from '@/components/ui/GlossaryTerm'
 
 const EmergencyFundIntro = ({ journeyData, nextStep, prevStep }) => {
   return (
@@ -21,16 +21,31 @@ const EmergencyFundIntro = ({ journeyData, nextStep, prevStep }) => {
             <strong>Why this matters:</strong> The first step to financial security is to learn about and set up an emergency fund. This is crucial before planning for retirement or extra investments.
           </p>
         </div>
+
         {/* Why Emergency Fund */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 mb-8">
-        {/* What is Emergency Fund */}
+          {/* What is Emergency Fund */}
           <div>
             <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
               <Shield className="w-6 h-6 text-gray-600 mr-2" />
               What Is an Emergency Fund?
             </h3>
             <p className="text-gray-700 mb-4">
-              3-6 months of expenses sitting in a safe, accessible account that earns interest.
+              3-6 months of expenses sitting in a safe, accessible account that earns{' '}
+              <GlossaryTerm term="interest">
+                <h4 className="font-bold mb-2 text-gray-900">What is Interest?</h4>
+                <p className="mb-2">
+                  Interest is the return you can get on your money. When you put money into a bank or brokerage account, it isn't really just sitting there. The bank is using that money for their own investments in the background.
+                </p>
+                <p className="mb-3">
+                  Essentially, you're loaning the bank that money until you decide to take it out. Interest is what the bank is willing to pay to encourage you to store your money with them.
+                </p>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="font-semibold mb-1">Example:</p>
+                  <p className="mb-1">If you have $100 in an account with 5% interest, after one year you'd have $105.</p>
+                  <p className="text-xs text-gray-600">Math: $100 × 1.05 = $105 (5% of $100 is $5)</p>
+                </div>
+              </GlossaryTerm>.
             </p>
             <div className="bg-gray-50 border border-gray-400 rounded-lg p-4">
               <p className="font-semibold text-gray-900 mb-2">The Rules:</p>
@@ -70,14 +85,24 @@ const EmergencyFundIntro = ({ journeyData, nextStep, prevStep }) => {
           <div className="grid md:grid-cols-2 gap-4 mb-4">
             <div className="bg-primary-50 border border-gray-400 rounded-lg p-4">
               <p className="font-bold text-gray-900 mb-2">Regular Bank Checkings/Savings Account</p>
-              <p className="text-sm text-gray-700 mb-2">Interest: <strong>Typically 0% - %1</strong></p>
+              <p className="text-sm text-gray-700 mb-2">Interest: <strong>Typically 0% - 1%</strong></p>
               <p className="text-sm text-gray-600">
-                Money can lose value to inflation
+                Money can lose value to{' '}
+                <GlossaryTerm term="inflation">
+                  <h4 className="font-bold mb-2 text-gray-900">What is Inflation?</h4>
+                  <p className="mb-2">
+                    Inflation is the gradual increase in prices over time. It means your money loses purchasing power - what costs $100 today might cost $103 next year.
+                  </p>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <p className="font-semibold mb-1">Example:</p>
+                    <p>If inflation is 3% per year and your savings account pays 0% interest, you're actually <em>losing</em> 3% of your money's value each year.</p>
+                  </div>
+                </GlossaryTerm>
               </p>
             </div>
             
             <div className="bg-green-50 border border-gray-400 rounded-lg p-4">
-              <p className="font-bold text-gray-900 mb-2">Money Market Funds or High Yield Accounts</p>
+              <p className="font-bold text-gray-900 mb-2">Money Market Funds or High-Yield Accounts</p>
               <p className="text-sm text-gray-700 mb-2">Interest: <strong>Typically 3.5% - 5%</strong></p>
               <p className="text-sm text-gray-600">
                 Just as safe, grows your money

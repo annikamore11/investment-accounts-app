@@ -51,33 +51,47 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
 
         {/* Preset Options */}
         <div className="mb-6">
-          <label className="block text-base md:text-lg font-semibold text-gray-900 mb-4">
-            Select a target amount:
-          </label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {presetAmounts.map(option => (
-              <button
-                key={option.value}
-                onClick={() => setSelectedAmount(option.value)}
-                className={`p-3 md:p-4 rounded-xl border-2 transition-all ${
-                  selectedAmount === option.value
-                    ? 'border-accent-green-600 bg-accent-green-50 shadow-md'
-                    : 'border-gray-300 hover:border-gray-400 bg-white'
-                }`}
-              >
-                <p className="text-lg md:text-xl font-bold text-gray-900">{option.label}</p>
-                <p className="text-xs text-gray-600 mt-1">{option.months}</p>
-                
-              </button>
-            ))}
-          </div>
+          {monthlyExpenses !== 0 ? (
+            <>
+              <label className="block text-base md:text-lg font-semibold text-gray-900 mb-4">
+                Select a target amount:
+              </label>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {presetAmounts.map(option => (
+                  <button
+                    key={option.value}
+                    onClick={() => setSelectedAmount(option.value)}
+                    className={`p-3 md:p-4 rounded-xl border-2 transition-all ${
+                      selectedAmount === option.value
+                        ? 'border-accent-green-600 bg-accent-green-50 shadow-md'
+                        : 'border-gray-300 hover:border-gray-400 bg-white'
+                    }`}
+                  >
+                    <p className="text-lg md:text-xl font-bold text-gray-900">{option.label}</p>
+                    <p className="text-xs text-gray-600 mt-1">{option.months}</p>
+                    
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div></div>
+          )}
+          
         </div>
 
         {/* Custom Amount */}
         <div className="bg-gray-50 border-2 border-gray-300 rounded-xl p-4 md:p-6 mb-6">
-          <label className="block text-base md:text-lg font-semibold text-gray-900 mb-3">
-            Or enter your own goal:
-          </label>
+          {monthlyExpenses === 0 ? (
+            <label className="block text-base md:text-lg font-semibold text-gray-900 mb-3">
+              Enter your goal:
+            </label>
+          ) : (
+            <label className="block text-base md:text-lg font-semibold text-gray-900 mb-3">
+              Or enter your own goal:
+            </label>
+          )}
+          
           <div className="flex items-center gap-2">
             <span className="text-xl md:text-2xl font-bold text-gray-700">$</span>
             <input
@@ -107,7 +121,7 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
               How much would you like to start your emergency fund with?
             </label>
             <p className="text-sm text-gray-600 mb-3">
-              Enter $0 if you're starting from scratch - that's totally okay!
+              Enter $0 if you want to set up your account without transferring money yet.
             </p>
             <div className="bg-gray-50 border-2 border-gray-300 rounded-xl p-4">
               <div className="flex items-center gap-2">
