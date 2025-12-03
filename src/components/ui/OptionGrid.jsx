@@ -1,0 +1,65 @@
+'use client'
+
+import { Check } from 'lucide-react'
+
+/**
+ * Standardized option grid for selection patterns
+ * Supports single and multi-column layouts with icons
+ */
+export default function OptionGrid({
+  options = [],
+  selectedValue,
+  onChange,
+  columns = 2, // Number of columns on larger screens
+  className = ''
+}) {
+  const gridClass = columns === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'
+
+  return (
+    <div className={`grid ${gridClass} gap-4 mb-8 ${className}`}>
+      {options.map((option) => {
+        const isSelected = selectedValue === option.value
+
+        return (
+          <button
+            key={option.value}
+            onClick={() => onChange(option.value)}
+            className={`
+              relative px-4 sm:px-5 py-4 rounded-xl border-2 transition-all duration-300
+              ${isSelected
+                ? 'border-accent-green-600 bg-accent-green-50 shadow-lg scale-105'
+                : 'border-primary-400 hover:border-primary-600 bg-primary-50 hover:bg-white hover:shadow-md'
+              }
+            `}
+          >
+            {/* Check Icon */}
+            {isSelected && (
+              <div className="absolute top-2 right-2 bg-accent-green-600 rounded-full p-1 animate-fadeIn">
+                <Check className="w-4 h-4 text-white" />
+              </div>
+            )}
+
+            {/* Option Icon (if provided) */}
+            {option.icon && (
+              <div className={`mb-3 flex justify-center ${isSelected ? 'text-accent-green-700' : 'text-primary-700'}`}>
+                {option.icon}
+              </div>
+            )}
+
+            {/* Option Label */}
+            <div className={`font-semibold text-base sm:text-lg ${isSelected ? 'text-accent-green-900' : 'text-primary-900'}`}>
+              {option.label}
+            </div>
+
+            {/* Option Description (if provided) */}
+            {option.description && (
+              <p className={`mt-2 text-xs sm:text-sm ${isSelected ? 'text-accent-green-700' : 'text-primary-700'}`}>
+                {option.description}
+              </p>
+            )}
+          </button>
+        )
+      })}
+    </div>
+  )
+}

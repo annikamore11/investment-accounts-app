@@ -67,8 +67,13 @@
   font-display: swap;
 }
 
+/* ============================================
+   ANIMATION UTILITIES
+   Apply standardized animations to elements
+   ============================================ */
+
 .animate-fadeIn-transition {
-  animation: fadeInCard .6s ease-out forwards;
+  animation: fadeInCard 0.5s ease-out forwards;
 }
 
 .animate-fadeIn {
@@ -76,7 +81,27 @@
 }
 
 .animate-slideUp {
-  animation: slideUp 0.7s ease-out;
+  animation: slideUp 0.5s ease-out;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.5s ease-out;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.5s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.5s ease-out;
+}
+
+.fadeInCard {
+  animation: fadeInCard 0.5s ease-out forwards;
 }
 
 .static-background {
@@ -85,10 +110,6 @@
   background-position: center;
   background-repeat: no-repeat;
   overflow: hidden;
-}
-
-.fadeInCard {
-  animation: fadeInCard 0.4s ease-out forwards;
 }
 
 .static-background::before {
@@ -211,47 +232,142 @@
   z-index: 2;
 }
 
+/* ============================================
+   MOBILE RESPONSIVENESS
+   Optimized for mobile devices
+   ============================================ */
+
 /* Mobile: slightly fade background for readability */
 @media (max-width: 767px) {
   .money-image-background {
     padding: 4rem 0; /* Remove horizontal padding on mobile */
   }
-  
-  .money-image-background::before {
 
+  .money-image-background::before {
     top: 50%;
     right: -20%;
     transform: translateY(-50%);
     width: 120%;
     height: 110%;
   }
-}
 
-
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { 
-    opacity: 0;
-    transform: translateY(20px);
+  /* Make step containers take full width on mobile with minimal margins */
+  .max-w-4xl {
+    max-width: 100% !important;
   }
-  to { 
+
+  /* Reduce outer padding on mobile for full-width effect */
+  body {
+    padding: 0;
+  }
+
+  /* Ensure cards have proper spacing on mobile */
+  .bg-primary-100.rounded-2xl {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+}
+
+
+
+/* ============================================
+   STANDARDIZED ANIMATIONS
+   All animations use consistent timing (500ms)
+   ============================================ */
+
+/* Fade In - Basic opacity transition */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fade In Card - Card entrance with slight upward movement */
+@keyframes fadeInCard {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-@keyframes pulse {
-  0%, 100% { 
+
+/* Slide Up - Content appearing from below */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide Down - Content appearing from above */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide In Left - Content entering from left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide In Right - Content entering from right */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale In - Content scaling from small to normal */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
     transform: scale(1);
   }
-  50% { 
+}
+
+/* Pulse - Subtle breathing effect */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
     transform: scale(1.05);
   }
 }
+
+/* Fade In Cards - Multiple cards with stagger */
 @keyframes fadeInCards {
   from {
     opacity: 0;
