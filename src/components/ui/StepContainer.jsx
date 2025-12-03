@@ -20,19 +20,19 @@ export default function StepContainer({
     : 'translate-y-0 opacity-100'
 
   return (
-    <div className={`w-full max-w-4xl mx-auto px-4 sm:px-6 md:px-8 transition-all duration-500 ${
+    <div className={`w-full max-w-4xl mx-auto px-2 sm:px-6 md:px-8 transition-all duration-500 ${
       isExiting ? exitClass : enterClass
     }`}>
       {/* Header Section */}
       {(title || subtitle) && (
-        <div className="text-center mt-6 sm:mt-8 md:mt-10 mb-6 lg:mb-10 animate-fadeIn">
+        <div className="text-center mt-4 sm:mt-8 md:mt-10 mb-4 sm:mb-6 lg:mb-10 animate-fadeIn">
           {title && (
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-100 mb-3 px-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-100 mb-2 sm:mb-3 px-2">
               {title}
             </h1>
           )}
           {subtitle && (
-            <p className="text-base sm:text-lg text-primary-200 px-4">
+            <p className="text-base sm:text-lg text-primary-200 px-2 sm:px-4">
               {subtitle}
             </p>
           )}
@@ -40,7 +40,7 @@ export default function StepContainer({
       )}
 
       {/* Main Content Card */}
-      <div className="bg-primary-100 rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 lg:p-12 animate-fadeIn">
+      <div className="bg-primary-100 rounded-2xl shadow-xl p-6 sm:p-6 md:p-8 lg:p-12 animate-fadeIn">
         {children}
       </div>
     </div>

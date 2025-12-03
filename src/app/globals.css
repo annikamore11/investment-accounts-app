@@ -237,7 +237,7 @@
    Optimized for mobile devices
    ============================================ */
 
-/* Mobile: slightly fade background for readability */
+/* Mobile: Optimize for mobile devices with larger containers */
 @media (max-width: 767px) {
   .money-image-background {
     padding: 4rem 0; /* Remove horizontal padding on mobile */
@@ -251,20 +251,21 @@
     height: 110%;
   }
 
-  /* Make step containers take full width on mobile with minimal margins */
+  /* Make step containers take full width on mobile */
   .max-w-4xl {
     max-width: 100% !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
   }
 
-  /* Reduce outer padding on mobile for full-width effect */
-  body {
-    padding: 0;
-  }
-
-  /* Ensure cards have proper spacing on mobile */
+  /* Ensure cards take up most of the screen on mobile */
   .bg-primary-100.rounded-2xl {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
+    border-radius: 1rem; /* Slightly smaller radius on mobile */
+  }
+
+  /* Larger text on mobile for better readability */
+  h1 {
+    font-size: 1.75rem !important; /* Slightly larger than default */
   }
 }
 

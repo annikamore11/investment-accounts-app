@@ -1,7 +1,5 @@
 'use client'
 
-import { Check } from 'lucide-react'
-
 /**
  * Standardized option grid for selection patterns
  * Supports single and multi-column layouts with icons
@@ -25,20 +23,13 @@ export default function OptionGrid({
             key={option.value}
             onClick={() => onChange(option.value)}
             className={`
-              relative px-4 sm:px-5 py-4 rounded-xl border-2 transition-all duration-300
+              relative px-4 sm:px-5 py-4 rounded-xl border-2 transition-all duration-300 text-left
               ${isSelected
                 ? 'border-accent-green-600 bg-accent-green-50 shadow-lg scale-105'
-                : 'border-primary-400 hover:border-primary-600 bg-primary-50 hover:bg-white hover:shadow-md'
+                : 'border-primary-400 hover:border-primary-600 bg-primary-50 hover:bg-white hover:shadow-md hover:scale-102'
               }
             `}
           >
-            {/* Check Icon */}
-            {isSelected && (
-              <div className="absolute top-2 right-2 bg-accent-green-600 rounded-full p-1 animate-fadeIn">
-                <Check className="w-4 h-4 text-white" />
-              </div>
-            )}
-
             {/* Option Icon (if provided) */}
             {option.icon && (
               <div className={`mb-3 flex justify-center ${isSelected ? 'text-accent-green-700' : 'text-primary-700'}`}>
