@@ -262,9 +262,15 @@ const JourneyFlow = () => {
 
   // Get step names for a section
   const getSectionStepNames = (section) => {
+    // Check for dynamic getStepNames function first
+    if (typeof section.getStepNames === 'function') {
+      return section.getStepNames(journeyData)
+    }
+    // Then check for static stepNames array
     if (section.stepNames) {
       return section.stepNames
     }
+    // Fallback to generic step names
     const steps = typeof section.getSteps === 'function'
       ? section.getSteps(journeyData)
       : section.steps || []
@@ -377,50 +383,49 @@ const JourneyFlow = () => {
               {sectionConfigs.map((section) => {
                 const isCompleted = journeyData.sectionCompletion[section.id]
                 const isActive = currentSection === section.id
-                const isExpanded = expandedSections[section.id] || isActive
+                const isExpanded = expandedSections[section.id]
                 const stepNames = getSectionStepNames(section)
                 const hasMultipleSteps = stepNames.length > 1
 
                 return (
                   <div key={section.id} className="mb-1">
-                    <div className="flex items-center gap-1">
-                      {hasMultipleSteps && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            toggleSectionExpansion(section.id)
-                          }}
-                          className="p-1 hover:bg-primary-300/30 rounded transition-colors"
-                        >
-                          {isExpanded ? (
-                            <ChevronDown className="w-4 h-4 text-primary-200" />
-                          ) : (
-                            <ChevronRight className="w-4 h-4 text-primary-200" />
-                          )}
-                        </button>
-                      )}
-                      <button
-                        onClick={() => goToSection(section.id)}
-                        className={`
-                          flex-1 text-left px-4 py-2.5 rounded-lg transition-all flex items-center justify-between
-                          ${isActive
-                            ? 'bg-green-50 text-green-700'
-                            : isCompleted
-                              ? 'btn-journey-next shadow-md'
-                              : 'bg-primary-50/50 text-gray-800 hover:bg-primary-300/50'
-                          }
-                          ${!hasMultipleSteps ? 'ml-0' : ''}
-                        `}
-                      >
-                        <div className="font-medium text-sm">{section.title}</div>
+                    <button
+                      onClick={() => goToSection(section.id)}
+                      className={`
+                        w-full text-left px-4 py-2.5 rounded-lg transition-all flex items-center justify-between
+                        ${isActive
+                          ? 'bg-green-50 text-green-700'
+                          : isCompleted
+                            ? 'btn-journey-next shadow-md'
+                            : 'bg-primary-50/50 text-gray-800 hover:bg-primary-300/50'
+                        }
+                      `}
+                    >
+                      <div className="font-medium text-sm">{section.title}</div>
+                      <div className="flex items-center gap-2">
                         {isCompleted && !isActive && (
                           <Check className="w-4 h-4 text-primary-100 flex-shrink-0" />
                         )}
                         {isCompleted && isActive && (
                           <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
                         )}
-                      </button>
-                    </div>
+                        {hasMultipleSteps && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              toggleSectionExpansion(section.id)
+                            }}
+                            className="p-1 hover:bg-primary-300/30 rounded transition-colors"
+                          >
+                            {isExpanded ? (
+                              <ChevronDown className="w-4 h-4 text-primary-200" />
+                            ) : (
+                              <ChevronRight className="w-4 h-4 text-primary-200" />
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </button>
 
                     {/* Step Dropdown */}
                     {hasMultipleSteps && isExpanded && (
