@@ -15,6 +15,8 @@ const EmergencyFundIntro = ({ journeyData, nextStep, prevStep }) => {
         </p>
       </div>
 
+      
+
       <div className="bg-primary-100 rounded-xl shadow-xl p-8 md:p-12">
         <div className="bg-purple-100 border border-purple-300 rounded-xl p-4 mb-6">
           <p className="text-sm text-purple-900">

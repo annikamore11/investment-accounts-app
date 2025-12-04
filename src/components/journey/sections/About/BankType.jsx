@@ -35,12 +35,6 @@ const BankType = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
       icon: <Smartphone className="w-6 h-6" />,
       label: 'Online-Only Bank',
       description: 'Examples: Ally, SoFi, Capital One 360, Chime • Can be instant or take several days'
-    },
-    {
-      value: 'business',
-      icon: <Briefcase className="w-6 h-6" />,
-      label: 'Business or Joint Account',
-      description: 'Used for LLCs, shared, or company-linked accounts • Typically 3-7 days'
     }
   ]
 
@@ -63,6 +57,7 @@ const BankType = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
         options={bankOptions}
         selectedValue={bankType}
         onChange={setBankType}
+        columns={3}
       />
 
       {/* Helpful note based on selection */}

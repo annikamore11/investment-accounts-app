@@ -393,7 +393,7 @@ const JourneyFlow = () => {
           {/* Main Content */}
           <div className={`transition-all duration-300 ${isSidebarOpen ? 'md:ml-64' : 'ml-0'}`}>
             <div ref={mainContentRef} className="h-[calc(100vh-4rem)] overflow-y-auto">
-              <div className={`px-8 py-8 min-h-full
+              <div className={`px-2 md:px-8 py-2 md:py-8 min-h-full
               ${isSidebarOpen
                 ? 'w-full static-background mx-auto'
                 : 'w-full static-background'
