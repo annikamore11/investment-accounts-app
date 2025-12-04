@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../../context/AuthContext'
-import { X, Menu, Check } from 'lucide-react'
+import { X, Menu, Check, ChevronDown, ChevronRight } from 'lucide-react'
 import { loadJourneyFromDatabase, deleteJourneyFromDatabase } from '../../utils/JourneyStorage'
 import { useJourneySave } from '../../hooks/useJourneySave'
 
@@ -73,8 +73,9 @@ const JourneyFlow = () => {
   const { user } = useAuth()
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [expandedSections, setExpandedSections] = useState({})
   const mainContentRef = useRef(null)
-  
+
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [journeyData, setJourneyData] = useState(INITIAL_JOURNEY_DATA)
 
@@ -241,10 +242,33 @@ const JourneyFlow = () => {
   }
 
   // Go to section
-  const goToSection = (sectionId) => {
+  const goToSection = (sectionId, stepIndex = null) => {
     setCurrentSection(sectionId)
-    setCurrentStepInSection(journeyData.lastStepInSection?.[sectionId] || 0)
+    if (stepIndex !== null) {
+      setCurrentStepInSection(stepIndex)
+    } else {
+      setCurrentStepInSection(journeyData.lastStepInSection?.[sectionId] || 0)
+    }
     scrollToTop()
+  }
+
+  // Toggle section expansion
+  const toggleSectionExpansion = (sectionId) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionId]: !prev[sectionId]
+    }))
+  }
+
+  // Get step names for a section
+  const getSectionStepNames = (section) => {
+    if (section.stepNames) {
+      return section.stepNames
+    }
+    const steps = typeof section.getSteps === 'function'
+      ? section.getSteps(journeyData)
+      : section.steps || []
+    return steps.map((_, index) => `Step ${index + 1}`)
   }
 
   // Section progress bar component
@@ -349,32 +373,83 @@ const JourneyFlow = () => {
               </button>
             </div>
             
-            <nav className="flex-1 overflow-y-auto p-6 space-y-2">
+            <nav className="flex-1 overflow-y-auto p-6 space-y-1">
               {sectionConfigs.map((section) => {
                 const isCompleted = journeyData.sectionCompletion[section.id]
                 const isActive = currentSection === section.id
+                const isExpanded = expandedSections[section.id] || isActive
+                const stepNames = getSectionStepNames(section)
+                const hasMultipleSteps = stepNames.length > 1
+
                 return (
-                  <button
-                    key={section.id}
-                    onClick={() => goToSection(section.id)}
-                    className={`
-                      w-full text-left px-4 py-3 rounded-lg transition-all flex items-center justify-between
-                      ${isActive 
-                        ? 'bg-green-50 text-green-700' 
-                        : isCompleted 
-                          ? 'btn-journey-next shadow-md' 
-                          : 'bg-primary-50/50 text-gray-800 hover:bg-primary-300/50'
-                      }
-                    `}
-                  >
-                    <div className="font-medium">{section.title}</div>
-                    {isCompleted && !isActive && (
-                      <Check className="w-5 h-5 text-primary-100 flex-shrink-0" />
+                  <div key={section.id} className="mb-1">
+                    <div className="flex items-center gap-1">
+                      {hasMultipleSteps && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            toggleSectionExpansion(section.id)
+                          }}
+                          className="p-1 hover:bg-primary-300/30 rounded transition-colors"
+                        >
+                          {isExpanded ? (
+                            <ChevronDown className="w-4 h-4 text-primary-200" />
+                          ) : (
+                            <ChevronRight className="w-4 h-4 text-primary-200" />
+                          )}
+                        </button>
+                      )}
+                      <button
+                        onClick={() => goToSection(section.id)}
+                        className={`
+                          flex-1 text-left px-4 py-2.5 rounded-lg transition-all flex items-center justify-between
+                          ${isActive
+                            ? 'bg-green-50 text-green-700'
+                            : isCompleted
+                              ? 'btn-journey-next shadow-md'
+                              : 'bg-primary-50/50 text-gray-800 hover:bg-primary-300/50'
+                          }
+                          ${!hasMultipleSteps ? 'ml-0' : ''}
+                        `}
+                      >
+                        <div className="font-medium text-sm">{section.title}</div>
+                        {isCompleted && !isActive && (
+                          <Check className="w-4 h-4 text-primary-100 flex-shrink-0" />
+                        )}
+                        {isCompleted && isActive && (
+                          <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Step Dropdown */}
+                    {hasMultipleSteps && isExpanded && (
+                      <div className="ml-8 mt-1 space-y-0.5 animate-fadeIn">
+                        {stepNames.map((stepName, stepIndex) => {
+                          const isCurrentStep = isActive && currentStepInSection === stepIndex
+                          const isPastStep = isActive && currentStepInSection > stepIndex
+
+                          return (
+                            <button
+                              key={stepIndex}
+                              onClick={() => goToSection(section.id, stepIndex)}
+                              className={`
+                                w-full text-left px-3 py-1.5 rounded text-xs transition-all
+                                ${isCurrentStep
+                                  ? 'bg-accent-green-100 text-accent-green-800 font-medium'
+                                  : isPastStep
+                                    ? 'text-primary-300 hover:text-primary-200 hover:bg-primary-700/30'
+                                    : 'text-primary-400 hover:text-primary-300 hover:bg-primary-700/30'
+                                }
+                              `}
+                            >
+                              {stepName}
+                            </button>
+                          )
+                        })}
+                      </div>
                     )}
-                    {isCompleted && isActive && (
-                      <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
-                    )}
-                  </button>
+                  </div>
                 )
               })}
             </nav>
