@@ -59,13 +59,22 @@ const INITIAL_JOURNEY_DATA = {
     emergencyFund: 0,
     retirement: 0,
   },
-  
+
   // Section completion
   sectionCompletion: {
     welcome: false,
     aboutYou: false,
     budget: false,
     emergencyFund: false,
+  },
+
+  // Track completed steps for each section (array of step indices)
+  completedSteps: {
+    welcome: [],
+    aboutYou: [],
+    budget: [],
+    emergencyFund: [],
+    retirement: [],
   }
 }
 
@@ -164,14 +173,30 @@ const JourneyFlow = () => {
   const nextStep = () => {
     const section = getCurrentSection()
     const steps = getCurrentSteps()
-    
+
     if (!section || steps.length === 0) return
+
+    // Mark current step as completed
+    setJourneyData(prev => {
+      const currentCompleted = prev.completedSteps[currentSection] || []
+      const updatedCompleted = currentCompleted.includes(currentStepInSection)
+        ? currentCompleted
+        : [...currentCompleted, currentStepInSection]
+
+      return {
+        ...prev,
+        completedSteps: {
+          ...prev.completedSteps,
+          [currentSection]: updatedCompleted
+        }
+      }
+    })
 
     if (currentStepInSection < steps.length - 1) {
       // Next step in section
       const newStep = currentStepInSection + 1
       setCurrentStepInSection(newStep)
-      
+
       // Save last step for this section
       setJourneyData(prev => ({
         ...prev,
@@ -193,7 +218,7 @@ const JourneyFlow = () => {
           [currentSection]: currentStepInSection
         }
       }))
-      
+
       // Move to next section
       const currentIndex = sectionConfigs.findIndex(s => s.id === currentSection)
       if (currentIndex < sectionConfigs.length - 1) {
@@ -202,7 +227,7 @@ const JourneyFlow = () => {
         setCurrentStepInSection(journeyData.lastStepInSection[nextSectionId] || 0)
       }
     }
-    
+
     scrollToTop()
   }
 
@@ -275,6 +300,18 @@ const JourneyFlow = () => {
       ? section.getSteps(journeyData)
       : section.steps || []
     return steps.map((_, index) => `Step ${index + 1}`)
+  }
+
+  // Get completion count for a section
+  const getSectionCompletion = (section) => {
+    const steps = typeof section.getSteps === 'function'
+      ? section.getSteps(journeyData)
+      : section.steps || []
+    const totalSteps = steps.length
+    const completed = journeyData.completedSteps[section.id] || []
+    const completedCount = completed.length
+
+    return { completedCount, totalSteps, isFullyCompleted: completedCount === totalSteps && totalSteps > 0 }
   }
 
   // Section progress bar component
@@ -381,11 +418,12 @@ const JourneyFlow = () => {
             
             <nav className="flex-1 overflow-y-auto p-6 space-y-1">
               {sectionConfigs.map((section) => {
-                const isCompleted = journeyData.sectionCompletion[section.id]
                 const isActive = currentSection === section.id
                 const isExpanded = expandedSections[section.id]
                 const stepNames = getSectionStepNames(section)
                 const hasMultipleSteps = stepNames.length > 1
+                const { completedCount, totalSteps, isFullyCompleted } = getSectionCompletion(section)
+                const completedStepsArray = journeyData.completedSteps[section.id] || []
 
                 return (
                   <div key={section.id} className="mb-1">
@@ -393,21 +431,20 @@ const JourneyFlow = () => {
                       onClick={() => goToSection(section.id)}
                       className={`
                         w-full text-left px-4 py-2.5 rounded-lg transition-all flex items-center justify-between
-                        ${isActive
-                          ? 'bg-green-50 text-green-700'
-                          : isCompleted
-                            ? 'btn-journey-next shadow-md'
+                        ${isFullyCompleted
+                          ? 'bg-green-600 text-white shadow-md hover:bg-green-700'
+                          : isActive
+                            ? 'bg-green-50 text-green-700'
                             : 'bg-primary-50/50 text-gray-800 hover:bg-primary-300/50'
                         }
                       `}
                     >
                       <div className="font-medium text-sm">{section.title}</div>
                       <div className="flex items-center gap-2">
-                        {isCompleted && !isActive && (
-                          <Check className="w-4 h-4 text-primary-100 flex-shrink-0" />
-                        )}
-                        {isCompleted && isActive && (
-                          <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+                        {hasMultipleSteps && (
+                          <span className={`text-xs font-medium ${isFullyCompleted ? 'text-white' : 'text-gray-600'}`}>
+                            {completedCount}/{totalSteps}
+                          </span>
                         )}
                         {hasMultipleSteps && (
                           <button
@@ -418,9 +455,9 @@ const JourneyFlow = () => {
                             className="p-1 hover:bg-primary-300/30 rounded transition-colors"
                           >
                             {isExpanded ? (
-                              <ChevronDown className="w-4 h-4 text-primary-200" />
+                              <ChevronDown className={`w-4 h-4 ${isFullyCompleted ? 'text-white' : 'text-primary-200'}`} />
                             ) : (
-                              <ChevronRight className="w-4 h-4 text-primary-200" />
+                              <ChevronRight className={`w-4 h-4 ${isFullyCompleted ? 'text-white' : 'text-primary-200'}`} />
                             )}
                           </button>
                         )}
@@ -432,23 +469,26 @@ const JourneyFlow = () => {
                       <div className="ml-8 mt-1 space-y-0.5 animate-fadeIn">
                         {stepNames.map((stepName, stepIndex) => {
                           const isCurrentStep = isActive && currentStepInSection === stepIndex
-                          const isPastStep = isActive && currentStepInSection > stepIndex
+                          const isStepCompleted = completedStepsArray.includes(stepIndex)
 
                           return (
                             <button
                               key={stepIndex}
                               onClick={() => goToSection(section.id, stepIndex)}
                               className={`
-                                w-full text-left px-3 py-1.5 rounded text-xs transition-all
+                                w-full text-left px-3 py-1.5 rounded text-xs transition-all flex items-center justify-between gap-2
                                 ${isCurrentStep
                                   ? 'bg-accent-green-100 text-accent-green-800 font-medium'
-                                  : isPastStep
+                                  : isStepCompleted
                                     ? 'text-primary-300 hover:text-primary-200 hover:bg-primary-700/30'
                                     : 'text-primary-400 hover:text-primary-300 hover:bg-primary-700/30'
                                 }
                               `}
                             >
-                              {stepName}
+                              <span>{stepName}</span>
+                              {isStepCompleted && (
+                                <Check className="w-3 h-3 text-green-500 flex-shrink-0" />
+                              )}
                             </button>
                           )
                         })}
