@@ -142,7 +142,7 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
               href="https://www.fidelity.com/open-account/overview"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-700 underline font-semibold"
+              className="text-accent-green-600 hover:text-accent-green-700 underline font-semibold"
             >
               Fidelity.com
             </a>
@@ -506,18 +506,6 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
             </div>
           )}
 
-          {/* Action Button */}
-          {currentStep.url && !currentStep.alternatives && (
-            <a
-              href={currentStep.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-            >
-              <span>Open Fidelity.com</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          )}
         </div>
 
         {/* Navigation Arrows */}
