@@ -142,7 +142,7 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
               href="https://www.fidelity.com/open-account/overview"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-700 underline font-semibold"
+              className="text-accent-green-600 hover:text-accent-green-700 underline font-semibold"
             >
               Fidelity.com
             </a>
@@ -156,7 +156,7 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
               <div className="space-y-2">
                 <p className="font-semibold text-gray-900">What is SPAXX?</p>
                 <p>
-                  SPAXX is Fidelity's government money market fund. It's a very safe investment that holds short-term U.S. government securities.
+                  SPAXX is Fidelity's government money market fund. It's a very safe investment that essentially acts the same as a high yield savings account.
                 </p>
                 <p>
                   When you choose SPAXX as your core position, any uninvested cash in your account automatically goes into this fund and earns interest (typically 2-5% annually), instead of sitting idle earning nothing.
@@ -506,18 +506,6 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
             </div>
           )}
 
-          {/* Action Button */}
-          {currentStep.url && !currentStep.alternatives && (
-            <a
-              href={currentStep.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-            >
-              <span>Open Fidelity.com</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          )}
         </div>
 
         {/* Navigation Arrows */}
