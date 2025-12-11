@@ -2,8 +2,16 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { Player } from '@lottiefiles/react-lottie-player'
+import dynamic from 'next/dynamic' 
 import { PiggyBank, Target, TrendingUp, ArrowRight } from 'lucide-react'
+
+const Player = dynamic(
+  () => import('@lottiefiles/react-lottie-player').then((mod) => mod.Player),
+  { 
+    ssr: false,
+    loading: () => <div style={{ height: '300px', width: '100%' }} /> // Placeholder while loading
+  }
+)
 
 const ModeSelection = () => {
   const router = useRouter()
