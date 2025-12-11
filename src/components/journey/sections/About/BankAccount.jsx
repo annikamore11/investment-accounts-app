@@ -14,6 +14,11 @@ const BankAccount = ({ journeyData, updateJourneyData, nextStep, prevStep }) => 
 
   const handleNext = () => {
     updateJourneyData('hasBankAccount', hasBankAccount)
+
+    if (hasBankAccount === false) {
+      updateJourneyData('bankType', null)
+    }
+
     transitionTo(nextStep)
   }
 
@@ -51,7 +56,7 @@ const BankAccount = ({ journeyData, updateJourneyData, nextStep, prevStep }) => 
             <div>
               <h3 className="font-semibold text-orange-900 mb-2">Action Required</h3>
               <p className="text-sm text-orange-800 mb-3">
-                You'll need to open a bank account before you can start investing. We recommend:
+                Having a bank account makes it much easier to start investing. We recommend:
               </p>
               <ul className="text-sm text-orange-800 space-y-1 ml-4 list-disc">
                 <li>Large banks: Chase, Bank of America, Wells Fargo</li>
@@ -59,7 +64,7 @@ const BankAccount = ({ journeyData, updateJourneyData, nextStep, prevStep }) => 
                 <li>Credit unions in your area</li>
               </ul>
               <p className="text-sm text-orange-800 mt-3">
-                You can continue this journey and come back once you have an account set up.
+                If you plan to transfer money other ways, or are only interested in opening a retirement account, continue on.
               </p>
             </div>
           </div>
