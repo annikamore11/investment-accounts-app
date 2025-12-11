@@ -23,7 +23,7 @@ const Employer401k = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
   ]
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div id="employer-401k" className="w-full max-w-4xl mx-auto">
       {/* Header Section */}
       <div className="text-center mt-10 mb-6 lg:mb-10">
         

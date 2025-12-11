@@ -4,6 +4,8 @@ import RetirementIntro from './OpeningPage'
 import Has401KMatch from './Has401kMatch'
 import RetirementOutcomes from './Outcome'
 import RothIRAInfo from './RothIRAInfo'
+import RetirementOutcomesContinued from './OutcomeContinued'
+import IncreaseContributionPrompt from './IncreaseContributionPrompt'
 
 export const retirementConfig = {
   id: 'retirement',
@@ -18,20 +20,27 @@ export const retirementConfig = {
   // Define which steps show based on previous journey data
   getSteps: (journeyData) => {
     const steps = []
-
-    //Opening Page 
+  
+    //  Opening page always shows
     steps.push(RetirementIntro)
-
-    // Only show this section if the user answered the 401k question earlier
-    if (journeyData.hasEmployer401k !== null) {
-      steps.push(Employer401kFollowup)
-      if (journeyData.hasEmployerMatch === true) {
-        steps.push(Has401KMatch)
-        
-      }
-      steps.push(RetirementOutcomes)
+  
+    //  401k followup MUST ALWAYS EXIST or navigation breaks
+    steps.push(Employer401kFollowup)
+  
+    //  Only show match step if they actually HAVE a 401k
+    if (journeyData.hasEmployer401k === true) {
+      steps.push(Has401KMatch)
     }
+  
+    //  Outcomes always last
+    steps.push(RetirementOutcomes)
 
+    //outcomes continued
+    steps.push(RetirementOutcomesContinued)
+
+    //further savings
+    steps.push(IncreaseContributionPrompt)
+  
     return steps
   },
 
@@ -56,5 +65,7 @@ export const retirementSteps = [
     RetirementIntro,
     Employer401kFollowup,
     Has401KMatch,
-    RetirementOutcomes
+    RetirementOutcomes,
+    RetirementOutcomesContinued,
+    IncreaseContributionPrompt
 ]
