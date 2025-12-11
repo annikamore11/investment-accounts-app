@@ -311,7 +311,10 @@ const JourneyFlow = () => {
       : section.steps || []
     const totalSteps = steps.length
     const completed = journeyData.completedSteps?.[section.id] || []
-    const completedCount = completed.length
+    // Filter out any completed step indices that are beyond the current total steps
+    // This handles cases where steps change dynamically (e.g., user changes employment status)
+    const validCompleted = completed.filter(stepIndex => stepIndex < totalSteps)
+    const completedCount = validCompleted.length
 
     return { completedCount, totalSteps, isFullyCompleted: completedCount === totalSteps && totalSteps > 0 }
   }
