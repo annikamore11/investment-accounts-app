@@ -470,7 +470,7 @@ const JourneyFlow = () => {
 
                     {/* Step Dropdown */}
                     {hasMultipleSteps && isExpanded && (
-                      <div className="ml-8 mt-1 space-y-0.5 animate-fadeIn">
+                      <div className="mt-1 space-y-0.5 animate-fadeIn">
                         {stepNames.map((stepName, stepIndex) => {
                           const isCurrentStep = isActive && currentStepInSection === stepIndex
                           const isStepCompleted = completedStepsArray.includes(stepIndex)
@@ -480,7 +480,7 @@ const JourneyFlow = () => {
                               key={stepIndex}
                               onClick={() => goToSection(section.id, stepIndex)}
                               className={`
-                                w-full text-left px-3 py-1.5 rounded text-xs transition-all flex items-center gap-2 cursor-pointer
+                                w-full text-left px-4 py-1.5 rounded text-xs transition-all flex items-center justify-between gap-2 cursor-pointer
                                 ${isCurrentStep
                                   ? 'bg-accent-green-100 text-accent-green-800 font-medium'
                                   : isStepCompleted
