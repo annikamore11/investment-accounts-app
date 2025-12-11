@@ -279,12 +279,16 @@ const JourneyFlow = () => {
     scrollToTop()
   }
 
-  // Toggle section expansion
+  // Toggle section expansion - only one section can be expanded at a time
   const toggleSectionExpansion = (sectionId) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [sectionId]: !prev[sectionId]
-    }))
+    setExpandedSections(prev => {
+      // If clicking the currently expanded section, close it
+      if (prev[sectionId]) {
+        return {}
+      }
+      // Otherwise, close all others and open this one
+      return { [sectionId]: true }
+    })
   }
 
   // Get step names for a section

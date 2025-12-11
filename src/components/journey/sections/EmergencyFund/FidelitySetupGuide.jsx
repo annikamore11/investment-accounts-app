@@ -139,7 +139,23 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
           'Go to Fidelity.com and click "Open an Account"',
           'Select "Brokerage Account"',
           'Fill in your personal information',
-          'When asked about "Core Position", select "Fidelity Government Money Market Fund (SPAXX)"',
+          <>
+            When asked about "Core Position", select{' '}
+            <GlossaryTerm term="Fidelity Government Money Market Fund (SPAXX)">
+              <div className="space-y-2">
+                <p className="font-semibold text-gray-900">What is SPAXX?</p>
+                <p>
+                  SPAXX is Fidelity's government money market fund. It's a very safe investment that holds short-term U.S. government securities.
+                </p>
+                <p>
+                  When you choose SPAXX as your core position, any uninvested cash in your account automatically goes into this fund and earns interest (typically 2-5% annually), instead of sitting idle earning nothing.
+                </p>
+                <p className="text-gray-600 text-xs border-t border-gray-200 pt-2 mt-2">
+                  This is perfect for your emergency fund because it's safe, liquid (you can access your money anytime), and earns much more than a typical bank account.
+                </p>
+              </div>
+            </GlossaryTerm>
+          </>,
           'Review and submit your application'
         ],
         notes: [
@@ -401,47 +417,21 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
 
           {/* Regular Instructions */}
           {currentStep.instructions && currentStep.instructions.length > 0 && (
-            <>
-              <div className="bg-white border border-gray-300 rounded-lg p-4 md:p-6 mb-4">
-                <h3 className="font-semibold text-gray-900 mb-3">
-                  {currentStepIndex === 0 ? 'What to gather:' : 'Instructions:'}
-                </h3>
-                <ol className="space-y-2">
-                  {currentStep.instructions.map((instruction, i) => (
-                    <li key={i} className="flex items-start space-x-3">
-                      <span className="flex-shrink-0 w-6 h-6 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center text-sm font-semibold">
-                        {i + 1}
-                      </span>
-                      <span className="text-gray-700 text-sm md:text-base">{instruction}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-
-              {/* Special SPAXX explanation for step 2 */}
-              {currentStepIndex === 1 && (
-                <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-4 mb-4">
-                  <h4 className="font-semibold text-purple-900 mb-2 text-sm">About Your Core Position</h4>
-                  <p className="text-sm text-purple-800">
-                    When selecting your core position, choose{' '}
-                    <GlossaryTerm term="Fidelity Government Money Market Fund (SPAXX)">
-                      <div className="space-y-2">
-                        <p className="font-semibold text-gray-900">What is SPAXX?</p>
-                        <p>
-                          SPAXX is Fidelity's government money market fund. It's a very safe investment that holds short-term U.S. government securities.
-                        </p>
-                        <p>
-                          When you choose SPAXX as your core position, any uninvested cash in your account automatically goes into this fund and earns interest (typically 2-5% annually), instead of sitting idle earning nothing.
-                        </p>
-                        <p className="text-gray-600 text-xs border-t border-gray-200 pt-2 mt-2">
-                          This is perfect for your emergency fund because it's safe, liquid (you can access your money anytime), and earns much more than a typical bank account.
-                        </p>
-                      </div>
-                    </GlossaryTerm>.
-                  </p>
-                </div>
-              )}
-            </>
+            <div className="bg-white border border-gray-300 rounded-lg p-4 md:p-6 mb-4">
+              <h3 className="font-semibold text-gray-900 mb-3">
+                {currentStepIndex === 0 ? 'What to gather:' : 'Instructions:'}
+              </h3>
+              <ol className="space-y-2">
+                {currentStep.instructions.map((instruction, i) => (
+                  <li key={i} className="flex items-start space-x-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center text-sm font-semibold">
+                      {i + 1}
+                    </span>
+                    <span className="text-gray-700 text-sm md:text-base">{instruction}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
           )}
 
           {/* Alternative Methods (for no bank account) */}
