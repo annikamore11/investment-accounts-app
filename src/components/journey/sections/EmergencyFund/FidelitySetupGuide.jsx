@@ -145,7 +145,7 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
               <div className="space-y-2">
                 <p className="font-semibold text-gray-900">What is SPAXX?</p>
                 <p>
-                  SPAXX is Fidelity's government money market fund. It's a very safe investment that holds short-term U.S. government securities.
+                  SPAXX is Fidelity's government money market fund. It's a very safe investment that essentially acts the same as a high yield savings account.
                 </p>
                 <p>
                   When you choose SPAXX as your core position, any uninvested cash in your account automatically goes into this fund and earns interest (typically 2-5% annually), instead of sitting idle earning nothing.
