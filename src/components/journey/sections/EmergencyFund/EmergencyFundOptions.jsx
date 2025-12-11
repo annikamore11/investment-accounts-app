@@ -57,13 +57,6 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
         </p>
       </InfoBox>
 
-      {/* Disclaimer */}
-      <InfoBox type="warning" className="mb-6">
-        <p className="text-xs">
-          <strong>Educational Information Only:</strong> This information is for educational purposes and is not financial advice. We are not affiliated with Fidelity. Consider researching multiple options and consulting a financial advisor before making decisions.
-        </p>
-      </InfoBox>
-
       {/* Other options link */}
       <div className="text-center mb-8">
         <Link

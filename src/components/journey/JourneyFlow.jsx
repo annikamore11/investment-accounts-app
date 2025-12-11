@@ -444,7 +444,7 @@ const JourneyFlow = () => {
                       <div className="font-medium text-sm">{section.title}</div>
                       <div className="flex items-center gap-2">
                         {hasMultipleSteps && (
-                          <span className={`text-xs font-medium ${isFullyCompleted ? 'text-white' : 'text-gray-600'}`}>
+                          <span className={`text-xs font-medium ${isFullyCompleted ? 'text-white' : 'text-gray-800'}`}>
                             {completedCount}/{totalSteps}
                           </span>
                         )}
@@ -459,9 +459,9 @@ const JourneyFlow = () => {
                             aria-label={isExpanded ? "Collapse steps" : "Expand steps"}
                           >
                             {isExpanded ? (
-                              <ChevronDown className={`w-4 h-4 ${isFullyCompleted ? 'text-white' : 'text-primary-200'}`} />
+                              <ChevronDown className={`w-4 h-4 ${isFullyCompleted ? 'text-white' : 'text-gray-800'}`} />
                             ) : (
-                              <ChevronRight className={`w-4 h-4 ${isFullyCompleted ? 'text-white' : 'text-primary-200'}`} />
+                              <ChevronRight className={`w-4 h-4 ${isFullyCompleted ? 'text-white' : 'text-gray-800'}`} />
                             )}
                           </div>
                         )}
@@ -482,7 +482,7 @@ const JourneyFlow = () => {
                               className={`
                                 w-full text-left px-4 py-1.5 rounded text-xs transition-all flex items-center justify-between gap-2 cursor-pointer
                                 ${isCurrentStep
-                                  ? 'bg-accent-green-100 text-accent-green-800 font-medium'
+                                  ? 'bg-green-50 text-green-700 font-medium'
                                   : isStepCompleted
                                     ? 'text-primary-300 hover:text-primary-200 hover:bg-primary-700/30'
                                     : 'text-primary-400 hover:text-primary-300 hover:bg-primary-700/30'
