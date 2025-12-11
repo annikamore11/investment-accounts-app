@@ -114,10 +114,10 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
         {selectedAmount > 0 && (
           <div className="mb-6 animate-fadeIn">
             <label className="block text-base md:text-lg font-semibold text-gray-900 mb-3">
-              How much would you like to start your emergency fund with?
+              How much do you have saved to add to an emergency fund?
             </label>
             <p className="text-sm text-gray-600 mb-3">
-              Enter $0 if you want to set up your account without transferring money yet.
+              It's okay if you don't have anything to add right now!
             </p>
             <div className="bg-gray-50 border-2 border-gray-300 rounded-xl p-4">
               <div className="flex items-center gap-2">
