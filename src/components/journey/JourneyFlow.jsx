@@ -480,7 +480,7 @@ const JourneyFlow = () => {
                               key={stepIndex}
                               onClick={() => goToSection(section.id, stepIndex)}
                               className={`
-                                w-full text-left px-3 py-1.5 rounded text-xs transition-all flex items-center justify-between gap-2
+                                w-full text-left px-3 py-1.5 rounded text-xs transition-all flex items-center justify-between gap-2 cursor-pointer
                                 ${isCurrentStep
                                   ? 'bg-accent-green-100 text-accent-green-800 font-medium'
                                   : isStepCompleted
