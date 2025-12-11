@@ -106,7 +106,8 @@ const JourneyFlow = () => {
       if (user) {
         const { success, data } = await loadJourneyFromDatabase(user.id)
         if (success && data) {
-          setJourneyData(data.journey_data)
+          // Merge with INITIAL_JOURNEY_DATA to ensure new fields exist
+          setJourneyData({ ...INITIAL_JOURNEY_DATA, ...data.journey_data })
           setCurrentSection(data.current_section || 'welcome')
           setCurrentStepInSection(data.current_step || 0)
         }
@@ -114,7 +115,8 @@ const JourneyFlow = () => {
         const saved = localStorage.getItem('journey_guest')
         if (saved) {
           const parsed = JSON.parse(saved)
-          setJourneyData(parsed.data)
+          // Merge with INITIAL_JOURNEY_DATA to ensure new fields exist
+          setJourneyData({ ...INITIAL_JOURNEY_DATA, ...parsed.data })
           setCurrentSection(parsed.section || 'welcome')
           setCurrentStepInSection(parsed.stepInSection || 0)
         }
@@ -308,7 +310,7 @@ const JourneyFlow = () => {
       ? section.getSteps(journeyData)
       : section.steps || []
     const totalSteps = steps.length
-    const completed = journeyData.completedSteps[section.id] || []
+    const completed = journeyData.completedSteps?.[section.id] || []
     const completedCount = completed.length
 
     return { completedCount, totalSteps, isFullyCompleted: completedCount === totalSteps && totalSteps > 0 }
@@ -423,7 +425,7 @@ const JourneyFlow = () => {
                 const stepNames = getSectionStepNames(section)
                 const hasMultipleSteps = stepNames.length > 1
                 const { completedCount, totalSteps, isFullyCompleted } = getSectionCompletion(section)
-                const completedStepsArray = journeyData.completedSteps[section.id] || []
+                const completedStepsArray = journeyData.completedSteps?.[section.id] || []
 
                 return (
                   <div key={section.id} className="mb-1">
