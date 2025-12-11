@@ -13,6 +13,7 @@ import { aboutConfig } from './sections/About'
 import { budgetConfig } from './sections/BudgetIncome'
 import { emergencyFundConfig } from './sections/EmergencyFund'
 import { retirementConfig } from './sections/Retirement'
+import { investingConfig } from './sections/Investing'
 
 const INITIAL_JOURNEY_DATA = {
   // About You
@@ -51,6 +52,14 @@ const INITIAL_JOURNEY_DATA = {
   salaryMatchLimit: '',
   userContribution: '',
 
+  // Non-Retirement Investing Data
+  investingGoal: '',
+  customInvestingGoal: '',
+  investingTimeframe: 5,
+  riskTolerance: 5,
+  investingStrategy: '',
+  selectedIndexFund: '',
+
   // Track last step for each section
   lastStepInSection: {
     welcome: 0,
@@ -58,6 +67,7 @@ const INITIAL_JOURNEY_DATA = {
     budget: 0,
     emergencyFund: 0,
     retirement: 0,
+    investing: 0,
   },
 
   // Section completion
@@ -66,6 +76,7 @@ const INITIAL_JOURNEY_DATA = {
     aboutYou: false,
     budget: false,
     emergencyFund: false,
+    investing: false,
   },
 
   // Track completed steps for each section (array of step indices)
@@ -75,6 +86,7 @@ const INITIAL_JOURNEY_DATA = {
     budget: [],
     emergencyFund: [],
     retirement: [],
+    investing: [],
   }
 }
 
@@ -97,7 +109,8 @@ const JourneyFlow = () => {
     aboutConfig,
     budgetConfig,
     emergencyFundConfig,
-    retirementConfig
+    retirementConfig,
+    investingConfig
   ]
 
   // Load progress on mount
@@ -279,12 +292,16 @@ const JourneyFlow = () => {
     scrollToTop()
   }
 
-  // Toggle section expansion
+  // Toggle section expansion - only one section can be expanded at a time
   const toggleSectionExpansion = (sectionId) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [sectionId]: !prev[sectionId]
-    }))
+    setExpandedSections(prev => {
+      // If clicking the currently expanded section, close it
+      if (prev[sectionId]) {
+        return {}
+      }
+      // Otherwise, close all others and open this one
+      return { [sectionId]: true }
+    })
   }
 
   // Get step names for a section
@@ -311,7 +328,10 @@ const JourneyFlow = () => {
       : section.steps || []
     const totalSteps = steps.length
     const completed = journeyData.completedSteps?.[section.id] || []
-    const completedCount = completed.length
+    // Filter out any completed step indices that are beyond the current total steps
+    // This handles cases where steps change dynamically (e.g., user changes employment status)
+    const validCompleted = completed.filter(stepIndex => stepIndex < totalSteps)
+    const completedCount = validCompleted.length
 
     return { completedCount, totalSteps, isFullyCompleted: completedCount === totalSteps && totalSteps > 0 }
   }
@@ -444,7 +464,7 @@ const JourneyFlow = () => {
                       <div className="font-medium text-sm">{section.title}</div>
                       <div className="flex items-center gap-2">
                         {hasMultipleSteps && (
-                          <span className={`text-xs font-medium ${isFullyCompleted ? 'text-white' : 'text-gray-600'}`}>
+                          <span className={`text-xs font-medium ${isFullyCompleted ? 'text-white' : 'text-gray-800'}`}>
                             {completedCount}/{totalSteps}
                           </span>
                         )}
@@ -459,9 +479,9 @@ const JourneyFlow = () => {
                             aria-label={isExpanded ? "Collapse steps" : "Expand steps"}
                           >
                             {isExpanded ? (
-                              <ChevronDown className={`w-4 h-4 ${isFullyCompleted ? 'text-white' : 'text-primary-200'}`} />
+                              <ChevronDown className={`w-4 h-4 ${isFullyCompleted ? 'text-white' : 'text-gray-800'}`} />
                             ) : (
-                              <ChevronRight className={`w-4 h-4 ${isFullyCompleted ? 'text-white' : 'text-primary-200'}`} />
+                              <ChevronRight className={`w-4 h-4 ${isFullyCompleted ? 'text-white' : 'text-gray-800'}`} />
                             )}
                           </div>
                         )}
@@ -470,7 +490,7 @@ const JourneyFlow = () => {
 
                     {/* Step Dropdown */}
                     {hasMultipleSteps && isExpanded && (
-                      <div className="ml-8 mt-1 space-y-0.5 animate-fadeIn">
+                      <div className="mt-1 space-y-0.5 animate-fadeIn">
                         {stepNames.map((stepName, stepIndex) => {
                           const isCurrentStep = isActive && currentStepInSection === stepIndex
                           const isStepCompleted = completedStepsArray.includes(stepIndex)
@@ -480,9 +500,9 @@ const JourneyFlow = () => {
                               key={stepIndex}
                               onClick={() => goToSection(section.id, stepIndex)}
                               className={`
-                                w-full text-left px-3 py-1.5 rounded text-xs transition-all flex items-center justify-between gap-2 cursor-pointer
+                                w-full text-left px-4 py-1.5 rounded text-xs transition-all flex items-center justify-between gap-2 cursor-pointer
                                 ${isCurrentStep
-                                  ? 'bg-accent-green-100 text-accent-green-800 font-medium'
+                                  ? 'bg-green-50 text-green-700 font-medium'
                                   : isStepCompleted
                                     ? 'text-primary-300 hover:text-primary-200 hover:bg-primary-700/30'
                                     : 'text-primary-400 hover:text-primary-300 hover:bg-primary-700/30'
