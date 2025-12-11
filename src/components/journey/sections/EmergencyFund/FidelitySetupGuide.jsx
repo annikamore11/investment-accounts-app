@@ -136,7 +136,18 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
         id: 'step2',
         title: 'Open a Fidelity Account',
         instructions: [
-          'Go to Fidelity.com and click "Open an Account"',
+          <>
+            Go to{' '}
+            <a
+              href="https://www.fidelity.com/open-account/overview"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-700 underline font-semibold"
+            >
+              Fidelity.com
+            </a>
+            {' '}and click "Open an Account"
+          </>,
           'Select "Brokerage Account"',
           'Fill in your personal information',
           <>
@@ -163,7 +174,7 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
           'This is where your emergency fund will sit and grow',
           'There are no fees or minimums for this account'
         ],
-        url: 'https://www.fidelity.com/open-account/overview'
+        url: null
       }
     ]
 
