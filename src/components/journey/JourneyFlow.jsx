@@ -13,6 +13,7 @@ import { aboutConfig } from './sections/About'
 import { budgetConfig } from './sections/BudgetIncome'
 import { emergencyFundConfig } from './sections/EmergencyFund'
 import { retirementConfig } from './sections/Retirement'
+import { investingConfig } from './sections/Investing'
 
 const INITIAL_JOURNEY_DATA = {
   // About You
@@ -51,6 +52,14 @@ const INITIAL_JOURNEY_DATA = {
   salaryMatchLimit: '',
   userContribution: '',
 
+  // Non-Retirement Investing Data
+  investingGoal: '',
+  customInvestingGoal: '',
+  investingTimeframe: 5,
+  riskTolerance: 5,
+  investingStrategy: '',
+  selectedIndexFund: '',
+
   // Track last step for each section
   lastStepInSection: {
     welcome: 0,
@@ -58,6 +67,7 @@ const INITIAL_JOURNEY_DATA = {
     budget: 0,
     emergencyFund: 0,
     retirement: 0,
+    investing: 0,
   },
 
   // Section completion
@@ -66,6 +76,7 @@ const INITIAL_JOURNEY_DATA = {
     aboutYou: false,
     budget: false,
     emergencyFund: false,
+    investing: false,
   },
 
   // Track completed steps for each section (array of step indices)
@@ -75,6 +86,7 @@ const INITIAL_JOURNEY_DATA = {
     budget: [],
     emergencyFund: [],
     retirement: [],
+    investing: [],
   }
 }
 
@@ -97,7 +109,8 @@ const JourneyFlow = () => {
     aboutConfig,
     budgetConfig,
     emergencyFundConfig,
-    retirementConfig
+    retirementConfig,
+    investingConfig
   ]
 
   // Load progress on mount
