@@ -447,19 +447,21 @@ const JourneyFlow = () => {
                           </span>
                         )}
                         {hasMultipleSteps && (
-                          <button
+                          <div
                             onClick={(e) => {
                               e.stopPropagation()
                               toggleSectionExpansion(section.id)
                             }}
-                            className="p-1 hover:bg-primary-300/30 rounded transition-colors"
+                            className="p-1 hover:bg-primary-300/30 rounded transition-colors cursor-pointer"
+                            role="button"
+                            aria-label={isExpanded ? "Collapse steps" : "Expand steps"}
                           >
                             {isExpanded ? (
                               <ChevronDown className={`w-4 h-4 ${isFullyCompleted ? 'text-white' : 'text-primary-200'}`} />
                             ) : (
                               <ChevronRight className={`w-4 h-4 ${isFullyCompleted ? 'text-white' : 'text-primary-200'}`} />
                             )}
-                          </button>
+                          </div>
                         )}
                       </div>
                     </button>
