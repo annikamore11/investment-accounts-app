@@ -1,6 +1,12 @@
 import React, { useState } from 'react'
+import StepContainer from '@/components/ui/StepContainer'
+import OptionGrid from '@/components/ui/OptionGrid'
+import StepNavigation from '@/components/ui/StepNavigation'
+import InfoBox from '@/components/ui/InfoBox'
+import useStepTransition from '@/hooks/useStepTransition'
 
 const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
+  const { isExiting, transitionTo } = useStepTransition()
   const [selectedAmount, setSelectedAmount] = useState(journeyData.emergencyFundGoal || '')
   const [currentSavings, setCurrentSavings] = useState(journeyData.emergencyFundCurrentAmount || '')
 
@@ -23,31 +29,21 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
   const handleNext = () => {
     updateJourneyData('emergencyFundGoal', goalAmount)
     updateJourneyData('emergencyFundCurrentAmount', savedAmount)
-    
-    setTimeout(() => {
-      nextStep()
-    }, 50)
+
+    transitionTo(nextStep)
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 md:px-0">
-      <div className="text-center mt-10 mb-6 lg:mb-10">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary-100 mb-3">
-          Choose Your Goal
-        </h1>
-        <p className="text-base md:text-lg text-primary-200 max-w-4xl mx-auto">
-          How much do you want in your emergency fund?
-        </p>
-      </div>
-
-      <div className="bg-primary-100 rounded-xl shadow-xl p-4 md:p-8 lg:p-12">
-        
-        {/* Info Box */}
-        <div className="bg-accent-purple-50 border border-accent-purple-300 rounded-xl p-3 md:p-4 mb-6">
-          <p className="text-sm text-accent-purple-900">
-            <strong>Don't worry!</strong> You don't need to have this amount right now. This is your <em>goal</em> to build over time.
-          </p>
-        </div>
+    <StepContainer
+      title="Choose Your Goal"
+      subtitle="How much do you want in your emergency fund?"
+      isExiting={isExiting}
+      exitDirection="horizontal"
+    >
+      <InfoBox
+        title="Don't worry!"
+        message="You don't need to have this amount right now. This is your <em>goal</em> to build over time."
+      />
 
         {/* Preset Options */}
         <div className="mb-6">
@@ -180,40 +176,20 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
         )}
 
 
-        {/* Navigation */}
-        <div className="flex gap-4">
-          <button onClick={prevStep} className="btn-journey-back">
-            ← Back
-          </button>
-          <button
-            onClick={handleNext}
-            disabled={!selectedAmount}
-            className={`flex-1 ${
-              selectedAmount ? 'btn-journey-next' : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            Next →
-          </button>
-        </div>
-      </div>
+        
+      <StepNavigation
+        onBack={prevStep}
+        onNext={handleNext}
+        canGoNext={!!selectedAmount}
+        isExiting={isExiting}
+      />
 
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            max-height: 0;
-          }
-          to {
-            opacity: 1;
-            max-height: 2000px;
-          }
-        }
-
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-out forwards;
-        }
-      `}</style>
-    </div>
+      {!selectedAmount && (
+        <p className="text-sm text-primary-500 text-center mt-4 animate-fadeIn">
+          Please select your amount to continue
+        </p>
+      )}
+    </StepContainer>
   )
 }
 

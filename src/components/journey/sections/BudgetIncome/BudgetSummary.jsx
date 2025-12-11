@@ -1,8 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { DollarSign, TrendingUp, Calendar, PiggyBank, Scale, HandCoins } from 'lucide-react'
 import BudgetStackedBarChart from '@/components/charts/BudgetStackedBarChart'
 
 const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
+  const [isExiting, setIsExiting] = useState(false)
   const income = journeyData.monthlyIncome || 0
   const expenses = journeyData.monthlyExpenses || 0
   const taxes = journeyData.estimatedTaxDollarAmount || 0
@@ -23,8 +24,17 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
     return labels[freq] || freq
   }
 
+  const handleNext = () => {
+    setIsExiting(true)
+    setTimeout(() => {
+      nextStep()
+    }, 500)
+  }
+
   return (
-    <div className="w-full max-w-6xl mx-auto">
+    <div className={`w-full max-w-4xl mx-auto transition-all duration-500 ${
+      isExiting ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
+    }`}>
       
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -159,10 +169,18 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
 
       {/* Navigation */}
       <div className="flex gap-4 mt-8">
-        <button onClick={prevStep} className="btn-journey-back">
+        <button 
+          onClick={prevStep}
+          disabled={isExiting} 
+          className="btn-journey-back"
+        >
           ← Back
         </button>
-        <button onClick={nextStep} className="flex-1 btn-journey-next">
+        <button 
+          onClick={handleNext} 
+          disabled={isExiting}
+          className="flex-1 btn-journey-next"
+        >
           Continue to Next Section →
         </button>
       </div>

@@ -1,11 +1,14 @@
-import React, {useState} from 'react'
-import { CheckCircle, Briefcase, Calendar, Landmark, Building } from 'lucide-react'
+'use client'
+
+import { useState } from 'react'
+import { Briefcase, Calendar, Landmark, Building } from 'lucide-react'
+import StepContainer from '@/components/ui/StepContainer'
+import StepNavigation from '@/components/ui/StepNavigation'
+import useStepTransition from '@/hooks/useStepTransition'
 
 const AboutSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
-  const [isExiting, setIsExiting] = useState(false)
-  
-  
-  // Format employment status for display
+  const { isExiting, transitionTo } = useStepTransition()
+
   const getEmploymentLabel = (employment) => {
     const labels = {
       'employed-company': 'Employed at a company',
@@ -17,152 +20,96 @@ const AboutSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
     return labels[employment] || employment
   }
 
-  // Format bank type for display
   const getBankTypeLabel = (bankType) => {
     const labels = {
       'large': 'Large National Bank',
       'regional': 'Regional or Credit Union',
-      'online': 'Online Bank'
+      'online': 'Online Bank',
+      'business': 'Business Account'
     }
     return labels[bankType] || bankType
   }
 
   const handleNext = () => {
-    setIsExiting(true)
-    setTimeout(() => {
-      nextStep()
-    }, 700)
+    transitionTo(nextStep)
   }
 
   return (
-    <div className={`w-full max-w-4xl mx-auto transition-all duration-500 ${
-      isExiting ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
-    }`}>
-
-      <div className="bg-white rounded-xl shadow-xl p-8 md:p-12 border-2 border-gray-200">
-        
-        {/* Report Header */}
-        <div className="border-b-2 border-gray-300 pb-4 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Personal Information Summary</h2>
-          <p className="text-sm text-gray-600 mt-1">Review your responses below</p>
+    <StepContainer
+      isExiting={isExiting}
+      exitDirection="vertical"
+    >
+      <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 border-2 border-primary-200">
+        <div className="border-b-2 border-primary-300 pb-4 mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-primary-900">Personal Information Summary</h2>
+          <p className="text-sm text-primary-600 mt-1">Review your responses below</p>
         </div>
 
-        {/* Report Content - Table Style */}
         <div className="space-y-1 mb-8">
-          
-          {/* Employment Status Row */}
-          <div className="grid grid-cols-3 py-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-            <div className="flex items-center space-x-3 col-span-1">
-              <Briefcase className="w-5 h-5 text-gray-500" />
-              <span className="font-semibold text-gray-700">Employment Status</span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
+            <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
+              <Briefcase className="w-5 h-5 text-primary-500" />
+              <span className="font-semibold text-primary-700">Employment Status</span>
             </div>
-            <div className="col-span-2 text-gray-900">
+            <div className="col-span-2 text-primary-900">
               {getEmploymentLabel(journeyData.employment)}
             </div>
           </div>
 
-          {/* 401k Status Row (only if employed at company) */}
-          {journeyData.employment === 'employed-company' && (
-            <div className="grid grid-cols-3 py-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-              <div className="flex items-center space-x-3 col-span-1">
-                <Building className="w-5 h-5 text-gray-500" />
-                <span className="font-semibold text-gray-700">Employer 401(k)</span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
+            <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
+              <Calendar className="w-5 h-5 text-primary-500" />
+              <span className="font-semibold text-primary-700">Age Range</span>
+            </div>
+            <div className="col-span-2 text-primary-900">
+              {journeyData.age}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
+            <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
+              <Landmark className="w-5 h-5 text-primary-500" />
+              <span className="font-semibold text-primary-700">Bank Account</span>
+            </div>
+            <div className="col-span-2 text-primary-900">
+              {journeyData.hasBankAccount ? 'Yes' : 'No'}
+            </div>
+          </div>
+
+          {journeyData.hasBankAccount && journeyData.bankType && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
+              <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
+                <Building className="w-5 h-5 text-primary-500" />
+                <span className="font-semibold text-primary-700">Bank Type</span>
               </div>
-              <div className="col-span-2">
-                <div className="text-gray-900">
-                  {journeyData.hasEmployer401k === true ? (
-                    <span className="inline-flex items-center">
-                      <CheckCircle className="w-4 h-4 text-primary-600 mr-2" />
-                      Yes, available
-                    </span>
-                  ) : (
-                    'Not available or unsure'
-                  )}
-                </div>
-                {journeyData.hasEmployer401k === true && (
-                  <div className="text-sm text-accent-purple-700 mt-1 italic">
-                    ✓ Great! We'll prioritize your 401(k) in recommendations.
-                  </div>
-                )}
+              <div className="col-span-2 text-primary-900">
+                {getBankTypeLabel(journeyData.bankType)}
               </div>
             </div>
           )}
 
-          {/* Age Range Row */}
-          <div className="grid grid-cols-3 py-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-            <div className="flex items-center space-x-3 col-span-1">
-              <Calendar className="w-5 h-5 text-gray-500" />
-              <span className="font-semibold text-gray-700">Age Range</span>
-            </div>
-            <div className="col-span-2">
-              <div className="text-gray-900">{journeyData.age}</div>
-              {['18-25', '26-35'].includes(journeyData.age) && (
-                <div className="text-sm text-accent-purple-700 mt-1 italic">
-                  ✓ Time is on your side for long-term growth investments
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Bank Account Row */}
-          <div className="grid grid-cols-3 py-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-            <div className="flex items-center space-x-3 col-span-1">
-              <Landmark className="w-5 h-5 text-gray-500" />
-              <span className="font-semibold text-gray-700">Bank Account</span>
-            </div>
-            <div className="col-span-2">
-              <div className="text-gray-900">
-                {journeyData.hasBankAccount ? (
-                  <span className="inline-flex items-center">
-                    <CheckCircle className="w-4 h-4 text-primary-600 mr-2" />
-                    Yes
-                  </span>
-                ) : (
-                  'Not yet'
-                )}
+          {journeyData.employment === 'employed-company' && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
+              <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
+                <Building className="w-5 h-5 text-primary-500" />
+                <span className="font-semibold text-primary-700">Employer 401(k)</span>
               </div>
-              {journeyData.hasBankAccount && journeyData.bankType && (
-                <div className="text-sm text-gray-600 mt-1">
-                  Type: {getBankTypeLabel(journeyData.bankType)}
-                </div>
-              )}
-              {!journeyData.hasBankAccount && (
-                <div className="text-sm text-orange-700 mt-1 italic">
-                  ⚠ Remember to open a bank account before starting to invest
-                </div>
-              )}
+              <div className="col-span-2 text-primary-900">
+                {journeyData.hasEmployer401k ? 'Yes' : 'No or Not Sure'}
+              </div>
             </div>
-          </div>
-
+          )}
         </div>
 
-        {/* Notes Section */}
-        <div className="bg-accent-purple-50 border-l-4 border-accent-purple-500 p-4 mb-8">
-          <p className="text-sm text-gray-800">
-            <strong className="text-accent-purple-900">Note:</strong> Need to change something? Use the <strong>← Back</strong> button to edit your answers.
-          </p>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex gap-4">
-          <button
-            onClick={prevStep}
-            className="btn-journey-back"
-            disabled={isExiting}
-          >
-            ← Back
-          </button>
-          <button
-            onClick={handleNext}
-            disabled={isExiting}
-            className="flex-1 btn-journey-next"
-          >
-            Continue to Next Section →
-          </button>
-        </div>
-
+        <StepNavigation
+          onBack={prevStep}
+          onNext={handleNext}
+          canGoNext={true}
+          isExiting={isExiting}
+          nextLabel="Continue →"
+        />
       </div>
-    </div>
+    </StepContainer>
   )
 }
 

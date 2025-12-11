@@ -12,7 +12,25 @@ export const emergencyFundConfig = {
   id: 'emergencyFund',
   title: 'Emergency Fund',
   multipleSteps: true,
-  
+
+  getStepNames: (journeyData) => {
+    const names = ['Introduction', 'Common Guideline']
+
+    if (journeyData.hasEmergencyFund === false) {
+        names.push('Goal')
+        names.push('Account Options')
+      }
+
+    if (journeyData.emergencyFundAccountType === 'bank' || journeyData.emergencyFundAccountType === 'high-yield-savings') {
+          names.push('Summary')
+      } else {
+          names.push('Setup Guide')
+          names.push('Summary')
+      }
+
+    return names
+  },
+
   getSteps: (journeyData) => {
     const steps = [
         EmergencyFundIntro,
