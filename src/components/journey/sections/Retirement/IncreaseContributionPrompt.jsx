@@ -52,7 +52,7 @@ const IncreaseContributionPrompt = ({ journeyData, updateJourneyData, nextStep, 
             Yes, increase my contribution
           </button>
 
-          <button onClick={handleYes} className="flex-1 btn-journey-back px-6 py-4">
+          <button onClick={handleNo} className="flex-1 btn-journey-back px-6 py-4">
             No, keep it the same
           </button>
         </div>

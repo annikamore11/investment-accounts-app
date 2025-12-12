@@ -362,11 +362,24 @@ const JourneyFlow = () => {
     )
   }
 
+  // Helper function to get the index of a specific step component in a section
+  const getStepIndexInSection = (sectionId, ComponentToFind) => {
+    const section = sectionConfigs.find(s => s.id === sectionId)
+    if (!section) return 0
+
+    const sectionSteps = typeof section.getSteps === 'function'
+      ? section.getSteps(journeyData)
+      : section.steps || []
+
+    const index = sectionSteps.findIndex(step => step === ComponentToFind)
+    return index >= 0 ? index : 0
+  }
+
   // Render step
   const renderStep = () => {
     const section = getCurrentSection()
     const steps = getCurrentSteps()
-    
+
     if (!section || !steps[currentStepInSection]) {
       return (
         <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
@@ -376,13 +389,15 @@ const JourneyFlow = () => {
     }
 
     const StepComponent = steps[currentStepInSection]
-    
+
     return (
       <StepComponent
         journeyData={journeyData}
         updateJourneyData={updateJourneyData}
         nextStep={nextStep}
         prevStep={prevStep}
+        goToSection={goToSection}
+        getStepIndexInSection={getStepIndexInSection}
       />
     )
   }
