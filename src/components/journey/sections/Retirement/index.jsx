@@ -32,6 +32,9 @@ export const retirementConfig = {
     if (journeyData.hasEmployer401k === true) {
       steps.push(Has401KMatch)
     }
+    if (journeyData.openIRA === true) {
+      steps.push(RothIRAInfo)
+    }
   
     //  Outcomes always last
     steps.push(RetirementOutcomes)

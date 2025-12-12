@@ -15,6 +15,11 @@ const Employer401kFollowup = ({
   const [showTooltip, setShowTooltip] = useState(false)
   const tooltipRef = useRef(null)
 
+  const handleYes = () => {
+    updateJourneyData('openIRA', true)
+    setTimeout(nextStep, 0) // ensures the update happens first
+  }
+
   // Close tooltip when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -68,7 +73,7 @@ const Employer401kFollowup = ({
             </p>
             <div className="flex gap-4">
               <button
-                onClick={handleNext}
+                onClick={handleYes}
                 className="bg-accent-green-600 hover:bg-accent-green-700 text-white text-lg font-semibold px-8 py-3 rounded-xl shadow-md transition-all duration-300"
               >
                 Continue to Set Up an IRA Account →
