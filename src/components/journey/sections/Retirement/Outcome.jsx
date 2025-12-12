@@ -1,16 +1,16 @@
 import React from 'react'
+import { TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react'
 
 const RetirementOutcomes = ({ journeyData, nextStep, prevStep }) => {
   const user = Number(journeyData.userContribution) || 0
   const company = Number(journeyData.companyMatch) || 0
   const match = Number(journeyData.matchPercent) || 0
 
-  let companyReal;
-
+  let companyReal
   if (user >= company) {
-    companyReal = company * (match / 100);
+    companyReal = company * (match / 100)
   } else {
-    companyReal = user * (match / 100);
+    companyReal = user * (match / 100)
   }
 
   const totalContribution = user + company;

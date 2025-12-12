@@ -23,7 +23,7 @@ const RetirementOutcomesContinued = ({ nextStep, prevStep }) => {
 
                 {/* Box #1 */}
                 <div className="bg-white rounded-xl p-5 shadow-sm text-gray-800 text-lg">
-                <p className="font-bold text-accent-green-700 mb-2">Maximize Roth</p>
+                <p className="font-bold text-accent-green-700 text-xl mb-2">Maximize Roth</p>
                 <p>
                     If your 401(k) allows it, you should be contributing Roth money to it.
                 </p>
@@ -39,7 +39,7 @@ const RetirementOutcomesContinued = ({ nextStep, prevStep }) => {
 
                 {/* Box #2 */}
                 <div className="bg-white rounded-xl p-5 shadow-sm text-gray-800 text-lg">
-                <p className="font-bold text-accent-green-700 mb-2">Investments</p>
+                <p className="font-bold text-accent-green-700 text-xl mb-2">Investments</p>
                 <p>
                     Make sure that your 401(k) is invested properly.
                 </p>

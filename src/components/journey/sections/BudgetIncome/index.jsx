@@ -10,6 +10,15 @@ export const budgetConfig = {
   multipleSteps: true,
   stepLabels: ['Expenses', 'Income', 'Summary'], // Static labels
   
+    getStepNames: (journeyData) => {
+    const names = ['Expenses']
+
+    names.push('Income')
+    names.push('Summary')
+
+    return names
+  },
+
   getSteps: (journeyData) => {
     const steps = [MonthlyExpensesEstimate]
     

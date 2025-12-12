@@ -64,8 +64,8 @@ const EmergencyFundSummary = ({ journeyData, updateJourneyData, nextStep, prevSt
   }
 
   return (
-    <div className={`w-full max-w-4xl mx-auto px-4 md:px-0 transition-all duration-500 ${
-      isExiting ? '-translate-x-full opacity-0' : 'translate-x-0 opacity-100'
+    <div className={`w-full max-w-4xl mx-auto transition-all duration-500 ${
+      isExiting ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
     }`}>
       <div className="bg-white rounded-xl shadow-xl p-4 md:p-8 lg:p-12 border-2 border-gray-200">
         

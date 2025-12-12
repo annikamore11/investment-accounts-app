@@ -6,6 +6,7 @@ import RetirementOutcomes from './Outcome'
 import RothIRAInfo from './RothIRAInfo'
 import RetirementOutcomesContinued from './OutcomeContinued'
 import IncreaseContributionPrompt from './IncreaseContributionPrompt'
+import RetirementOptionsPage from './FurtherContributionOptions'
 
 export const retirementConfig = {
   id: 'retirement',
@@ -34,12 +35,23 @@ export const retirementConfig = {
   
     //  Outcomes always last
     steps.push(RetirementOutcomes)
-
-    //outcomes continued
     steps.push(RetirementOutcomesContinued)
 
-    //further savings
+
+    // further savings prompt always shows
     steps.push(IncreaseContributionPrompt)
+
+    // Only show the options page if they clicked YES
+    if (journeyData.wantsToIncreaseContribution === true) {
+      steps.push(RetirementOptionsPage)
+    }else {
+      steps.push(RothIRAInfo)
+    }
+    if (journeyData.wantstoopenIRA === true) {
+      steps.push(RothIRAInfo)
+    } else {
+      steps.push(RothIRAInfo)
+    }
   
     return steps
   },

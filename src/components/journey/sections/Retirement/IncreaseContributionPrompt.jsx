@@ -1,10 +1,20 @@
 import React from 'react'
 
-const IncreaseContributionPrompt = ({ journeyData, nextStep, prevStep }) => {
+const IncreaseContributionPrompt = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const user = Number(journeyData.userContribution) || 0
   const company = Number(journeyData.companyMatch) || 0
   const match = Number(journeyData.matchPercent) || 0
 
+  const handleYes = () => {
+    updateJourneyData('wantsToIncreaseContribution', true)
+    setTimeout(nextStep, 0) // ensures the update happens first
+  }
+  
+  const handleNo = () => {
+    updateJourneyData('wantsToIncreaseContribution', false)
+    setTimeout(nextStep, 0)
+  }
+  
   let companyReal;
   if (user >= company) {
     companyReal = company * (match / 100)
@@ -38,16 +48,11 @@ const IncreaseContributionPrompt = ({ journeyData, nextStep, prevStep }) => {
           <button onClick={prevStep} className="btn-journey-back flex-none">
                 ← Back
           </button>
-          <button
-            onClick={nextStep}
-            className="flex-1 btn-journey-next px-6 py-4"
-          >
+          <button onClick={handleYes} className="flex-1 btn-journey-next px-6 py-4">
             Yes, increase my contribution
           </button>
-          <button
-            onClick={prevStep}
-            className="flex-1 btn-journey-back px-6 py-4"
-          >
+
+          <button onClick={handleYes} className="flex-1 btn-journey-back px-6 py-4">
             No, keep it the same
           </button>
         </div>

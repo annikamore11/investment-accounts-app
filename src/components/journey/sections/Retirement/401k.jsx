@@ -55,7 +55,7 @@ const Employer401kFollowup = ({
     <div className="w-full max-w-4xl mx-auto">
       <div className="text-center mt-10 mb-6 lg:mb-10">
         <h1 className="text-3xl md:text-4xl font-bold text-primary-100 mb-3">
-          {has401k ? '401K Match' : 'Next Steps'}
+          {has401k ? '401(k) Match' : 'Next Steps'}
         </h1>
       </div>
 
@@ -122,7 +122,7 @@ const Employer401kFollowup = ({
                 { value: false, label: 'No' }
               ].map(option => (
                 <button
-                  key={option.value}
+                  key={option.value.toString()}
                   onClick={() => setHasMatch(option.value)}
                   className={`flex items-center justify-center px-8 py-2 rounded-xl border text-center text-lg font-medium transition-all duration-200
                     ${hasMatch === option.value
@@ -164,6 +164,23 @@ const Employer401kFollowup = ({
           </>
         )}
       </div>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            max-height: 0;
+          }
+          to {
+            opacity: 1;
+            max-height: 2000px;
+          }
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out forwards;
+        }
+      `}</style>
     </div>
   )
 }
