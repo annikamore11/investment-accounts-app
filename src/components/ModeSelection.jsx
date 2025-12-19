@@ -33,14 +33,14 @@ const ModeSelection = () => {
           
           {/* Hero Section with Animation */}
           <div className="text-center mb-12">
-            <div className="max-w-md mx-auto mb-8">
+            {/* <div className="max-w-md mx-auto mb-8">
               <Player
                 autoplay
                 loop
                 src="/assets/animations/investing.json"
                 style={{ height: '300px', width: '100%' }}
               />
-            </div>
+            </div> */}
             <h1 className="text-4xl md:text-5xl font-bold text-primary-100 mb-4">
               Let's Get Your Money Working for You
             </h1>
@@ -49,63 +49,7 @@ const ModeSelection = () => {
             </p>
           </div>
 
-          {/* Before/After Comparison */}
-          <div className="max-w-4xl mx-auto mb-16">
-            <div className="bg-white/90 backdrop-blur rounded-2xl shadow-xl overflow-hidden">
-              <div className="grid md:grid-cols-2 divide-x divide-gray-200">
-                
-                {/* Before */}
-                <div className="p-8">
-                  <h3 className="font-bold text-gray-900 mb-4 text-center text-lg">
-                    Without InvestEd
-                  </h3>
-                  <ul className="space-y-3 text-gray-600">
-                    <li className="flex items-start">
-                      <span className="text-red-500 mr-2 flex-shrink-0">✗</span>
-                      <span>Google 50 different articles</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-red-500 mr-2 flex-shrink-0">✗</span>
-                      <span>Confusing financial jargon</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-red-500 mr-2 flex-shrink-0">✗</span>
-                      <span>Not sure what applies to YOU</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-red-500 mr-2 flex-shrink-0">✗</span>
-                      <span>Never actually open an account</span>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* After */}
-                <div className="p-8 bg-gradient-to-br from-green-50 to-white">
-                  <h3 className="font-bold text-gray-900 mb-4 text-center text-lg">
-                    With InvestEd
-                  </h3>
-                  <ul className="space-y-3 text-gray-700">
-                    <li className="flex items-start">
-                      <span className="text-green-600 mr-2 flex-shrink-0 font-bold">✓</span>
-                      <span>Everything in one place</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-green-600 mr-2 flex-shrink-0 font-bold">✓</span>
-                      <span>Plain English explanations</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-green-600 mr-2 flex-shrink-0 font-bold">✓</span>
-                      <span>Based on YOUR situation</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-green-600 mr-2 flex-shrink-0 font-bold">✓</span>
-                      <span>Step-by-step account setup</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
+          
 
           {/* Mode Selection */}
           <h2 className="text-2xl font-bold text-primary-100 text-center mb-8">
@@ -249,17 +193,7 @@ const ModeSelection = () => {
             </div>
           </div>
 
-          {/* Disclaimer */}
-          <div className="max-w-3xl mx-auto mt-16 text-center px-4">
-            <div className="bg-white/80 backdrop-blur rounded-xl p-6 border border-gray-200">
-              <p className="text-sm text-gray-700 mb-2">
-                We provide educational information to help you understand your options.
-              </p>
-              <p className="text-xs text-gray-600">
-                This is not personalized financial advice. You make your own investment decisions.
-              </p>
-            </div>
-          </div>
+          
         </div>
       </div>
     </div>

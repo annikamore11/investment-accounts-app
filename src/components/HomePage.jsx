@@ -86,7 +86,7 @@ export default function HomePage() {
             {/* LEFT: Animation + Signup */}
             <div className="relative flex flex-col items-center w-full md:w-1/2">
               <div className="absolute inset-0 bg-linear-to-b from-green-100/30 to-transparent blur-2xl rounded-full"></div>
-              {/* <Player
+              <Player
                 ref={playerRef}
                 autoplay
                 loop={false}
@@ -98,7 +98,7 @@ export default function HomePage() {
                   height: "auto",
                   transform: "scale(1.3)",
                 }}
-              /> */}
+              />
             </div>
           
             {/* RIGHT: Steps */}
@@ -140,8 +140,8 @@ export default function HomePage() {
 
       {/* Bridging the Gap Section */}
       <ScrollReveal>
-        <section className="money-image-background flex items-center min-h-[60vh] py-12">
-          <div className="w-full px-4 md:px-0">
+        <section className="money-image-background flex items-center min-h-[60vh] ">
+          <div className="w-full px-4 md:px-0 p-8 md:p-18">
             <div className="w-full md:max-w-3xl text-left md:px-8">
               <motion.h2 
                 initial={{ opacity: 0, x: -20 }}
