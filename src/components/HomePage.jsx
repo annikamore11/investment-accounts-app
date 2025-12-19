@@ -140,8 +140,8 @@ export default function HomePage() {
 
       {/* Bridging the Gap Section */}
       <ScrollReveal>
-        <section className="money-image-background flex items-center min-h-[60vh] py-12">
-          <div className="w-full px-4 md:px-0">
+        <section className="money-image-background flex items-center min-h-[60vh] ">
+          <div className="w-full px-4 md:px-0 p-8 md:p-18">
             <div className="w-full md:max-w-3xl text-left md:px-8">
               <motion.h2 
                 initial={{ opacity: 0, x: -20 }}
