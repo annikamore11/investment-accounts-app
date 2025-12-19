@@ -86,7 +86,7 @@ export default function HomePage() {
             {/* LEFT: Animation + Signup */}
             <div className="relative flex flex-col items-center w-full md:w-1/2">
               <div className="absolute inset-0 bg-linear-to-b from-green-100/30 to-transparent blur-2xl rounded-full"></div>
-              <Player
+              {/* <Player
                 ref={playerRef}
                 autoplay
                 loop={false}
@@ -98,7 +98,7 @@ export default function HomePage() {
                   height: "auto",
                   transform: "scale(1.3)",
                 }}
-              />
+              /> */}
             </div>
           
             {/* RIGHT: Steps */}

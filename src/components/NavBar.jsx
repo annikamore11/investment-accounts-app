@@ -22,12 +22,17 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <img
+              {/* <img
                 src="/assets/logo/Sprout2.svg"
                 alt="Sprout logo"
                 className="h-6 w-auto object-contain align-middle"
+              /> */}
+              <img
+                src="/assets/logo/Title.svg"
+                alt="Company Title"
+                className="h-18 w-auto object-contain"
               />
-              <span className="text-xl font-bold text-primary-100">InvestEd</span>
+              {/* <span className="text-xl font-bold text-primary-100">InvestEd</span> */}
             </Link>
           </div>
 
