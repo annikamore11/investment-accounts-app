@@ -4,6 +4,10 @@ import React, { useRef } from 'react'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
+import dynamic from 'next/dynamic'
+
+// Dynamically import Spline to avoid SSR issues
+const Spline = dynamic(() => import('@splinetool/react-spline'), { ssr: false })
 
 // Reusable scroll animation component
 const ScrollReveal = ({ children, delay = 0 }) => {
@@ -40,6 +44,11 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col bg-zinc-950">
       {/* Hero Section */}
       <section className="relative flex items-center justify-center px-6 py-16 min-h-screen static-background overflow-hidden" style={{ perspective: '1000px' }}>
+
+        {/* Spline 3D Scene - Background Layer */}
+        <div className="absolute inset-0 opacity-40" style={{ transform: 'translateZ(-150px)' }}>
+          <Spline scene="https://prod.spline.design/A6lJNLTwSUCrOSOw/scene.splinecode" />
+        </div>
 
         {/* 3D Layered Background */}
         <div className="absolute inset-0 overflow-hidden">
