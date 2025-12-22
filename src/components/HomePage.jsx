@@ -39,65 +39,81 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-zinc-950">
       {/* Hero Section */}
-      <section className="flex items-center justify-center px-6 pt-32 pb-24 min-h-screen static-background">
-        <div className="max-w-5xl w-full">
-          {/* Title */}
+      <section className="relative flex items-center justify-center px-6 pt-24 pb-32 min-h-screen static-background overflow-hidden">
+        <div className="max-w-7xl w-full relative z-10">
+
+          {/* Main Title - Large and Bold */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-center mb-20"
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="mb-24 md:mb-32"
           >
-            <h1 className="text-5xl md:text-7xl font-bold text-primary-100 mb-4 leading-tight">
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold text-primary-100 leading-[0.9] mb-6">
               Finally.
             </h1>
-            <h2 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-green-600 leading-tight">
-              A Path From Learning to Earning
+            <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-green-500 to-green-600">
+                A Path From
+              </span>
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-500 via-green-600 to-green-500">
+                Learning to Earning
+              </span>
             </h2>
           </motion.div>
 
-          {/* Steps - Centered Grid Layout */}
+          {/* Steps - Creative Staggered Layout */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-3xl mx-auto mb-20"
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="relative mb-20 md:mb-28"
           >
-            {steps.map((step, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.5 + (index * 0.1) }}
-                className="flex items-start space-x-4 group"
-              >
-                <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-zinc-950 font-bold text-base bg-gradient-to-br from-green-400 to-green-600 shadow-lg group-hover:shadow-green-500/50 transition-all duration-300">
-                  {index + 1}
-                </div>
-                <div className="pt-1">
-                  <h3 className="font-semibold text-lg md:text-xl text-primary-100 leading-snug">
-                    {step.title}
-                  </h3>
-                </div>
-              </motion.div>
-            ))}
+            <div className="flex flex-col md:flex-row md:flex-wrap gap-6 md:gap-8 max-w-5xl">
+              {steps.map((step, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 + (index * 0.1) }}
+                  className={`
+                    group cursor-default
+                    ${index % 2 === 0 ? 'md:mt-0' : 'md:mt-8'}
+                  `}
+                >
+                  <div className="relative inline-block">
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-green-600/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <h3 className="relative text-2xl md:text-3xl font-bold text-primary-200 group-hover:text-primary-50 transition-colors duration-300 border-l-4 border-green-500 pl-4 py-2">
+                      {step.title}
+                    </h3>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
 
-          {/* CTA Button */}
+          {/* CTA - Bold and Prominent */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-            className="text-center"
+            transition={{ duration: 0.8, delay: 1 }}
           >
             <Link
               href="/mode-selection"
-              className="inline-block btn-secondary font-bold text-lg px-12 py-4 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+              className="group relative inline-block"
             >
-              Get Started
+              <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-green-600 blur-2xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
+              <div className="relative bg-gradient-to-r from-green-500 to-green-600 text-zinc-950 font-bold text-xl md:text-2xl px-16 py-6 rounded-full hover:from-green-400 hover:to-green-500 transition-all duration-300 shadow-2xl group-hover:shadow-green-500/50 group-hover:scale-105 transform">
+                Get Started
+              </div>
             </Link>
           </motion.div>
         </div>
+
+        {/* Decorative Elements */}
+        <div className="absolute top-1/4 right-0 w-96 h-96 bg-green-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-green-600/5 rounded-full blur-3xl"></div>
       </section>
 
       {/* Bridging the Gap Section */}
