@@ -39,96 +39,160 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-zinc-950">
       {/* Hero Section */}
-      <section className="relative flex items-center justify-center px-6 py-16 min-h-screen static-background overflow-hidden">
+      <section className="relative flex items-center justify-center px-6 py-16 min-h-screen static-background overflow-hidden" style={{ perspective: '1000px' }}>
 
-        {/* Animated Background Blobs */}
+        {/* 3D Layered Background */}
         <div className="absolute inset-0 overflow-hidden">
-          {/* Blob 1 - Large floating */}
-          <motion.div
-            animate={{
-              x: [0, 100, 0],
-              y: [0, -50, 0],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-gradient-to-br from-green-500/20 to-green-600/10 rounded-full blur-3xl"
-          />
 
-          {/* Blob 2 - Medium pulsing */}
+          {/* Layer 1 - Deepest - Large Blobs */}
           <motion.div
-            animate={{
-              x: [0, -80, 0],
-              y: [0, 60, 0],
-              scale: [1, 1.3, 1],
-            }}
-            transition={{
-              duration: 15,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1
-            }}
-            className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-green-600/15 to-green-400/5 rounded-full blur-3xl"
-          />
-
-          {/* Blob 3 - Small accent */}
-          <motion.div
-            animate={{
-              x: [0, -50, 0],
-              y: [0, -80, 0],
-              scale: [1, 1.4, 1],
-            }}
-            transition={{
-              duration: 18,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 2
-            }}
-            className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-gradient-to-bl from-green-400/10 to-transparent rounded-full blur-3xl"
-          />
-
-          {/* Floating Particles */}
-          {[...Array(15)].map((_, i) => (
+            className="absolute inset-0"
+            style={{ transform: 'translateZ(-200px)' }}
+          >
             <motion.div
-              key={i}
               animate={{
-                y: [0, -100, 0],
-                x: [0, Math.random() * 50 - 25, 0],
-                opacity: [0, 0.6, 0],
+                x: [0, 150, 0],
+                y: [0, -80, 0],
+                scale: [1, 1.3, 1],
               }}
               transition={{
-                duration: 8 + Math.random() * 4,
+                duration: 25,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute top-1/4 right-[-10%] w-[600px] h-[600px] bg-gradient-to-br from-green-500/15 to-green-600/5 rounded-full blur-3xl"
+            />
+            <motion.div
+              animate={{
+                x: [0, -120, 0],
+                y: [0, 90, 0],
+                scale: [1, 1.4, 1],
+              }}
+              transition={{
+                duration: 22,
                 repeat: Infinity,
                 ease: "easeInOut",
-                delay: Math.random() * 5,
+                delay: 2
               }}
-              className="absolute w-1 h-1 bg-green-500/40 rounded-full"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
+              className="absolute bottom-1/4 left-[-10%] w-[550px] h-[550px] bg-gradient-to-tr from-green-600/12 to-green-400/3 rounded-full blur-3xl"
             />
-          ))}
+          </motion.div>
 
-          {/* Animated Grid Lines */}
-          <div className="absolute inset-0 opacity-5">
-            {[...Array(5)].map((_, i) => (
+          {/* Layer 2 - Middle - Chain Link Rings */}
+          <motion.div
+            className="absolute inset-0"
+            style={{ transform: 'translateZ(-100px)' }}
+          >
+            {[...Array(6)].map((_, i) => (
               <motion.div
-                key={`h-${i}`}
-                animate={{ opacity: [0.3, 0.8, 0.3] }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  delay: i * 0.5,
+                key={`ring-${i}`}
+                animate={{
+                  scale: [0.8, 1.2, 0.8],
+                  rotate: [0, 180, 360],
+                  opacity: [0.2, 0.4, 0.2],
                 }}
-                className="absolute w-full h-px bg-gradient-to-r from-transparent via-green-500 to-transparent"
-                style={{ top: `${(i + 1) * 20}%` }}
+                transition={{
+                  duration: 15,
+                  repeat: Infinity,
+                  ease: "linear",
+                  delay: i * 2.5,
+                }}
+                className="absolute border-2 border-green-500/20 rounded-full"
+                style={{
+                  left: `${15 + i * 15}%`,
+                  top: `${20 + (i % 3) * 20}%`,
+                  width: `${100 + i * 30}px`,
+                  height: `${100 + i * 30}px`,
+                }}
               />
             ))}
-          </div>
+          </motion.div>
+
+          {/* Layer 3 - Floating Connected Nodes (Chain Effect) */}
+          <motion.div
+            className="absolute inset-0"
+            style={{ transform: 'translateZ(-50px)' }}
+          >
+            {/* Connection Lines - Sequential Animation */}
+            <svg className="absolute inset-0 w-full h-full opacity-10">
+              <defs>
+                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#22c55e" stopOpacity="0.6" />
+                  <stop offset="100%" stopColor="#16a34a" stopOpacity="0.2" />
+                </linearGradient>
+              </defs>
+
+              {/* Animated connecting lines */}
+              <motion.path
+                d="M 100 150 L 300 100 L 500 200 L 700 150"
+                stroke="url(#lineGradient)"
+                strokeWidth="2"
+                fill="none"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: [0, 1, 0] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <motion.path
+                d="M 150 400 L 350 350 L 550 450 L 750 400"
+                stroke="url(#lineGradient)"
+                strokeWidth="2"
+                fill="none"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: [0, 1, 0] }}
+                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+              />
+            </svg>
+
+            {/* Floating Nodes */}
+            {[...Array(8)].map((_, i) => (
+              <motion.div
+                key={`node-${i}`}
+                animate={{
+                  y: [0, -30, 0],
+                  scale: [1, 1.2, 1],
+                }}
+                transition={{
+                  duration: 5 + i * 0.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.8,
+                }}
+                className="absolute w-3 h-3 bg-green-500/60 rounded-full shadow-lg shadow-green-500/50"
+                style={{
+                  left: `${15 + i * 12}%`,
+                  top: `${30 + (i % 2) * 40}%`,
+                }}
+              />
+            ))}
+          </motion.div>
+
+          {/* Layer 4 - Front - Particles */}
+          <motion.div
+            className="absolute inset-0"
+            style={{ transform: 'translateZ(0px)' }}
+          >
+            {[...Array(20)].map((_, i) => (
+              <motion.div
+                key={`particle-${i}`}
+                animate={{
+                  y: [0, -120, 0],
+                  x: [0, Math.random() * 60 - 30, 0],
+                  opacity: [0, 0.8, 0],
+                }}
+                transition={{
+                  duration: 10 + Math.random() * 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: Math.random() * 8,
+                }}
+                className="absolute w-1.5 h-1.5 bg-green-400/60 rounded-full"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                }}
+              />
+            ))}
+          </motion.div>
         </div>
 
         {/* Growth Chart SVG - Right Side */}
@@ -199,7 +263,7 @@ export default function HomePage() {
           </svg>
         </motion.div>
 
-        <div className="max-w-6xl w-full relative z-10 text-center">
+        <div className="max-w-6xl w-full relative z-10 text-center" style={{ transform: 'translateZ(50px)', transformStyle: 'preserve-3d' }}>
 
           {/* Main Title - Large and Bold - Centered */}
           <motion.div
@@ -207,6 +271,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: "easeOut" }}
             className="mb-16"
+            style={{ transform: 'translateZ(80px)' }}
           >
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold text-primary-100 leading-[0.9] mb-6">
               Finally.
@@ -228,6 +293,7 @@ export default function HomePage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="relative mb-12"
+            style={{ transform: 'translateZ(60px)' }}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto">
               {steps.map((step, index) => (
@@ -254,6 +320,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
+            style={{ transform: 'translateZ(100px)' }}
           >
             <Link
               href="/mode-selection"
