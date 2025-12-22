@@ -34,7 +34,7 @@ const EmploymentStatus = ({ journeyData, updateJourneyData, nextStep, prevStep }
       isExiting={isExiting}
       exitDirection="horizontal"
     >
-      <p className="text-center text-lg sm:text-xl text-primary-700 max-w-2xl mx-auto mb-6">
+      <p className="text-center text-lg sm:text-xl text-primary-100 max-w-2xl mx-auto mb-6">
         Choose the option that best describes your current situation.
       </p>
 
