@@ -40,6 +40,137 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col bg-zinc-950">
       {/* Hero Section */}
       <section className="relative flex items-center justify-center px-6 pt-24 pb-32 min-h-screen static-background overflow-hidden">
+
+        {/* Animated Background Blobs */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Blob 1 - Large floating */}
+          <motion.div
+            animate={{
+              x: [0, 100, 0],
+              y: [0, -50, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-gradient-to-br from-green-500/20 to-green-600/10 rounded-full blur-3xl"
+          />
+
+          {/* Blob 2 - Medium pulsing */}
+          <motion.div
+            animate={{
+              x: [0, -80, 0],
+              y: [0, 60, 0],
+              scale: [1, 1.3, 1],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+            className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-green-600/15 to-green-400/5 rounded-full blur-3xl"
+          />
+
+          {/* Blob 3 - Small accent */}
+          <motion.div
+            animate={{
+              x: [0, -50, 0],
+              y: [0, -80, 0],
+              scale: [1, 1.4, 1],
+            }}
+            transition={{
+              duration: 18,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 2
+            }}
+            className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-gradient-to-bl from-green-400/10 to-transparent rounded-full blur-3xl"
+          />
+        </div>
+
+        {/* Growth Chart SVG - Right Side */}
+        <motion.div
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 0.15, x: 0 }}
+          transition={{ duration: 1.5, delay: 0.5 }}
+          className="absolute right-0 top-1/2 -translate-y-1/2 w-1/2 h-3/4 hidden lg:block"
+        >
+          <svg viewBox="0 0 400 400" className="w-full h-full opacity-50">
+            {/* Upward trending bars */}
+            <motion.rect
+              initial={{ height: 0, y: 400 }}
+              animate={{ height: 100, y: 300 }}
+              transition={{ duration: 1, delay: 1 }}
+              x="50" width="40" fill="url(#greenGradient)" rx="4"
+            />
+            <motion.rect
+              initial={{ height: 0, y: 400 }}
+              animate={{ height: 150, y: 250 }}
+              transition={{ duration: 1, delay: 1.2 }}
+              x="120" width="40" fill="url(#greenGradient)" rx="4"
+            />
+            <motion.rect
+              initial={{ height: 0, y: 400 }}
+              animate={{ height: 220, y: 180 }}
+              transition={{ duration: 1, delay: 1.4 }}
+              x="190" width="40" fill="url(#greenGradient)" rx="4"
+            />
+            <motion.rect
+              initial={{ height: 0, y: 400 }}
+              animate={{ height: 300, y: 100 }}
+              transition={{ duration: 1, delay: 1.6 }}
+              x="260" width="40" fill="url(#greenGradient)" rx="4"
+            />
+            <motion.rect
+              initial={{ height: 0, y: 400 }}
+              animate={{ height: 380, y: 20 }}
+              transition={{ duration: 1, delay: 1.8 }}
+              x="330" width="40" fill="url(#greenGradient)" rx="4"
+            />
+
+            {/* Upward arrow */}
+            <motion.path
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={{ duration: 2, delay: 2 }}
+              d="M 60 350 Q 150 300, 240 180 T 360 40"
+              stroke="url(#greenGradient)"
+              strokeWidth="3"
+              fill="none"
+              strokeLinecap="round"
+            />
+            <motion.path
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 3.5 }}
+              d="M 360 40 L 350 50 L 360 45 L 370 50 Z"
+              fill="#22c55e"
+            />
+
+            <defs>
+              <linearGradient id="greenGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stopColor="#16a34a" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#22c55e" stopOpacity="0.8" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </motion.div>
+
+        {/* Floating Geometric Shapes */}
+        <motion.div
+          animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-20 left-1/4 w-16 h-16 border-2 border-green-500/30 rounded-lg hidden md:block"
+        />
+        <motion.div
+          animate={{ y: [0, 15, 0], rotate: [0, -8, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute bottom-32 right-1/4 w-20 h-20 border-2 border-green-400/20 rounded-full hidden md:block"
+        />
+
         <div className="max-w-7xl w-full relative z-10">
 
           {/* Main Title - Large and Bold */}
@@ -110,10 +241,6 @@ export default function HomePage() {
             </Link>
           </motion.div>
         </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-1/4 right-0 w-96 h-96 bg-green-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-green-600/5 rounded-full blur-3xl"></div>
       </section>
 
       {/* Bridging the Gap Section */}
