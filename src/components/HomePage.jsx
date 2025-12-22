@@ -73,11 +73,11 @@ export default function HomePage() {
         <div className="max-w-6xl w-full">
           <div className="text-center mb-16 animate-fadeIn">
             <h1 className="text-5xl md:text-6xl font-bold text-primary-100 mb-6">
-              Start your investment journey today.
+              Finally.
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-green-600">
+                A Path From Learning to Earning
+              </span>
             </h1>
-            <p className="text-xl text-primary-400 mb-4 max-w-2xl mx-auto">
-              We walk you through the first steps... wherever you are in life.
-            </p>
           </div>
 
           {/* Visual + Steps Section */}
