@@ -140,7 +140,7 @@ export default function HomePage() {
 
       {/* Bridging the Gap Section */}
       <ScrollReveal>
-        <section className="money-image-background flex items-center min-h-[60vh] ">
+        <section className="money-image-background flex items-center min-h-[60vh]">
           <div className="w-full px-4 md:px-0 p-8 md:p-18">
             <div className="w-full md:max-w-3xl text-left md:px-8">
               <motion.h2 
@@ -164,6 +164,36 @@ export default function HomePage() {
                 We've seen how difficult it was for friends and family to actually open and fund accounts, 
                 which is why we focus on guidance, simplicity, and action.
               </motion.p>
+
+              {/* Phone mockup - Desktop (right side) */}
+              <motion.div 
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 2.0 }}
+                className="absolute top-1/2 right-[-2%] -translate-y-1/2 w-[120%] h-[120%] rounded-xl overflow-hidden z-0 hidden lg:block"
+              >
+                <img 
+                  src="/assets/images/iphone.png"
+                  alt="Investment app on phone"
+                  className="w-full h-full object-contain object-right pr-20"
+                />
+              </motion.div>
+
+              {/* Phone mockup - Mobile (below text, centered) */}
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="lg:hidden w-[80%] h-[80%] max-w-xs mx-auto my-8 pl-10"
+              >
+                <img 
+                  src="/assets/images/iphone.png"
+                  alt="Investment app on phone"
+                  className="w-full h-auto object-contain"
+                />
+              </motion.div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-10">
                 {[

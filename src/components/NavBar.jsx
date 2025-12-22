@@ -30,7 +30,7 @@ const Navbar = () => {
               <img
                 src="/assets/logo/Title.svg"
                 alt="Company Title"
-                className="h-18 w-auto object-contain"
+                className="h-20 w-auto object-contain"
               />
               {/* <span className="text-xl font-bold text-primary-100">InvestEd</span> */}
             </Link>
