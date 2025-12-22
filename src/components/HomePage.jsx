@@ -1,17 +1,9 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { motion, useInView } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
-import dynamic from 'next/dynamic'
-
-// Dynamically import Player to avoid SSR issues
-const Player = dynamic(
-  () => import('@lottiefiles/react-lottie-player').then((mod) => mod.Player),
-  { ssr: false }
-)
 
 // Reusable scroll animation component
 const ScrollReveal = ({ children, delay = 0 }) => {
@@ -32,9 +24,6 @@ const ScrollReveal = ({ children, delay = 0 }) => {
 
 export default function HomePage() {
   const { user } = useAuth()
-  const [currentStep, setCurrentStep] = useState(0)
-  const playerRef = useRef(null)
-  const pathname = usePathname()  // Changed from useLocation
 
   const steps = [
     { title: "Open the right accounts" },
@@ -43,25 +32,6 @@ export default function HomePage() {
     { title: "Automate it all" }
   ]
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (playerRef.current) {
-        playerRef.current.stop()
-        playerRef.current.play()
-      }
-    }, 100)
-    
-    return () => clearTimeout(timer)
-  }, [pathname])  // Changed from location.key
-
-  useEffect(() => {
-    setCurrentStep(0)
-    const timers = steps.map((_, i) =>
-      setTimeout(() => setCurrentStep(i + 1), (i + 1) * 800)
-    )
-    return () => timers.forEach(clearTimeout)
-  }, [pathname])  // Changed from location.key
-
   if (user) {
     return <LoggedInHome user={user} />
   }
@@ -69,72 +39,64 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-zinc-950">
       {/* Hero Section */}
-      <section className="flex items-center justify-center px-4 pt-20 min-h-[100vh] md:min-h-screen static-background">
-        <div className="max-w-6xl w-full">
-          <div className="text-center mb-16 animate-fadeIn">
-            <h1 className="text-5xl md:text-6xl font-bold text-primary-100 mb-6">
+      <section className="flex items-center justify-center px-6 pt-32 pb-24 min-h-screen static-background">
+        <div className="max-w-5xl w-full">
+          {/* Title */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-center mb-20"
+          >
+            <h1 className="text-5xl md:text-7xl font-bold text-primary-100 mb-4 leading-tight">
               Finally.
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-green-600">
-                A Path From Learning to Earning
-              </span>
             </h1>
-          </div>
+            <h2 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-green-600 leading-tight">
+              A Path From Learning to Earning
+            </h2>
+          </motion.div>
 
-          {/* Visual + Steps Section */}
-          <section className="relative pb-10 lg:pb-15 flex flex-col md:flex-row items-center justify-center gap-16 md:gap-28 px-6 md:px-16">
-            
-            {/* LEFT: Animation + Signup */}
-            <div className="relative flex flex-col items-center w-full md:w-1/2">
-              <div className="absolute inset-0 bg-linear-to-b from-green-100/30 to-transparent blur-2xl rounded-full"></div>
-              <Player
-                ref={playerRef}
-                autoplay
-                loop={false}
-                keepLastFrame
-                src="/assets/animations/growing.json"
-                style={{
-                  width: "100%",
-                  maxWidth: "750px",
-                  height: "auto",
-                  transform: "scale(1.3)",
-                }}
-              />
-            </div>
-          
-            {/* RIGHT: Steps */}
-            <div className="flex flex-col space-y-6 lg:space-y-10 max-w-md w-full">
-              {steps.map((step, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{
-                    opacity: currentStep > index ? 1 : 0,
-                    y: currentStep > index ? 0 : 20,
-                  }}
-                  transition={{ duration: 0.2, ease: "easeInOut" }}
-                  className="flex items-center space-x-4"
-                >
-                  <div className="shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg bg-green-500">
-                    {index + 1}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg md:text-xl text-primary-100">
-                      {step.title}
-                    </h3>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </section>
+          {/* Steps - Centered Grid Layout */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-3xl mx-auto mb-20"
+          >
+            {steps.map((step, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 + (index * 0.1) }}
+                className="flex items-start space-x-4 group"
+              >
+                <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-zinc-950 font-bold text-base bg-gradient-to-br from-green-400 to-green-600 shadow-lg group-hover:shadow-green-500/50 transition-all duration-300">
+                  {index + 1}
+                </div>
+                <div className="pt-1">
+                  <h3 className="font-semibold text-lg md:text-xl text-primary-100 leading-snug">
+                    {step.title}
+                  </h3>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
 
-          <div className="text-center animate-slideUp pb-10">
+          {/* CTA Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="text-center"
+          >
             <Link
               href="/mode-selection"
-              className="inline-block btn-secondary font-bold text-xl px-10 py-4 rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+              className="inline-block btn-secondary font-bold text-lg px-12 py-4 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
             >
               Get Started
             </Link>
-          </div>
+          </motion.div>
         </div>
       </section>
 
