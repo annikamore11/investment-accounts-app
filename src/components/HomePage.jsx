@@ -39,7 +39,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-zinc-950">
       {/* Hero Section */}
-      <section className="relative flex items-center justify-center px-6 pt-24 pb-32 min-h-screen static-background overflow-hidden">
+      <section className="relative flex items-center justify-center px-6 py-16 min-h-screen static-background overflow-hidden">
 
         {/* Animated Background Blobs */}
         <div className="absolute inset-0 overflow-hidden">
@@ -89,14 +89,54 @@ export default function HomePage() {
             }}
             className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-gradient-to-bl from-green-400/10 to-transparent rounded-full blur-3xl"
           />
+
+          {/* Floating Particles */}
+          {[...Array(15)].map((_, i) => (
+            <motion.div
+              key={i}
+              animate={{
+                y: [0, -100, 0],
+                x: [0, Math.random() * 50 - 25, 0],
+                opacity: [0, 0.6, 0],
+              }}
+              transition={{
+                duration: 8 + Math.random() * 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: Math.random() * 5,
+              }}
+              className="absolute w-1 h-1 bg-green-500/40 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+            />
+          ))}
+
+          {/* Animated Grid Lines */}
+          <div className="absolute inset-0 opacity-5">
+            {[...Array(5)].map((_, i) => (
+              <motion.div
+                key={`h-${i}`}
+                animate={{ opacity: [0.3, 0.8, 0.3] }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  delay: i * 0.5,
+                }}
+                className="absolute w-full h-px bg-gradient-to-r from-transparent via-green-500 to-transparent"
+                style={{ top: `${(i + 1) * 20}%` }}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Growth Chart SVG - Right Side */}
         <motion.div
           initial={{ opacity: 0, x: 100 }}
-          animate={{ opacity: 0.15, x: 0 }}
+          animate={{ opacity: 0.12, x: 0 }}
           transition={{ duration: 1.5, delay: 0.5 }}
-          className="absolute right-0 top-1/2 -translate-y-1/2 w-1/2 h-3/4 hidden lg:block"
+          className="absolute right-0 top-1/2 -translate-y-1/2 w-1/2 h-3/4 hidden lg:block pointer-events-none"
         >
           <svg viewBox="0 0 400 400" className="w-full h-full opacity-50">
             {/* Upward trending bars */}
@@ -159,26 +199,14 @@ export default function HomePage() {
           </svg>
         </motion.div>
 
-        {/* Floating Geometric Shapes */}
-        <motion.div
-          animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-20 left-1/4 w-16 h-16 border-2 border-green-500/30 rounded-lg hidden md:block"
-        />
-        <motion.div
-          animate={{ y: [0, 15, 0], rotate: [0, -8, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute bottom-32 right-1/4 w-20 h-20 border-2 border-green-400/20 rounded-full hidden md:block"
-        />
+        <div className="max-w-6xl w-full relative z-10 text-center">
 
-        <div className="max-w-7xl w-full relative z-10">
-
-          {/* Main Title - Large and Bold */}
+          {/* Main Title - Large and Bold - Centered */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="mb-24 md:mb-32"
+            className="mb-16"
           >
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold text-primary-100 leading-[0.9] mb-6">
               Finally.
@@ -194,28 +222,25 @@ export default function HomePage() {
             </h2>
           </motion.div>
 
-          {/* Steps - Creative Staggered Layout */}
+          {/* Steps - Centered Grid Layout */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="relative mb-20 md:mb-28"
+            className="relative mb-12"
           >
-            <div className="flex flex-col md:flex-row md:flex-wrap gap-6 md:gap-8 max-w-5xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto">
               {steps.map((step, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 + (index * 0.1) }}
-                  className={`
-                    group cursor-default
-                    ${index % 2 === 0 ? 'md:mt-0' : 'md:mt-8'}
-                  `}
+                  className="group cursor-default"
                 >
-                  <div className="relative inline-block">
+                  <div className="relative inline-block w-full text-center">
                     <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-green-600/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <h3 className="relative text-2xl md:text-3xl font-bold text-primary-200 group-hover:text-primary-50 transition-colors duration-300 border-l-4 border-green-500 pl-4 py-2">
+                    <h3 className="relative text-xl md:text-2xl font-bold text-primary-200 group-hover:text-primary-50 transition-colors duration-300 py-2">
                       {step.title}
                     </h3>
                   </div>
@@ -224,7 +249,7 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-          {/* CTA - Bold and Prominent */}
+          {/* CTA - Bold and Prominent - Centered */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -235,7 +260,7 @@ export default function HomePage() {
               className="group relative inline-block"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-green-600 blur-2xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
-              <div className="relative bg-gradient-to-r from-green-500 to-green-600 text-zinc-950 font-bold text-xl md:text-2xl px-16 py-6 rounded-full hover:from-green-400 hover:to-green-500 transition-all duration-300 shadow-2xl group-hover:shadow-green-500/50 group-hover:scale-105 transform">
+              <div className="relative bg-gradient-to-r from-green-500 to-green-600 text-zinc-950 font-bold text-xl md:text-2xl px-16 py-5 rounded-full hover:from-green-400 hover:to-green-500 transition-all duration-300 shadow-2xl group-hover:shadow-green-500/50 group-hover:scale-105 transform">
                 Get Started
               </div>
             </Link>
