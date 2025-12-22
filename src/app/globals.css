@@ -107,35 +107,12 @@
 .static-background {
   position: relative;
   background-size: cover;
-  /* background: linear-gradient(
-    to bottom,
-    #0a0008 0%,
-    #0a0008 33%,
-    #1a1f28 50%,
-    #2d3540 65%,
-    #4a5158 80%,
-    #8a9199 100%
-  ); */
   background-position: center;
   background-repeat: no-repeat;
   overflow: hidden;
 }
 
 .static-background::before {
-  /* content: "";
-  position: absolute;
-  top: 50%;
-  right: 9%;
-  transform: translateY(-50%);
-  width: 90%;
-  height: 90%;
-  background-image: 
-    url("/assets/images/lamp.png");
-  background-size: cover;
-  background-position: center right;
-  background-blend-mode: multiply;   
-  border-radius: 12px;
-  z-index: 0; */
   content: "";
   position: absolute;
   background-size: cover;
@@ -185,7 +162,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-color: #8a9199;
+  background-color: #d2d3d4;
   z-index: 0;
 }
 
@@ -219,8 +196,7 @@
       #d2d3d4 0%,
       #2d3540 50%,
       #0a0008 100%
-    ),
-    url("/assets/images/noisy-background.png");
+    );
   background-size: cover, 200px 200px;  /* auto for gradient, 200px for texture tile */
   background-position: center, center;
   background-repeat: no-repeat, repeat; 
@@ -231,13 +207,13 @@
 .money-image-background::before {
   content: "";
   position: absolute;
-  top: 50%;
+  /* top: 50%;
   right: -2%;
   transform: translateY(-50%);
   width: 80%;
   height: 90%;
   background-image: 
-    url("/assets/images/computer3.png");
+    url("/assets/images/computer3.png"); */
   background-size: cover;
   background-position: center right;
   background-blend-mode: multiply;   /* This blends gradient with image */
@@ -250,6 +226,12 @@
   content: "";
   position: absolute;
   inset: 0;
+  background: url("/assets/images/noisy-background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.1; /* Light texture for bottom section */
+  mix-blend-mode: multiply;
   z-index: 1;
 }
 
