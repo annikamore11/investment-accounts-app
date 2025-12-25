@@ -40,7 +40,7 @@ export default function StepContainer({
       )}
 
       {/* Main Content Card */}
-      <div className="bg-primary-500/40 rounded-2xl shadow-xl p-6 sm:p-6 md:p-8 lg:p-12 animate-fadeIn">
+      <div className="bg-primary-100 rounded-2xl shadow-xl p-6 sm:p-6 md:p-8 lg:p-12 animate-fadeIn">
         {children}
       </div>
     </div>
