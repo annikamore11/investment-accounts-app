@@ -11,14 +11,14 @@ export default function OptionGrid({
   columns = 2, // Number of columns on larger screens
   className = ''
 }) {
-  const gridClasses = {
-    1: 'grid-cols-1',
-    2: 'grid-cols-1 sm:grid-cols-2',
-    3: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3',
-    4: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-4'
-  }
+const gridClasses = {
+  1: 'grid-cols-1',
+  2: 'grid-cols-1 sm:grid-cols-2',
+  3: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3',
+  4: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-4'
+}
 
-  const gridClass = gridClasses[columns] || 'grid-cols-1 sm:grid-cols-2'
+const gridClass = gridClasses[columns] || 'grid-cols-1 sm:grid-cols-2'
 
   return (
     <div className={`grid ${gridClass} gap-4 mb-8 ${className}`}>
@@ -33,7 +33,7 @@ export default function OptionGrid({
               relative px-4 sm:px-5 py-4 rounded-xl border-2 transition-all duration-300 text-left
               ${isSelected
                 ? 'border-accent-green-600 bg-accent-green-50 shadow-lg scale-105'
-                : 'border-primary-400 hover:border-primary-600 bg-primary-50/80 hover:bg-white hover:shadow-md hover:scale-102'
+                : 'border-primary-400 hover:border-primary-600 bg-primary-50 hover:bg-white hover:shadow-md hover:scale-102'
               }
             `}
           >

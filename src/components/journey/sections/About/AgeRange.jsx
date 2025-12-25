@@ -29,7 +29,7 @@ const AgeRange = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
       isExiting={isExiting}
       exitDirection="horizontal"
     >
-      <p className="text-lg sm:text-xl text-primary-700 max-w-4xl mx-auto text-center mb-6">
+      <p className="text-lg sm:text-xl text-primary-100 max-w-4xl mx-auto text-center mb-6">
         Our site is geared towards beginners. Age helps us recommend the right investment timelines.
       </p>
 
@@ -52,7 +52,7 @@ const AgeRange = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
       />
 
       {!age && (
-        <p className="text-sm text-primary-500 text-center mt-4 animate-fadeIn">
+        <p className="text-sm text-primary-100 text-center mt-4 animate-fadeIn">
           Please select your age range to continue
         </p>
       )}
