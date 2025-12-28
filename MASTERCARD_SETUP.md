@@ -96,6 +96,18 @@ GET /institution/v2/institutions/{institutionId}
 
 ## Troubleshooting
 
+### "Unexpected token '<', "<?xml vers"..." error
+This means the API is returning XML instead of JSON, typically due to:
+- **Placeholder credentials**: Replace `your_partner_id_here` etc. in `.env.local` with actual credentials
+- **Invalid credentials**: Double-check your Partner ID, Partner Secret, and App Key
+- **Missing App Key**: Ensure `MASTERCARD_APP_KEY` is set correctly
+
+**Solution:**
+1. Log in to [Mastercard Developer Portal](https://developer.mastercard.com/)
+2. Get your actual credentials (not the example placeholders)
+3. Update `.env.local` with real values
+4. Restart your development server: `npm run dev`
+
 ### "Mastercard credentials not configured" error
 - Check that your `.env.local` file exists
 - Verify all three credentials are set
@@ -105,11 +117,18 @@ GET /institution/v2/institutions/{institutionId}
 - Verify your Partner ID and Partner Secret are correct
 - Check that your App Key is valid
 - Ensure you're using the correct API URL
+- Make sure you haven't hit rate limits
 
-### No search results
+### No search results for "TD Bank" or similar
+- Try searching without "Bank" - just "TD"
+- Some institutions may be listed under different names
+- Try the full official name (e.g., "TD Bank, N.A.")
+- Check the [Supported Institutions](https://developer.mastercard.com/open-banking-us/documentation/financial-institution/supported-institutions/) page
+
+### Search returns empty but no errors
 - Try different search terms
 - Check if the institution name is spelled correctly
-- Some smaller institutions may not be in the database
+- Some smaller/regional institutions may not be in the database (10,000+ institutions covering 95% of US market)
 
 ## Documentation
 

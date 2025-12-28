@@ -224,10 +224,24 @@ const BankInstitution = ({ journeyData, updateJourneyData, nextStep, prevStep })
 
       {/* Error Message */}
       {error && (
-        <div className="max-w-2xl mx-auto mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl animate-fadeIn">
+        <div className="max-w-2xl mx-auto mb-6 p-4 sm:p-5 bg-red-50 border-2 border-red-200 rounded-xl animate-fadeIn">
           <div className="flex items-start space-x-3">
-            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-red-800">{error}</p>
+            <AlertCircle className="w-5 sm:w-6 h-5 sm:h-6 text-red-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-red-900 mb-1">Connection Error</h3>
+              <p className="text-sm text-red-800 mb-2">{error}</p>
+              {(error.includes('credentials') || error.includes('API returned an error')) && (
+                <div className="text-sm text-red-800 mt-3 bg-red-100 p-3 rounded">
+                  <p className="font-medium mb-2">Need to set up API credentials?</p>
+                  <ol className="list-decimal ml-4 space-y-1">
+                    <li>Get free credentials from <a href="https://developer.mastercard.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-red-900">Mastercard Developer Portal</a></li>
+                    <li>Add them to your <code className="bg-red-200 px-1 rounded">.env.local</code> file</li>
+                    <li>Restart your dev server</li>
+                  </ol>
+                  <p className="mt-2 text-xs">See <code className="bg-red-200 px-1 rounded">README_CREDENTIALS.md</code> for detailed instructions</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
