@@ -5,6 +5,7 @@ import Employer401k from './Employer401k'
 import AgeRange from './AgeRange'
 import BankAccount from './BankAccount'
 import BankType from './BankType'
+import BankInstitution from './BankInstitution'
 import AboutSummary from './AboutSummary'
 
 export const aboutConfig = {
@@ -25,6 +26,7 @@ export const aboutConfig = {
 
     if (journeyData.hasBankAccount === true) {
       names.push('Bank Type')
+      names.push('Bank Institution')
     }
 
     names.push('Summary')
@@ -44,9 +46,10 @@ export const aboutConfig = {
     steps.push(AgeRange)
     steps.push(BankAccount)
 
-    // Only show bank type if they have a bank account
+    // Only show bank type and institution if they have a bank account
     if (journeyData.hasBankAccount === true) {
       steps.push(BankType)
+      steps.push(BankInstitution)
     }
 
     steps.push(AboutSummary)
@@ -71,8 +74,12 @@ export const aboutConfig = {
       return false
     }
 
-    // If has bank account, must select type
+    // If has bank account, must select type and institution
     if (journeyData.hasBankAccount === true && !journeyData.bankType) {
+      return false
+    }
+
+    if (journeyData.hasBankAccount === true && !journeyData.bankInstitution) {
       return false
     }
 
