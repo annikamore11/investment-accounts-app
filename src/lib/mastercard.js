@@ -12,17 +12,23 @@ async function parseResponse(response) {
 
   // Check if response is XML (error response)
   if (contentType?.includes('xml') || text.trim().startsWith('<?xml')) {
-    throw new Error('API returned an error. Please check your credentials in .env.local');
+    console.error('API Error Response:', text); // Add this line to see the actual error
+    throw new Error(`API returned an error: ${text.substring(0, 200)}`); // Show first 200 chars of error
   }
 
   // Try to parse as JSON
   try {
     return JSON.parse(text);
   } catch (e) {
+    console.error('Response text:', text); // Add this to see what we got
     throw new Error('Invalid response from API. Please verify your credentials.');
   }
 }
 
+/**
+ * Get access token from Mastercard API
+ * Uses Partner ID and Partner Secret to authenticate
+ */
 /**
  * Get access token from Mastercard API
  * Uses Partner ID and Partner Secret to authenticate
@@ -62,20 +68,32 @@ async function getAccessToken() {
       throw new Error(`Authentication failed (${response.status}): Check your API credentials`);
     }
 
-    const data = await parseResponse(response);
-    return data.token;
+    const text = await response.text();
+    const contentType = response.headers.get('content-type');
+    
+    // Handle XML response
+    if (contentType?.includes('xml') || text.trim().startsWith('<?xml')) {
+      const tokenMatch = text.match(/<token>([^<]+)<\/token>/);
+      if (tokenMatch && tokenMatch[1]) {
+        return tokenMatch[1];
+      }
+      throw new Error('Could not parse token from XML response');
+    }
+    
+    // Handle JSON response
+    try {
+      const data = JSON.parse(text);
+      return data.token;
+    } catch (e) {
+      throw new Error('Invalid response format from API');
+    }
+    
   } catch (error) {
     console.error('Mastercard authentication error:', error);
     throw error;
   }
 }
 
-/**
- * Search for financial institutions by name
- * @param {string} search - Search term (e.g., "Chase", "Bank of America")
- * @param {number} limit - Maximum number of results to return
- * @returns {Promise<Array>} List of matching institutions
- */
 export async function searchInstitutions(search, limit = 25) {
   if (!search || search.trim().length < 2) {
     return [];
@@ -108,7 +126,14 @@ export async function searchInstitutions(search, limit = 25) {
     }
 
     const data = await parseResponse(response);
-    return data.institutions || [];
+    const institutions = data.institutions || [];
+    
+    // Log the first result to see what fields are available
+    if (institutions.length > 0) {
+      console.log('Sample institution data:', JSON.stringify(institutions[0], null, 2));
+    }
+    
+    return institutions;
   } catch (error) {
     console.error('Institution search error:', error);
     throw error;
@@ -151,6 +176,8 @@ export async function getInstitutionById(institutionId) {
   }
 }
 
+
+
 /**
  * Check if an institution is supported
  * @param {string} institutionName - Name of the institution to check
@@ -161,7 +188,13 @@ export async function checkInstitutionSupport(institutionName) {
     const institutions = await searchInstitutions(institutionName, 10);
 
     if (institutions.length === 0) {
-      return { supported: false, institution: null, suggestions: [] };
+      return { 
+        supported: false, 
+        institution: null, 
+        instantVerification: false,
+        verificationMethod: 'not-supported',
+        suggestions: [] 
+      };
     }
 
     // Look for exact or very close match
@@ -169,18 +202,16 @@ export async function checkInstitutionSupport(institutionName) {
       inst => inst.name.toLowerCase() === institutionName.toLowerCase()
     );
 
-    if (exactMatch) {
-      return {
-        supported: true,
-        institution: exactMatch,
-        suggestions: institutions.slice(0, 5),
-      };
-    }
+    const institution = exactMatch || institutions[0];
 
-    // Return first result as best match with other suggestions
+    // Check if OAuth is enabled for instant verification
+    const hasInstantVerification = institution.oauthEnabled === true;
+
     return {
       supported: true,
-      institution: institutions[0],
+      institution: institution,
+      instantVerification: hasInstantVerification,
+      verificationMethod: hasInstantVerification ? 'instant' : 'micro-deposits',
       suggestions: institutions.slice(0, 5),
     };
   } catch (error) {
