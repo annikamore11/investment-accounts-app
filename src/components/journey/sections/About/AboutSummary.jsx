@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Briefcase, Calendar, Landmark, Building } from 'lucide-react'
+import { Briefcase, Calendar, Landmark, Building, Building2 } from 'lucide-react'
 import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
 import useStepTransition from '@/hooks/useStepTransition'
@@ -84,6 +84,18 @@ const AboutSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
               </div>
               <div className="col-span-2 text-primary-900">
                 {getBankTypeLabel(journeyData.bankType)}
+              </div>
+            </div>
+          )}
+
+          {journeyData.hasBankAccount && journeyData.bankInstitution && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
+              <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
+                <Building2 className="w-5 h-5 text-primary-500" />
+                <span className="font-semibold text-primary-700">Bank Institution</span>
+              </div>
+              <div className="col-span-2 text-primary-900">
+                {journeyData.bankInstitution.name}
               </div>
             </div>
           )}
