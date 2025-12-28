@@ -89,23 +89,7 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
       isExiting={isExiting}
       exitDirection="horizontal"
     >
-      <div className="bg-accent-purple-50 border border-accent-purple-300 rounded-lg p-3 mb-6">
-        <div className="flex items-start space-x-2">
-          <Info className="w-5 h-5 text-accent-purple-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-accent-purple-900">
-            {isSelfEmployed ? (
-              <>
-                <strong>Self-employed?</strong> Enter your gross income per paycheck (before taxes). We'll calculate monthly and help you set aside for taxes.
-              </>
-            ) : (
-              <>
-                <strong>Use your take-home pay</strong> - the amount that hits your bank account after taxes and deductions.
-              </>
-            )}
-          </p>
-        </div>
-      </div>
-
+      
       {/* Pay Frequency */}
       <div className="mb-8">
         <label className="block text-base sm:text-lg font-semibold text-primary-700 mb-4">
@@ -138,9 +122,11 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
       {frequency && (
         <div className="mb-6 animate-fadeIn">
           <label className="block text-base sm:text-lg font-semibold text-primary-700 mb-4">
-            {frequency === 'irregular'
-              ? 'What do you estimate per month?'
-              : `How much per ${frequency === 'weekly' ? 'week' : frequency === 'biweekly' ? 'paycheck (every 2 weeks)' : frequency === 'semimonthly' ? 'paycheck (twice per month)' : 'month'}?`}
+            {journeyData.employment === 'self-employed'
+              ? 'How much gross per paycheck (before taxes and deductions)?'
+              : frequency === 'irregular'
+              ? 'What income do you estimate per month (after deductions like taxes)?'
+              : 'How much net per paycheck (after deductions like taxes)?'}
           </label>
 
           {/* Display Box */}
