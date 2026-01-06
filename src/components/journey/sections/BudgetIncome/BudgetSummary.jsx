@@ -1,13 +1,14 @@
 import React, {useState} from 'react'
 import { DollarSign, TrendingUp, Calendar, PiggyBank, Scale, HandCoins } from 'lucide-react'
-import BudgetStackedBarChart from '@/components/charts/BudgetStackedBarChart'
+import BudgetDonutChart from '@/components/charts/BudgetDonutChart'
+import IncomeExpensesBar from '@/components/charts/IncomeExpensesBar' 
 
 const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
   const [isExiting, setIsExiting] = useState(false)
   const income = journeyData.monthlyIncome || 0
   const expenses = journeyData.monthlyExpenses || 0
   const taxes = journeyData.estimatedTaxDollarAmount || 0
-  let netIncomeSelfEmployed = income - taxes
+  const netIncomeSelfEmployed = journeyData.netIncomeSelfEmployed || 0
   const leftover = journeyData.employment === 'self-employed' 
     ? netIncomeSelfEmployed - expenses 
     : income - expenses
@@ -32,36 +33,36 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
   }
 
   return (
-    <div className={`w-full max-w-4xl mx-auto transition-all duration-500 ${
+    <div className={`w-full max-w-6xl mx-auto transition-all duration-500 ${
       isExiting ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
     }`}>
       
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Remove auto-rows-fr, use items-start instead */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
         
-        {/* Left Column - Summary Table */}
-        <div className="bg-white rounded-xl shadow-xl p-8 border-2 border-gray-200">
+        {/* Left Column - Summary Table - Natural height, sets the standard */}
+        <div className="bg-white rounded-xl shadow-xl p-4 border-2 border-gray-200">
           
           {/* Report Header */}
-          <div className="border-b-2 border-gray-300 pb-4 mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Financial Summary</h2>
-            <p className="text-sm text-gray-600 mt-1">Review your information</p>
+          <div className="border-b-2 border-gray-300 pb-3 mb-4">
+            <h2 className="text-xl font-bold text-gray-900">Financial Summary</h2>
+            <p className="text-xs text-gray-600 mt-1">Review your information</p>
           </div>
 
           {/* Summary Rows */}
-          <div className="space-y-1 mb-8">
+          <div className="space-y-2">
             
             {/* Monthly Income */}
-            <div className="grid grid-cols-3 py-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-              <div className="flex items-center space-x-3 col-span-2">
-                <TrendingUp className="w-5 h-5 text-gray-500" />
+            <div className="grid grid-cols-3 py-3 border-b border-gray-200 hover:bg-gray-50 transition-colors">
+              <div className="flex items-center space-x-2 col-span-2">
+                <TrendingUp className="w-4 h-4 text-gray-500" />
                 {journeyData.employment === 'self-employed' ? (
-                  <span className="font-semibold text-gray-700">Monthly Gross Income</span>
+                  <span className="font-semibold text-gray-700 text-sm">Monthly Gross Income</span>
                 ) : (
-                  <span className="font-semibold text-gray-700">Monthly Net Income</span>
+                  <span className="font-semibold text-gray-700 text-sm">Monthly Net Income</span>
                 )}
               </div>
-              <div className="text-right text-gray-900 font-bold text-lg">
+              <div className="text-right text-gray-900 font-bold text-base">
                 ${income.toLocaleString()}
               </div>
             </div>
@@ -70,21 +71,21 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
             {journeyData.employment === 'self-employed' && (
               <>
                 <div className="grid grid-cols-3 py-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center space-x-3 col-span-2">
-                    <Scale className="w-5 h-5 text-red-500" />
-                    <span className="font-semibold text-gray-700">Est. Taxes</span>
+                  <div className="flex items-center space-x-2 col-span-2">
+                    <Scale className="w-4 h-4 text-red-500" />
+                    <span className="font-semibold text-gray-700 text-sm">Est. Taxes</span>
                   </div>
-                  <div className="text-right text-red-700 font-bold text-lg">
+                  <div className="text-right text-red-700 font-bold text-base">
                     -${taxes?.toLocaleString() || 0}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 py-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center space-x-3 col-span-2">
-                    <HandCoins className="w-5 h-5 text-gray-500" />
-                    <span className="font-semibold text-gray-700">Net Income</span>
+                  <div className="flex items-center space-x-2 col-span-2">
+                    <HandCoins className="w-4 h-4 text-gray-500" />
+                    <span className="font-semibold text-gray-700 text-sm">Net Income</span>
                   </div>
-                  <div className="text-right text-gray-900 font-bold text-lg">
+                  <div className="text-right text-gray-900 font-bold text-base">
                     ${netIncomeSelfEmployed?.toLocaleString() || 0}
                   </div>
                 </div>
@@ -93,22 +94,22 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
 
             {/* Monthly Expenses */}
             <div className="grid grid-cols-3 py-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-              <div className="flex items-center space-x-3 col-span-2">
-                <DollarSign className="w-5 h-5 text-red-500" />
-                <span className="font-semibold text-gray-700">Monthly Expenses</span>
+              <div className="flex items-center space-x-2 col-span-2">
+                <DollarSign className="w-4 h-4 text-red-500" />
+                <span className="font-semibold text-gray-700 text-sm">Monthly Expenses</span>
               </div>
-              <div className="text-right text-red-700 font-bold text-lg">
+              <div className="text-right text-red-700 font-bold text-base">
                 -${expenses.toLocaleString()}
               </div>
             </div>
 
             {/* Pay Frequency */}
             <div className="grid grid-cols-3 py-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-              <div className="flex items-center space-x-3 col-span-2">
-                <Calendar className="w-5 h-5 text-gray-500" />
-                <span className="font-semibold text-gray-700">Pay Frequency</span>
+              <div className="flex items-center space-x-2 col-span-2">
+                <Calendar className="w-4 h-4 text-gray-500" />
+                <span className="font-semibold text-gray-700 text-sm">Pay Frequency</span>
               </div>
-              <div className="text-right text-gray-900">
+              <div className="text-right text-gray-900 text-sm">
                 {getFrequencyLabel(journeyData.payFrequency)}
               </div>
             </div>
@@ -117,58 +118,35 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
             <div className={`grid grid-cols-3 py-4 border-b border-gray-200 ${
               leftover >= 0 ? 'bg-green-50' : 'bg-red-50'
             } transition-colors`}>
-              <div className="flex items-center space-x-3 col-span-2">
-                <PiggyBank className="w-5 h-5 text-gray-500" />
-                <span className="font-semibold text-gray-700">Available to Save Monthly</span>
+              <div className="flex items-center space-x-2 col-span-2">
+                <PiggyBank className="w-4 h-4 text-gray-500" />
+                <span className="font-semibold text-gray-700 text-sm">Available to Save Monthly</span>
               </div>
-              <div className={`text-right font-bold text-lg ${
+              <div className={`text-right font-bold text-base ${
                 leftover >= 0 ? 'text-green-700' : 'text-red-700'
               }`}>
                 {leftover >= 0 ? `$${leftover.toLocaleString()}` : `-$${Math.abs(leftover).toLocaleString()}`}
-                <div className="text-sm font-normal">
+                <div className="text-xs font-normal">
                   ({savingsRate}%)
                 </div>
               </div>
             </div>
           </div>
-
-          
         </div>
 
-        {/* Right Column - Pie Chart & Insights */}
-        <div className="space-y-6">
-          
-          {/* Pie Chart */}
-          <BudgetStackedBarChart journeyData={journeyData} />
+        {/* Middle Column - Income vs Expenses Bar - Stretches to match left */}
+        <div className="h-full">
+          <IncomeExpensesBar journeyData={journeyData} />
+        </div>
 
-          {/* Insights */}
-          <div className={`rounded-xl p-6 border-2 ${
-            leftover >= 500 ? 'bg-green-50 border-green-600' :
-            leftover >= 0 ? 'bg-yellow-50 border-yellow-300' :
-            'bg-red-50 border-red-300'
-          }`}>
-            <h3 className="font-bold text-gray-900 mb-2">Quick Insight</h3>
-            {leftover >= 500 && (
-              <p className="text-gray-700">
-                Great! You have ${leftover.toLocaleString()} available to save and invest each month. We'll help you make the most of it.
-              </p>
-            )}
-            {leftover > 0 && leftover < 500 && (
-              <p className="text-gray-700">
-                You have ${leftover.toLocaleString()} available to save. Every dollar counts - we'll help you build wealth over time!
-              </p>
-            )}
-            {leftover <= 0 && (
-              <p className="text-gray-700">
-                Your expenses match or exceed your income. Focus on building an emergency fund first, even if it's just $25-50/month. Learn more in the next section.
-              </p>
-            )}
-          </div>
+        {/* Right Column - Expense Breakdown Donut - Stretches to match left */}
+        <div className="h-full">
+          <BudgetDonutChart journeyData={journeyData} />
         </div>
       </div>
 
       {/* Navigation */}
-      <div className="flex gap-4 mt-8">
+      <div className="flex gap-4 mt-4">
         <button 
           onClick={prevStep}
           disabled={isExiting} 

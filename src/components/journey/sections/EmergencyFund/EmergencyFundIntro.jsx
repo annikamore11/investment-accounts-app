@@ -28,7 +28,7 @@ const EmergencyFundIntro = ({ journeyData, nextStep, prevStep }) => {
             <Shield className="w-6 h-6 text-primary-600 mr-2" />
             What Is an Emergency Fund?
           </h3>
-          <p className="text-primary-700 mb-4 text-sm sm:text-base">
+          <div className="text-primary-700 mb-4 text-sm sm:text-base">
             3-6 months of expenses sitting in a safe, accessible account that earns{' '}
             <GlossaryTerm term="interest">
               <h4 className="font-bold mb-2 text-primary-900">What is Interest?</h4>
@@ -44,7 +44,7 @@ const EmergencyFundIntro = ({ journeyData, nextStep, prevStep }) => {
                 <p className="text-xs text-primary-600">Math: $100 × 1.05 = $105 (5% of $100 is $5)</p>
               </div>
             </GlossaryTerm>.
-          </p>
+          </div>
           <p className="text-primary-700 text-sm sm:text-base">
             For unexpected costs like car repairs, medical bills, or job loss.
           </p>

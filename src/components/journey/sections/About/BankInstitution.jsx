@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Search, CheckCircle2, AlertCircle, Building2, Loader2 } from 'lucide-react'
+import { Search, CheckCircle2, AlertCircle, Building2, Loader2, Clock, Zap } from 'lucide-react'
 import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
 import InfoBox from '@/components/ui/InfoBox'
@@ -73,6 +73,8 @@ const BankInstitution = ({ journeyData, updateJourneyData, nextStep, prevStep })
         setVerificationStatus({
           supported: data.supported,
           institution: data.institution,
+          instantVerification: data.instantVerification,
+          verificationMethod: data.verificationMethod,
           suggestions: data.suggestions || []
         })
       }
@@ -86,6 +88,7 @@ const BankInstitution = ({ journeyData, updateJourneyData, nextStep, prevStep })
   const handleNext = () => {
     updateJourneyData('bankInstitution', selectedInstitution)
     updateJourneyData('bankInstitutionName', searchQuery)
+    updateJourneyData('bankVerificationMethod', verificationStatus?.verificationMethod || 'unknown')
     transitionTo(nextStep)
   }
 
@@ -101,7 +104,7 @@ const BankInstitution = ({ journeyData, updateJourneyData, nextStep, prevStep })
 
       <InfoBox
         type="why"
-        message="We'll check if your bank is supported for instant verification when connecting your investment accounts."
+        message="We'll check if your bank supports instant verification or requires manual verification when connecting to investment platforms."
       />
 
       {/* Search Input */}
@@ -145,6 +148,12 @@ const BankInstitution = ({ journeyData, updateJourneyData, nextStep, prevStep })
                     <div className="text-sm text-primary-500 truncate">{institution.urlHomeApp}</div>
                   )}
                 </div>
+                {institution.oauthEnabled && (
+                  <div className="flex items-center text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                    <Zap className="w-3 h-3 mr-1" />
+                    Instant
+                  </div>
+                )}
               </button>
             ))}
           </div>
@@ -165,36 +174,72 @@ const BankInstitution = ({ journeyData, updateJourneyData, nextStep, prevStep })
         <div className="max-w-2xl mx-auto mb-6 p-4 bg-primary-50 border-2 border-primary-200 rounded-xl animate-fadeIn">
           <div className="flex items-center space-x-3">
             <Loader2 className="w-5 h-5 text-primary-600 animate-spin flex-shrink-0" />
-            <p className="text-sm text-primary-700">Verifying institution support...</p>
+            <p className="text-sm text-primary-700">Checking verification method...</p>
           </div>
         </div>
       )}
 
       {verificationStatus && !isVerifying && selectedInstitution && (
         <div className="max-w-2xl mx-auto mb-6 animate-fadeIn">
-          {verificationStatus.supported ? (
+          {verificationStatus.instantVerification ? (
+            // Instant OAuth Verification
             <div className="p-4 sm:p-5 bg-green-50 border-2 border-green-300 rounded-xl">
               <div className="flex items-start space-x-3">
-                <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <Zap className="w-5 h-5 text-green-600" />
+                </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-green-900 mb-1">
-                    {selectedInstitution.name} is Supported!
+                  <h3 className="font-semibold text-green-900 mb-1 flex items-center">
+                    Instant Verification Available!
                   </h3>
-                  <p className="text-sm text-green-800">
-                    This institution supports instant verification through Mastercard Open Banking.
-                    You&apos;ll be able to connect your accounts quickly and securely.
+                  <p className="text-sm text-green-800 mb-2">
+                    {selectedInstitution.name} supports instant login through their secure portal. 
+                    You'll connect in seconds.
                   </p>
+                  <div className="text-xs text-green-700 bg-green-100 rounded-lg p-2 mt-2">
+                    <strong>How it works:</strong> You'll log in directly through your bank's website. 
+                    We never see your password—everything is secure and instant.
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : verificationStatus.supported ? (
+            // Micro-deposit Verification Required
+            <div className="p-4 sm:p-5 bg-yellow-50 border-2 border-yellow-300 rounded-xl">
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-yellow-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-yellow-900 mb-1">
+                    Manual Verification Required (2-3 Days)
+                  </h3>
+                  <p className="text-sm text-yellow-800 mb-2">
+                    {selectedInstitution.name} requires verification through micro-deposits.
+                  </p>
+                  <div className="text-xs text-yellow-700 bg-yellow-100 rounded-lg p-3 mt-2 space-y-2">
+                    <p><strong>How it works:</strong></p>
+                    <ol className="list-decimal ml-4 space-y-1">
+                      <li>Fidelity sends 2 small deposits (like $0.17 and $0.32) to your account</li>
+                      <li>Wait 1-3 business days for them to appear</li>
+                      <li>Verify the exact amounts to complete connection</li>
+                    </ol>
+                    <p className="text-yellow-600 font-medium mt-2">
+                      💡 This is still secure—just takes a bit longer!
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           ) : (
+            // Not Supported - Manual Entry Only
             <div className="p-4 sm:p-5 bg-orange-50 border-2 border-orange-300 rounded-xl">
               <div className="flex items-start space-x-3">
                 <AlertCircle className="w-6 h-6 text-orange-600 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <h3 className="font-semibold text-orange-900 mb-1">Limited Support</h3>
                   <p className="text-sm text-orange-800 mb-3">
-                    This institution may require manual verification, which could take 2-5 business days.
+                    This institution may require manual account information entry.
                   </p>
                   {verificationStatus.suggestions && verificationStatus.suggestions.length > 0 && (
                     <>
@@ -206,9 +251,14 @@ const BankInstitution = ({ journeyData, updateJourneyData, nextStep, prevStep })
                           <li key={suggestion.id}>
                             <button
                               onClick={() => handleSelectInstitution(suggestion)}
-                              className="underline hover:text-orange-900"
+                              className="underline hover:text-orange-900 flex items-center"
                             >
                               {suggestion.name}
+                              {suggestion.oauthEnabled && (
+                                <span className="ml-2 text-xs text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+                                  Instant
+                                </span>
+                              )}
                             </button>
                           </li>
                         ))}

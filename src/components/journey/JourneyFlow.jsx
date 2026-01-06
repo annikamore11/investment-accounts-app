@@ -33,6 +33,7 @@ const INITIAL_JOURNEY_DATA = {
   utilities: '',
   other: '',
   monthlyIncome: '',
+  netIncomeSelfEmployed: '',
   estimatedTaxPercentage: '',
   estimatedTaxDollarAmount: '',
   payFrequency: '',

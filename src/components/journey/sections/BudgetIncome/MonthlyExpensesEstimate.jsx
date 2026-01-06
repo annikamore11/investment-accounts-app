@@ -92,7 +92,7 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
             What are your total monthly expenses?
           </label>
           <p className="text-sm text-primary-600 mb-3">
-            Don't include <strong>paycheck deductions</strong> like insurance or 401(k) contributions.
+            Don't include <strong> deductions</strong> like taxes or 401(k) contributions.
           </p>
           <DollarInput
             value={monthlyExpenses}
@@ -109,7 +109,7 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
             Break down your major expenses:
           </label>
           <p className="text-sm text-primary-600 mb-3">
-            Don't include <strong>paycheck deductions</strong> like 401(k) contributions.
+            Don't include <strong> deductions</strong> like taxes or 401(k) contributions.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
             {/* Rent */}

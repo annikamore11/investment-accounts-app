@@ -3,7 +3,6 @@
 import EmploymentStatus from './Employment'
 import Employer401k from './Employer401k'
 import AgeRange from './AgeRange'
-import BankAccount from './BankAccount'
 import BankType from './BankType'
 import BankInstitution from './BankInstitution'
 import AboutSummary from './AboutSummary'
@@ -22,12 +21,11 @@ export const aboutConfig = {
     }
 
     names.push('Age Range')
-    names.push('Bank Account')
+    // names.push('Bank Account')
 
-    if (journeyData.hasBankAccount === true) {
-      names.push('Bank Type')
-      names.push('Bank Institution')
-    }
+    names.push('Bank Type')
+    names.push('Bank Institution')
+    
 
     names.push('Summary')
 
@@ -44,13 +42,11 @@ export const aboutConfig = {
     }
 
     steps.push(AgeRange)
-    steps.push(BankAccount)
+    // steps.push(BankAccount)
 
-    // Only show bank type and institution if they have a bank account
-    if (journeyData.hasBankAccount === true) {
-      steps.push(BankType)
-      steps.push(BankInstitution)
-    }
+    steps.push(BankType)
+    steps.push(BankInstitution)
+    
 
     steps.push(AboutSummary)
 
@@ -70,16 +66,16 @@ export const aboutConfig = {
     }
 
     // Must answer bank account question
-    if (journeyData.hasBankAccount === null) {
-      return false
-    }
+    // if (journeyData.hasBankAccount === null) {
+    //   return false
+    // }
 
     // If has bank account, must select type and institution
-    if (journeyData.hasBankAccount === true && !journeyData.bankType) {
+    if (!journeyData.bankType) {
       return false
     }
 
-    if (journeyData.hasBankAccount === true && !journeyData.bankInstitution) {
+    if (!journeyData.bankInstitution) {
       return false
     }
 

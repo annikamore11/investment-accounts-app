@@ -12,10 +12,8 @@ const AboutSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
   const getEmploymentLabel = (employment) => {
     const labels = {
       'employed-company': 'Employed at a company',
-      'self-employed': 'Self-employed / Freelance',
-      'student': 'Student',
+      'self-employed': 'Self-employed',
       'unemployed': 'Not currently working',
-      'other': 'Other'
     }
     return labels[employment] || employment
   }
@@ -23,9 +21,7 @@ const AboutSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
   const getBankTypeLabel = (bankType) => {
     const labels = {
       'large': 'Large National Bank',
-      'regional': 'Regional or Credit Union',
-      'online': 'Online Bank',
-      'business': 'Business Account'
+      'regional': 'Regional or Credit Union'
     }
     return labels[bankType] || bankType
   }
@@ -66,17 +62,7 @@ const AboutSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
-            <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
-              <Landmark className="w-5 h-5 text-primary-500" />
-              <span className="font-semibold text-primary-700">Bank Account</span>
-            </div>
-            <div className="col-span-2 text-primary-900">
-              {journeyData.hasBankAccount ? 'Yes' : 'No'}
-            </div>
-          </div>
-
-          {journeyData.hasBankAccount && journeyData.bankType && (
+          {journeyData.bankType && (
             <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
               <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
                 <Building className="w-5 h-5 text-primary-500" />
@@ -88,7 +74,7 @@ const AboutSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
             </div>
           )}
 
-          {journeyData.hasBankAccount && journeyData.bankInstitution && (
+          {journeyData.bankInstitution && (
             <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
               <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
                 <Building2 className="w-5 h-5 text-primary-500" />

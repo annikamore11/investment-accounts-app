@@ -75,7 +75,7 @@ export default function HomePage() {
       transition={{ duration: 0.8, delay: 0.4 }}
     >
       <Link
-        href="/mode-selection"
+        href="/journey"
         className="inline-block btn-secondary font-bold text-xl px-10 py-4 rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
       >
         Get Started
@@ -223,7 +223,7 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.4 }}
             >
               <Link
-                href="/mode-selection"
+                href="/journey"
                 className="inline-block btn-secondary text-xl font-bold px-10 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
               >
                 Start Your Journey →

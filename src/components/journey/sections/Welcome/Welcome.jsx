@@ -40,13 +40,13 @@ const Welcome = ({ nextStep }) => {
           </p>
         </div>
 
-        <div className="bg-primary-500/40 rounded-2xl shadow-xl p-6 mb-6 animate-fadeIn">
+        <div className="bg-primary-100 rounded-2xl shadow-xl p-6 mb-6 animate-fadeIn">
 
           <div className="space-y-3 mb-8">
             {steps.map((step, index) => (
               <div
                 key={step.number}
-                className={`flex items-center space-x-3 bg-primary-500/80 rounded-lg p-3.5 transition-all duration-500 ${
+                className={`flex items-center space-x-3 border-primary-400 hover:border-primary-600 bg-primary-50 hover:bg-white hover:shadow-md hover:scale-102 rounded-lg p-3.5 transition-all ${
                   visibleSteps > index
                     ? 'translate-x-0 opacity-100'
                     : 'translate-x-8 opacity-0'
@@ -60,7 +60,7 @@ const Welcome = ({ nextStep }) => {
                 }`}>
                   <span className="text-white font-bold text-sm">{step.number}</span>
                 </div>
-                <span className="text-primary-100 font-medium text-sm sm:text-base">{step.text}</span>
+                <span className="text-primary-700 font-medium text-sm sm:text-base">{step.text}</span>
               </div>
             ))}
           </div>

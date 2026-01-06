@@ -28,13 +28,7 @@ const BankType = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
       value: 'regional',
       icon: <Landmark className="w-6 h-6" />,
       label: 'Regional Bank or Credit Union',
-      description: 'Examples: First Interstate, Glacier, local credit unions • Takes 2-5 business days'
-    },
-    {
-      value: 'online',
-      icon: <Smartphone className="w-6 h-6" />,
-      label: 'Online-Only Bank',
-      description: 'Examples: Ally, SoFi, Capital One 360, Chime • Can be instant or take several days'
+      description: 'Examples: First Interstate, Glacier, local credit unions • May take 2-5 business days'
     }
   ]
 
@@ -57,14 +51,14 @@ const BankType = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
         options={bankOptions}
         selectedValue={bankType}
         onChange={setBankType}
-        columns={3}
+        columns={2}
       />
 
       {/* Helpful note based on selection */}
-      {(bankType === 'regional' || bankType === 'online' || bankType === 'business') && (
+      {(bankType === 'regional') && (
         <InfoBox
           type="warning"
-          message="Small, online, or business accounts may require manual verification, which can result in verification delays. Don't worry - we'll guide you through it!"
+          message="Small banks may require manual verification, which can result in verification delays. Don't worry - we'll guide you through it!"
         />
       )}
 
