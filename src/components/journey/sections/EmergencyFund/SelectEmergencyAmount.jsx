@@ -42,7 +42,7 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
     >
       <InfoBox
         title="Don't worry!"
-        message="You don't need to have this amount right now. This is your <em>goal</em> to build over time."
+        message="You don't need to have this amount right now. This is your goal to build over time."
       />
 
         {/* Preset Options */}

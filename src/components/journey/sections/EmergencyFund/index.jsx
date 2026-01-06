@@ -1,4 +1,3 @@
-// sections/AboutYou/index.js
 // sections/EmergencyFund/index.jsx
 
 import EmergencyFundIntro from './EmergencyFundIntro'
@@ -16,42 +15,41 @@ export const emergencyFundConfig = {
   getStepNames: (journeyData) => {
     const names = ['Introduction', 'Common Guideline']
 
+    // If they don't have an emergency fund, show goal and account selection
     if (journeyData.hasEmergencyFund === false) {
-        names.push('Goal')
-        names.push('Account Options')
+      names.push('Goal')
+      names.push('Account Options')
+      
+      // Only show setup guide if they chose Fidelity cash management
+      if (journeyData.emergencyFundAccountType === 'fidelity-cash-management') {
+        names.push('Setup Guide')
       }
+    }
 
-    if (journeyData.emergencyFundAccountType === 'bank' || journeyData.emergencyFundAccountType === 'high-yield-savings') {
-          names.push('Summary')
-      } else {
-          names.push('Setup Guide')
-          names.push('Summary')
-      }
+    // Always show summary at the end
+    names.push('Summary')
 
     return names
   },
 
   getSteps: (journeyData) => {
     const steps = [
-        EmergencyFundIntro,
-        EmergencyFundAmount
+      EmergencyFundIntro,
+      EmergencyFundAmount
     ]
     
-    // Only show amount selection if they don't have emergency fund
+    // Only show amount selection and account options if they don't have emergency fund
     if (journeyData.hasEmergencyFund === false) {
       steps.push(SelectEmergencyAmount)
       steps.push(EmergencyFundOptions)
+      
+      
+      steps.push(FidelitySetupGuide)
+      
     }
     
-
-      if (journeyData.emergencyFundAccountType === 'bank' || journeyData.emergencyFundAccountType === 'high-yield-savings') {
-          steps.push(EmergencyFundSummary)
-      } else {
-          steps.push(FidelitySetupGuide)
-          steps.push(EmergencyFundSummary)
-      }
-    
-    
+    // Always show summary at the end
+    steps.push(EmergencyFundSummary)
     
     return steps
   },
@@ -60,9 +58,10 @@ export const emergencyFundConfig = {
     // Must answer if they have emergency fund
     if (journeyData.hasEmergencyFund === null) return false
     
-    // If they don't have one, must set a goal
-    if (journeyData.hasEmergencyFund === false && !journeyData.emergencyFundGoal) {
-      return false
+    // If they don't have one, must set a goal and account type
+    if (journeyData.hasEmergencyFund === false) {
+      if (!journeyData.emergencyFundGoal) return false
+      if (!journeyData.emergencyFundAccountType) return false
     }
     
     return true

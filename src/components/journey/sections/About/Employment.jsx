@@ -14,7 +14,7 @@ const EmploymentStatus = ({ journeyData, updateJourneyData, nextStep, prevStep }
     updateJourneyData('employment', employment)
 
     // Only update for employed people
-    if (['self-employed', 'student', 'unemployed'].includes(employment)) {
+    if (['self-employed', 'unemployed'].includes(employment)) {
       updateJourneyData('hasEmployer401k', false)
     }
 
@@ -23,8 +23,7 @@ const EmploymentStatus = ({ journeyData, updateJourneyData, nextStep, prevStep }
 
   const employmentOptions = [
     { value: 'employed-company', label: 'Employed at a company' },
-    { value: 'self-employed', label: 'Self-employed / Freelance' },
-    { value: 'student', label: 'Student' },
+    { value: 'self-employed', label: 'Self-employed' },
     { value: 'unemployed', label: 'Not currently working' },
   ]
 
@@ -42,6 +41,7 @@ const EmploymentStatus = ({ journeyData, updateJourneyData, nextStep, prevStep }
         options={employmentOptions}
         selectedValue={employment}
         onChange={setEmployment}
+        columns = {3}
       />
 
       <StepNavigation

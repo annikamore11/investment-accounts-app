@@ -10,6 +10,7 @@ import useStepTransition from '@/hooks/useStepTransition'
 const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const [frequency, setFrequency] = useState(journeyData.payFrequency || '')
   const [paycheckAmount, setPaycheckAmount] = useState(journeyData.paycheckAmount || 0)
+  const [netIncomeSelfEmployed, setNetIncomeSelfEmployed] = useState(journeyData.netIncomeSelfEmployed || 0)
   const [customPaycheck, setCustomPaycheck] = useState('')
   const [taxPercentage, setTaxPercentage] = useState(journeyData.estimatedTaxPercentage || 25)
   const [taxDollarAmount, setTaxDollarAmount] = useState('')
@@ -52,14 +53,10 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
       updateJourneyData('estimatedTaxPercentage', taxPercentage)
       const calculatedTaxAmount = Math.round(monthlyIncome * (taxPercentage / 100))
       updateJourneyData('estimatedTaxDollarAmount', calculatedTaxAmount)
+      updateJourneyData('netIncomeSelfEmployed', afterTaxMonthly)
     }
 
     transitionTo(nextStep)
-  }
-
-  const handleSliderChange = (e) => {
-    setPaycheckAmount(parseInt(e.target.value))
-    setCustomPaycheck('')
   }
 
   const handleCustomChange = (value) => {
@@ -145,33 +142,10 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
             )}
           </div>
 
-          {/* Slider */}
-          <div className="mb-4">
-            <label className="block text-sm font-semibold text-primary-700 mb-2">
-              Adjust with slider:
-            </label>
-            <input
-              type="range"
-              min="500"
-              max="10000"
-              step="50"
-              value={paycheckAmount}
-              onChange={handleSliderChange}
-              className="w-full h-2.5 bg-primary-300 rounded-lg appearance-none cursor-pointer accent-accent-green-600"
-              style={{
-                background: `linear-gradient(to right, #16a34a 0%, #16a34a ${((paycheckAmount - 500) / (10000 - 500)) * 100}%, #d1d5db ${((paycheckAmount - 500) / (10000 - 500)) * 100}%, #d1d5db 100%)`
-              }}
-            />
-            <div className="flex justify-between text-xs text-primary-600 mt-1">
-              <span>$500</span>
-              <span>$10,000+</span>
-            </div>
-          </div>
-
           {/* Custom Input */}
           <div className="bg-primary-50 border-2 border-primary-300 rounded-xl p-4">
             <label className="block text-sm font-semibold text-primary-700 mb-2">
-              Or enter exact amount:
+              Enter amount:
             </label>
             <div className="flex items-center gap-2">
               <span className="text-xl sm:text-2xl font-bold text-primary-700">$</span>
