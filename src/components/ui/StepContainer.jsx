@@ -9,7 +9,8 @@ export default function StepContainer({
   subtitle,
   children,
   isExiting = false,
-  exitDirection = 'horizontal' // 'horizontal' | 'vertical'
+  exitDirection = 'horizontal', // 'horizontal' | 'vertical'
+  maxWidth = 'md:max-w-4xl'
 }) {
   const exitClass = exitDirection === 'horizontal'
     ? '-translate-x-full opacity-0'
@@ -20,7 +21,7 @@ export default function StepContainer({
     : 'translate-y-0 opacity-100'
 
   return (
-    <div className={`w-full md:max-w-4xl mx-auto px-2 sm:px-6 md:px-8 transition-all duration-500 ${
+    <div className={`w-full ${maxWidth} mx-auto px-2 sm:px-6 md:px-8 transition-all duration-500 ${
       isExiting ? exitClass : enterClass
     }`}>
       {/* Header Section */}

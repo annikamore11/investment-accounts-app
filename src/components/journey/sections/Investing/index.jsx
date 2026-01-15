@@ -1,10 +1,9 @@
 // Investing section configuration
 import InvestingIntro from './InvestingIntro'
 import GoalSelection from './GoalSelection'
-import TimeframeSelection from './TimeframeSelection'
 import RiskTolerance from './RiskTolerance'
-import InvestmentRecommendation from './InvestmentRecommendation'
-import IndexFundSelection from './IndexFundSelection'
+import InvestmentStrategyEducation from './InvestmentStrategyEducation'
+import BrokerageAccountCheck from './BrokerageAccountCheck'
 
 export const investingConfig = {
   id: 'investing',
@@ -15,15 +14,11 @@ export const investingConfig = {
     const steps = [
       InvestingIntro,
       GoalSelection,
-      TimeframeSelection,
       RiskTolerance,
-      InvestmentRecommendation,
+      InvestmentStrategyEducation,
+      BrokerageAccountCheck
     ]
 
-    // Add index fund selection step if they chose index investing
-    if (journeyData.investingStrategy === 'index') {
-      steps.push(IndexFundSelection)
-    }
 
     return steps
   },
@@ -32,14 +27,11 @@ export const investingConfig = {
     const names = [
       'Introduction',
       'Select Goal',
-      'Timeframe',
       'Risk Tolerance',
-      'Recommendation',
+      'Investment Education',
+      'Brokerage Account Check'
     ]
 
-    if (journeyData.investingStrategy === 'index') {
-      names.push('Choose Index Fund')
-    }
 
     return names
   }

@@ -54,9 +54,7 @@ const INITIAL_JOURNEY_DATA = {
   userContribution: '',
 
   // Non-Retirement Investing Data
-  investingGoal: '',
-  customInvestingGoal: '',
-  investingTimeframe: 5,
+  investingGoals: [],
   riskTolerance: 5,
   investingStrategy: '',
   selectedIndexFund: '',
