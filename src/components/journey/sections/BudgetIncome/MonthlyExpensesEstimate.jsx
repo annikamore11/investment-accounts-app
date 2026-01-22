@@ -121,7 +121,7 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
               <DollarInput
                 value={expenses.rent}
                 onChange={(val) => handleExpenseChange('rent', val)}
-                placeholder="1500"
+                placeholder="e.g. 1500"
                 showCommas={false}
               />
             </div>
@@ -135,7 +135,7 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
               <DollarInput
                 value={expenses.carPayment}
                 onChange={(val) => handleExpenseChange('carPayment', val)}
-                placeholder="300"
+                placeholder="e.g. 300"
                 showCommas={false}
               />
             </div>
@@ -149,7 +149,7 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
               <DollarInput
                 value={expenses.food}
                 onChange={(val) => handleExpenseChange('food', val)}
-                placeholder="400"
+                placeholder="e.g. 400"
                 showCommas={false}
               />
             </div>
@@ -163,7 +163,7 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
               <DollarInput
                 value={expenses.insurance}
                 onChange={(val) => handleExpenseChange('insurance', val)}
-                placeholder="150"
+                placeholder="e.g. 150"
                 showCommas={false}
               />
               <p className="text-xs text-primary-500 mt-1">*Not taken out of paycheck</p>
@@ -178,7 +178,7 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
               <DollarInput
                 value={expenses.utilities}
                 onChange={(val) => handleExpenseChange('utilities', val)}
-                placeholder="200"
+                placeholder="e.g. 200"
                 showCommas={false}
               />
               <p className="text-xs text-primary-500 mt-1">Electric, Phone, Internet, Student Loans</p>
@@ -193,7 +193,7 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
               <DollarInput
                 value={expenses.other}
                 onChange={(val) => handleExpenseChange('other', val)}
-                placeholder="300"
+                placeholder="e.g. 300"
                 showCommas={false}
               />
               <p className="text-xs text-primary-500 mt-1">Shopping, entertainment, hobbies</p>

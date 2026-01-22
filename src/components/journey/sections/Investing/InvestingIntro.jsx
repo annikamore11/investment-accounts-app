@@ -1,12 +1,14 @@
+import { useState } from 'react';
 import React from 'react'
 import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
 import GlossaryTerm from '@/components/ui/GlossaryTerm'
 import useStepTransition from '@/hooks/useStepTransition'
-import { TrendingUp, Target, Clock, Shield } from 'lucide-react'
+import { TrendingUp, Target, Clock, Shield, ChevronDown } from 'lucide-react'
 
 const InvestingIntro = ({ nextStep, prevStep }) => {
   const { isExiting, transitionTo } = useStepTransition()
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
 
   const handleNext = () => {
     transitionTo(nextStep)
@@ -40,29 +42,42 @@ const InvestingIntro = ({ nextStep, prevStep }) => {
           </div>
         </div>
 
-        {/* How it works */}
-        <div>
-          <h4 className="font-bold text-gray-900 mb-3">How It Works</h4>
-          <div className="space-y-3 text-gray-700 leading-relaxed">
-            <div>
-              When you invest outside of retirement accounts, you're buying{' '}
-              <GlossaryTerm term="stocks and bonds">
-                <div className="space-y-2">
-                  <p className="font-semibold text-gray-900">Stocks and Bonds</p>
-                  <p><strong>Stocks</strong> represent ownership in companies. When companies grow and become more valuable, your stocks typically increase in value too.</p>
-                  <p><strong>Bonds</strong> are loans you make to governments or companies. They pay you interest over time and return your principal at maturity.</p>
-                  <p className="text-xs text-gray-600 border-t border-gray-200 pt-2 mt-2">
-                    Most investors hold a mix of both to balance growth potential with stability.
-                  </p>
-                </div>
-              </GlossaryTerm>
-              {' '}that have the potential to grow in value over time. Unlike a savings account where your money earns a fixed interest rate, investments can go up or down based on market conditions.
+       {/* How it works */}
+        <div className="border border-gray-200 rounded-lg">
+          <button
+            onClick={() => setShowHowItWorks(!showHowItWorks)}
+            className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-between text-left rounded-t-lg"
+          >
+            <h4 className="font-bold text-gray-900">How It Works</h4>
+            <ChevronDown 
+              className={`w-5 h-5 text-gray-600 transition-transform duration-200 ${
+                showHowItWorks ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
+          
+          {showHowItWorks && (
+            <div className="px-4 py-4 space-y-3 text-gray-700 leading-relaxed border-t bg-gray-50 border-gray-200">
+              <div>
+                When you invest outside of retirement accounts, you're buying{' '}
+                <GlossaryTerm term="stocks and bonds">
+                  <div className="space-y-2">
+                    <p className="font-semibold text-gray-900">Stocks and Bonds</p>
+                    <p><strong>Stocks</strong> represent ownership in companies. They're volatile - they can go up the most when markets are strong, but they can also drop the most during downturns. Over long periods, stocks have historically provided the highest returns.</p>
+                    <p><strong>Bonds</strong> are loans you make to governments or companies that pay you interest over time. They're safer and more stable - they won't rise as dramatically as stocks, but they also won't fall as far during market downturns.</p>
+                    <p className="text-xs text-gray-600 border-t border-gray-200 pt-2 mt-2">
+                      Most investors hold a mix of both to balance growth potential with stability.
+                    </p>
+                  </div>
+                </GlossaryTerm>
+                {' '}that have the potential to grow in value over time. Unlike a savings account where your money earns a fixed interest rate, investments can go up or down based on market conditions.
+              </div>
+              
+              <p>
+                The key difference from retirement accounts is <strong>flexibility</strong>. You can withdraw your money whenever you need it without penalties, though you'll pay taxes on any gains. This makes non-retirement investing ideal for goals you'll reach before retirement age.
+              </p>
             </div>
-            
-            <p>
-              The key difference from retirement accounts is <strong>flexibility</strong>. You can withdraw your money whenever you need it without penalties, though you'll pay taxes on any gains. This makes non-retirement investing ideal for goals you'll reach before retirement age.
-            </p>
-          </div>
+          )}
         </div>
 
         {/* Key factors */}

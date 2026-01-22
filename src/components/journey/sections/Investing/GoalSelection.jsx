@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
 import useStepTransition from '@/hooks/useStepTransition'
-import { Plus, Trash2, Calendar, DollarSign, Target } from 'lucide-react'
+import { Plus, Trash2, Calendar, DollarSign, Target, AlertCircle } from 'lucide-react'
 
 const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const { isExiting, transitionTo } = useStepTransition()
   const [goals, setGoals] = useState(journeyData.investingGoals || [
     { id: 1, name: '', amount: '', timeframe: '' }
   ])
-
+  const [errors, setErrors] = useState({})
 
   const addGoal = () => {
     const newId = Math.max(...goals.map(g => g.id), 0) + 1
@@ -19,6 +19,10 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
   const removeGoal = (id) => {
     if (goals.length > 1) {
       setGoals(goals.filter(g => g.id !== id))
+      // Remove errors for this goal
+      const newErrors = { ...errors }
+      delete newErrors[id]
+      setErrors(newErrors)
     }
   }
 
@@ -26,12 +30,69 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
     setGoals(goals.map(g => 
       g.id === id ? { ...g, [field]: value } : g
     ))
+    
+    // Clear error for this field when user starts typing
+    if (errors[id]?.[field]) {
+      setErrors({
+        ...errors,
+        [id]: {
+          ...errors[id],
+          [field]: null
+        }
+      })
+    }
+  }
+
+  const validateTimeframe = (timeframe) => {
+    if (!timeframe.trim()) return false
+    
+    const normalized = timeframe.toLowerCase().trim()
+    
+    // Check for special values
+    if (normalized === '<1' || normalized === 'none') return true
+    
+    // Check if it's a valid integer
+    const num = parseInt(timeframe, 10)
+    return !isNaN(num) && num > 0 && num.toString() === timeframe.trim()
+  }
+
+  const validateGoals = () => {
+    const newErrors = {}
+    let hasErrors = false
+
+    goals.forEach(goal => {
+      if (goal.name.trim()) {
+        const goalErrors = {}
+        
+        if (!goal.amount.trim()) {
+          goalErrors.amount = 'Amount is required'
+          hasErrors = true
+        }
+        
+        if (!goal.timeframe.trim()) {
+          goalErrors.timeframe = 'Timeframe is required'
+          hasErrors = true
+        } else if (!validateTimeframe(goal.timeframe)) {
+          goalErrors.timeframe = 'Enter a number, "<1", or "none"'
+          hasErrors = true
+        }
+        
+        if (Object.keys(goalErrors).length > 0) {
+          newErrors[goal.id] = goalErrors
+        }
+      }
+    })
+
+    setErrors(newErrors)
+    return !hasErrors
   }
 
   const handleNext = () => {
-    const validGoals = goals.filter(g => g.name.trim())
-    updateJourneyData('investingGoals', validGoals)
-    transitionTo(nextStep)
+    if (validateGoals()) {
+      const validGoals = goals.filter(g => g.name.trim())
+      updateJourneyData('investingGoals', validGoals)
+      transitionTo(nextStep)
+    }
   }
 
   const handleBack = () => {
@@ -50,8 +111,6 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
         <p className="text-gray-700 leading-relaxed">
           Add one or more goals you'd like to work toward. Include how much you want to save and when you'd like to reach it.
         </p>
-
-        
 
         {/* Goals list */}
         <div className="space-y-4">
@@ -88,7 +147,7 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
                     type="text"
                     value={goal.name}
                     onChange={(e) => updateGoal(goal.id, 'name', e.target.value)}
-                    placeholder="e.g., House, kids' college, wedding..."
+                    placeholder="House, kids' college, wedding..."
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-green-500 focus:border-accent-green-500 transition-all"
                   />
                 </div>
@@ -108,16 +167,26 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
                           const value = e.target.value.replace(/[^0-9]/g, '')
                           updateGoal(goal.id, 'amount', value)
                         }}
-                        placeholder="25,000"
-                        className="w-full pl-9 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-green-500 focus:border-accent-green-500 transition-all"
+                        placeholder="25000"
+                        className={`w-full pl-9 pr-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-accent-green-500 transition-all ${
+                          errors[goal.id]?.amount 
+                            ? 'border-red-300 focus:border-red-500' 
+                            : 'border-gray-300 focus:border-accent-green-500'
+                        }`}
                       />
                     </div>
+                    {errors[goal.id]?.amount && (
+                      <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                        <AlertCircle className="w-3 h-3" />
+                        <span>{errors[goal.id].amount}</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Timeframe */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      When do you need it?
+                      Years until you need it
                     </label>
                     <div className="relative">
                       <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -125,10 +194,20 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
                         type="text"
                         value={goal.timeframe}
                         onChange={(e) => updateGoal(goal.id, 'timeframe', e.target.value)}
-                        placeholder="5 years, 2030, no rush..."
-                        className="w-full pl-9 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-green-500 focus:border-accent-green-500 transition-all"
+                        placeholder="<1, 5, 10, none"
+                        className={`w-full pl-9 pr-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-accent-green-500 transition-all ${
+                          errors[goal.id]?.timeframe 
+                            ? 'border-red-300 focus:border-red-500' 
+                            : 'border-gray-300 focus:border-accent-green-500'
+                        }`}
                       />
                     </div>
+                    {errors[goal.id]?.timeframe && (
+                      <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                        <AlertCircle className="w-3 h-3" />
+                        <span>{errors[goal.id].timeframe}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
