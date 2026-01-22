@@ -134,7 +134,7 @@ const InvestingIntro = ({ nextStep, prevStep }) => {
 
         <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
           <p className="text-sm text-gray-700">
-            <strong>Next up:</strong> We'll walk through your specific goals and guide you to decide the right investment approach for each one.
+            <strong>Next up:</strong> We'll help you choose your primary investment goal and guide you to decide the right approach for it.
           </p>
         </div>
       </div>
