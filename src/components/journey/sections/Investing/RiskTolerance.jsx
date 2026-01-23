@@ -4,16 +4,16 @@ import StepNavigation from '@/components/ui/StepNavigation'
 import useStepTransition from '@/hooks/useStepTransition'
 
 const RiskTolerance = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
-  const { isExiting, transitionTo } = useStepTransition()
+  const { isExiting, direction, transitionTo } = useStepTransition()
   const [riskLevel, setRiskLevel] = useState(journeyData.riskTolerance || 5)
 
   const handleNext = () => {
     updateJourneyData('riskTolerance', riskLevel)
-    transitionTo(nextStep)
+    transitionTo(nextStep, 'forward')
   }
 
   const handleBack = () => {
-    transitionTo(prevStep)
+    transitionTo(prevStep, 'backward')
   }
 
   const getRiskLabel = () => {
@@ -24,23 +24,12 @@ const RiskTolerance = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
     return 'Very Aggressive'
   }
 
-  const getRiskColor = () => {
-    if (riskLevel <= 3) return 'text-primary-600'
-    if (riskLevel <= 6) return 'text-accent-green-600'
-    return 'text-accent-orange-600'
-  }
-
-  const getBgColor = () => {
-    if (riskLevel <= 3) return 'bg-primary-50 border-primary-200'
-    if (riskLevel <= 6) return 'bg-accent-green-50 border-accent-green-200'
-    return 'bg-accent-orange-50 border-accent-orange-200'
-  }
-
   return (
     <StepContainer
       title="What's Your Risk Tolerance?"
       subtitle="Understanding your comfort with investment volatility"
       isExiting={isExiting}
+      direction={direction}
     >
       <div className="space-y-6">
         {/* Description */}
@@ -70,11 +59,11 @@ const RiskTolerance = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
         </div>
 
         {/* Risk Level Display */}
-        <div className={`${getBgColor()} border-2 rounded-xl p-8 text-center transition-all`}>
-          <div className={`text-6xl font-bold mb-2 ${getRiskColor()}`}>
+        <div className={`bg-accent-green-100 border-2 border-accent-green-700 rounded-xl p-8 text-center transition-all`}>
+          <div className={`text-6xl font-bold mb-2 text-accent-green-700`}>
             {riskLevel}
           </div>
-          <div className={`text-2xl font-semibold ${getRiskColor()}`}>
+          <div className={`text-2xl font-semibold text-accent-green-700`}>
             {getRiskLabel()}
           </div>
         </div>
@@ -102,8 +91,6 @@ const RiskTolerance = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
             <span>10</span>
           </div>
         </div>
-
-        
       </div>
 
       {/* Navigation */}

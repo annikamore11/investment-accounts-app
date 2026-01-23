@@ -9,21 +9,22 @@ export default function StepContainer({
   subtitle,
   children,
   isExiting = false,
-  exitDirection = 'horizontal', // 'horizontal' | 'vertical'
+  direction = 'forward', // 'forward' | 'backward'
   maxWidth = 'md:max-w-4xl'
 }) {
-  const exitClass = exitDirection === 'horizontal'
-    ? '-translate-x-full opacity-0'
-    : '-translate-y-full opacity-0'
-
-  const enterClass = exitDirection === 'horizontal'
-    ? 'translate-x-0 opacity-100'
-    : 'translate-y-0 opacity-100'
+  const getTransitionClass = () => {
+    if (isExiting) {
+      // Exit animations - slide out in the direction we're going
+      return direction === 'forward'
+        ? '-translate-x-full opacity-0'   // slide out to the right when going forward
+        : 'translate-x-full opacity-0'  // slide out to the left when going backward
+    }
+    // Enter state - always centered
+    return 'translate-x-0 opacity-100'
+  }
 
   return (
-    <div className={`w-full ${maxWidth} mx-auto px-2 sm:px-6 md:px-8 transition-all duration-500 ${
-      isExiting ? exitClass : enterClass
-    }`}>
+    <div className={`w-full ${maxWidth} mx-auto px-2 sm:px-6 md:px-8 transition-all duration-500 ${getTransitionClass()}`}>
       {/* Header Section */}
       {(title || subtitle) && (
         <div className="text-center mt-4 sm:mt-8 md:mt-10 mb-4 sm:mb-6 lg:mb-10 animate-fadeIn">

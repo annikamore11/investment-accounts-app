@@ -5,7 +5,7 @@ import useStepTransition from '@/hooks/useStepTransition'
 import { Calendar, DollarSign, Target, AlertCircle, Info } from 'lucide-react'
 
 const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
-  const { isExiting, transitionTo } = useStepTransition()
+  const { isExiting, direction, transitionTo } = useStepTransition()
   // Start with existing goal or a blank one
   const existingGoal = journeyData.investingGoals?.[0] || { name: '', amount: '', timeframe: '' }
   const [goal, setGoal] = useState(existingGoal)
@@ -63,12 +63,12 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
     if (validateGoal()) {
       // Store as array with single goal for consistency
       updateJourneyData('investingGoals', [goal])
-      transitionTo(nextStep)
+      transitionTo(nextStep, 'forward')
     }
   }
 
   const handleBack = () => {
-    transitionTo(prevStep)
+    transitionTo(prevStep, 'backward')
   }
 
   const canContinue = goal.name.trim()
@@ -78,6 +78,7 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
       title="Choose Your Primary Investment Goal"
       subtitle="What would you like to save and invest for?"
       isExiting={isExiting}
+      direction={direction}
     >
       <div className="space-y-6">
         <p className="text-gray-700 leading-relaxed">

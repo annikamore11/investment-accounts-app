@@ -7,15 +7,15 @@ import useStepTransition from '@/hooks/useStepTransition'
 import { TrendingUp, Target, Clock, Shield, ChevronDown } from 'lucide-react'
 
 const InvestingIntro = ({ nextStep, prevStep }) => {
-  const { isExiting, transitionTo } = useStepTransition()
+  const { isExiting, direction, transitionTo } = useStepTransition()
   const [showHowItWorks, setShowHowItWorks] = useState(false);
 
   const handleNext = () => {
-    transitionTo(nextStep)
+    transitionTo(nextStep, 'forward')
   }
 
   const handleBack = () => {
-    transitionTo(prevStep)
+    transitionTo(prevStep, 'backward')
   }
 
   return (
@@ -23,6 +23,7 @@ const InvestingIntro = ({ nextStep, prevStep }) => {
       title="Non-Retirement Investing"
       subtitle="Grow your wealth for life's other goals"
       isExiting={isExiting}
+      direction={direction}
     >
       <div className="space-y-6">
         {/* Main intro */}
