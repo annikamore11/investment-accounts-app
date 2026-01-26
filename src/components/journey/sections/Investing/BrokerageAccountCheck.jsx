@@ -48,7 +48,7 @@ const BrokerageAccountCheck = ({ journeyData, updateJourneyData, nextStep, prevS
       <div className="space-y-6">
         {/* Status Display */}
         <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
-          <h3 className="font-semibold text-gray-900 mb-3">Based on your previous responses:</h3>
+          <h3 className="font-semibold text-gray-900 mb-3">Based on information we have collected from the 'Emergency Fund' section:</h3>
           <div className="space-y-2 text-sm text-gray-700">
             <div className="flex justify-between">
               <span className="font-medium">Institution:</span>

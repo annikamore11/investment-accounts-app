@@ -9,6 +9,7 @@ import { TrendingUp, Target, Clock, Shield, ChevronDown } from 'lucide-react'
 const InvestingIntro = ({ nextStep, prevStep }) => {
   const { isExiting, direction, transitionTo } = useStepTransition()
   const [showHowItWorks, setShowHowItWorks] = useState(false);
+  const [showStrategy, setShowStrategy] = useState(false);
 
   const handleNext = () => {
     transitionTo(nextStep, 'forward')
@@ -43,7 +44,7 @@ const InvestingIntro = ({ nextStep, prevStep }) => {
           </div>
         </div>
 
-       {/* How it works */}
+        {/* How it works */}
         <div className="border border-gray-200 rounded-lg">
           <button
             onClick={() => setShowHowItWorks(!showHowItWorks)}
@@ -81,56 +82,71 @@ const InvestingIntro = ({ nextStep, prevStep }) => {
           )}
         </div>
 
-        {/* Key factors */}
-        <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
-          <h4 className="font-bold text-gray-900 mb-4">What Determines Your Strategy</h4>
-          <div className="space-y-4">
-            <div className="flex gap-3">
-              <div className="bg-purple-100 p-2 rounded-lg h-fit">
-                <Clock className="w-4 h-4 text-purple-700" />
-              </div>
-              <div>
-                <p className="font-semibold text-gray-900 mb-1">Your Timeline</p>
-                <div className="text-sm text-gray-700">
-                  Need the money in 2 years? You'll want safer, more stable investments. Have 10+ years? You can afford to take on more{' '}
-                  <GlossaryTerm term="risk">
-                    <div className="space-y-2">
-                      <p className="font-semibold text-gray-900">Investment Risk</p>
-                      <p>Risk refers to the possibility that your investments could lose value in the short term. Generally, investments with higher potential returns come with higher risk of temporary losses.</p>
-                      <p className="text-xs text-gray-600 border-t border-gray-200 pt-2 mt-2">
-                        Historically, holding investments longer reduces risk because markets tend to recover from downturns over time.
-                      </p>
+        {/* What Determines Your Strategy */}
+        <div className="border border-gray-200 rounded-lg">
+          <button
+            onClick={() => setShowStrategy(!showStrategy)}
+            className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-between text-left rounded-t-lg"
+          >
+            <h4 className="font-bold text-gray-900">What Determines Your Strategy</h4>
+            <ChevronDown 
+              className={`w-5 h-5 text-gray-600 transition-transform duration-200 ${
+                showStrategy ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
+          
+          {showStrategy && (
+            <div className="px-4 py-4 bg-gray-50 border-t border-gray-200">
+              <div className="space-y-4">
+                <div className="flex gap-3">
+                  <div className="bg-purple-100 p-2 rounded-lg h-fit">
+                    <Clock className="w-4 h-4 text-purple-700" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 mb-1">Your Timeline</p>
+                    <div className="text-sm text-gray-700">
+                      Need the money in 2 years? You'll want safer, more stable investments. Have 10+ years? You can afford to take on more{' '}
+                      <GlossaryTerm term="risk">
+                        <div className="space-y-2">
+                          <p className="font-semibold text-gray-900">Investment Risk</p>
+                          <p>Risk refers to the possibility that your investments could lose value in the short term. Generally, investments with higher potential returns come with higher risk of temporary losses.</p>
+                          <p className="text-xs text-gray-600 border-t border-gray-200 pt-2 mt-2">
+                            Historically, holding investments longer reduces risk because markets tend to recover from downturns over time.
+                          </p>
+                        </div>
+                      </GlossaryTerm>
+                      {' '}for potentially higher returns, since you have time to ride out market fluctuations.
                     </div>
-                  </GlossaryTerm>
-                  {' '}for potentially higher returns, since you have time to ride out market fluctuations.
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="bg-orange-100 p-2 rounded-lg h-fit">
+                    <Shield className="w-4 h-4 text-orange-700" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 mb-1">Your Risk Tolerance</p>
+                    <p className="text-sm text-gray-700">
+                      How comfortable are you watching your investment balance fluctuate? Some people can handle the ups and downs of aggressive growth strategies, while others prefer steadier, more conservative approaches even if it means lower potential returns.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="bg-green-100 p-2 rounded-lg h-fit">
+                    <Target className="w-4 h-4 text-green-700" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 mb-1">Your Specific Goal</p>
+                    <p className="text-sm text-gray-700">
+                      A home down payment you'll need in 3 years requires a different strategy than building generational wealth over decades. Your goal's importance and flexibility also matter.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div className="flex gap-3">
-              <div className="bg-orange-100 p-2 rounded-lg h-fit">
-                <Shield className="w-4 h-4 text-orange-700" />
-              </div>
-              <div>
-                <p className="font-semibold text-gray-900 mb-1">Your Risk Tolerance</p>
-                <p className="text-sm text-gray-700">
-                  How comfortable are you watching your investment balance fluctuate? Some people can handle the ups and downs of aggressive growth strategies, while others prefer steadier, more conservative approaches even if it means lower potential returns.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-3">
-              <div className="bg-green-100 p-2 rounded-lg h-fit">
-                <Target className="w-4 h-4 text-green-700" />
-              </div>
-              <div>
-                <p className="font-semibold text-gray-900 mb-1">Your Specific Goal</p>
-                <p className="text-sm text-gray-700">
-                  A home down payment you'll need in 3 years requires a different strategy than building generational wealth over decades. Your goal's importance and flexibility also matter.
-                </p>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
 
         <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
