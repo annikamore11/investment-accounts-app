@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useRef, useEffect } from 'react'
+import React, { useRef } from 'react'
 import Link from 'next/link'
-import { motion, scale, useInView } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
+import { Player } from '@lottiefiles/react-lottie-player'
 
 
 // Reusable scroll animation component
@@ -27,80 +28,65 @@ const ScrollReveal = ({ children, delay = 0 }) => {
 export default function HomePage() {
   const { user } = useAuth()
 
-  const steps = [
-    { title: "Open the right accounts" },
-    { title: "Choose the right investments" },
-    { title: "Save the right amount" },
-    { title: "Automate it all" }
-  ]
-
   if (user) {
     return <LoggedInHome user={user} />
   }
-  useEffect(() => {
-    // Load Hana viewer script
-    const script = document.createElement('script')
-    script.type = 'module'
-    script.src = 'https://cdn.spline.design/@splinetool/hana-viewer@1.2.27/hana-viewer.js'
-    document.head.appendChild(script)
-
-    return () => {
-      document.head.removeChild(script)
-    }
-  }, [])
 
 
   return (
     <div className="min-h-screen flex flex-col bg-zinc-950">
- <section className="relative h-screen static-background overflow-hidden pt-20">
+      <section className="relative min-h-screen static-background overflow-hidden pt-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10">
+          {/* Mobile: Stack vertically, Desktop: Side by side */}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 lg:gap-12">
 
-  {/* Text content (above 3D) */}
-  <div className="relative z-30 max-w-6xl mx-auto px-8 pt-10">
-    <motion.h1
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      className="text-5xl md:text-6xl font-bold text-primary-100 mb-6 pb-2 text-left"
-    >
-      FundJoi.
-      <span className="block mt-2 pb-2 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600">
-        A Path From Learning to Earning
-      </span>
-    </motion.h1>
+            {/* Text content */}
+            <div className="relative z-30 flex-1 text-center lg:text-left">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-100 mb-6 pb-2"
+              >
+                FundJoi.
+                <span className="block mt-2 pb-2 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600">
+                  A Path From Learning to Earning
+                </span>
+              </motion.h1>
 
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <Link
+                  href="/journey"
+                  className="inline-block btn-secondary font-bold text-lg sm:text-xl px-8 sm:px-10 py-3 sm:py-4 rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                >
+                  Get Started
+                </Link>
+              </motion.div>
+            </div>
 
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.4 }}
-    >
-      <Link
-        href="/journey"
-        className="inline-block btn-secondary font-bold text-xl px-10 py-4 rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-      >
-        Get Started
-      </Link>
-    </motion.div>
-  </div>
-
-  {/* Hana 3D Animation (behind text, clipped by section) */}
-  <div 
-    className="absolute inset-0 z-10 pointer-events-none"
-    style={{
-      top: '0%',  // Adjust this to position vertically
-    }}
-  >
-    <hana-viewer
-      style={{
-        width: "100%",
-        height: "100%",
-        transform: "scale(1.3) translateY(-280px)",
-        display: "block"
-      }}
-      url="https://prod.spline.design/dQhnphdIW73O3m9i-l61/scene.hanacode"
-    />
-  </div>
-</section>
+            {/* Lottie Animation */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="flex-1 flex justify-center lg:justify-end"
+            >
+              <div className="w-full max-w-[280px] sm:max-w-[350px] md:max-w-[400px] lg:max-w-[500px]">
+                <Player
+                  autoplay
+                  loop
+                  src="/assets/animations/growing.json"
+                  style={{ width: '100%', height: 'auto' }}
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* Bridging the Gap Section */}
       <ScrollReveal>
