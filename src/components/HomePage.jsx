@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useRef } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { motion, useInView } from 'framer-motion'
+import { motion, scale, useInView } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
-import { Player } from '@lottiefiles/react-lottie-player'
+import { ArrowRight, TrendingUp, Shield, Zap, DollarSign } from 'lucide-react'
+
 
 
 // Reusable scroll animation component
@@ -27,70 +28,104 @@ const ScrollReveal = ({ children, delay = 0 }) => {
 
 export default function HomePage() {
   const { user } = useAuth()
+  const [showContent, setShowContent] = useState(false)
+
+  useEffect(() => {
+    // Show content after animation completes
+    const timer = setTimeout(() => {
+      setShowContent(true)
+    }, 3500) // Adjust based on your animation duration
+
+    return () => clearTimeout(timer)
+  }, [])
 
   if (user) {
     return <LoggedInHome user={user} />
   }
 
-
   return (
     <div className="min-h-screen flex flex-col bg-zinc-950">
-      <section className="relative min-h-screen static-background overflow-hidden pt-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10">
-          {/* Mobile: Stack vertically, Desktop: Side by side */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 lg:gap-12">
+      <section className="relative h-screen static-background overflow-hidden pt-20">
 
-            {/* Text content */}
-            <div className="relative z-30 flex-1 text-center lg:text-left">
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-100 mb-6 pb-2"
-              >
-                FundJoi.
-                <span className="block mt-2 pb-2 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600">
-                  A Path From Learning to Earning
+        
+
+        {/* Content - fades in after animation */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: showContent ? 1 : 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-30 max-w-7xl mx-auto px-8 pt-10"
+        >
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-6xl md:text-7xl font-bold text-primary-100 mb-6 pb-2 text-left"
+          >
+            FundJoi.
+            <span className="block mt-2 pb-4 text-4xl md:text-6xl bg-clip-text bg-gradient-to-r from-green-400 to-green-600 text-transparent">
+              A Path From Learning to{" "}
+              <span className="relative inline-block text-primary-100">
+                <span className="relative z-10 font-extralight italic">
+                  Earning
                 </span>
-              </motion.h1>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
+                <img
+                  src="/assets/images/underline.svg"
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute left-0 -bottom-5 w-full h-5 z-0 pointer-events-none"
+                />
+              </span>
+            </span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="max-w-2xl text-primary-300 text-lg md:text-xl mb-8"
+          >
+            Skip the confusion. Click your way into your first brokerage and retirement accounts with a clear, guided, and interactive experience designed to help you navigate your options and get set up with confidence.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="flex flex-col gap-3"
+          >
+            <div className="flex flex-col gap-2 items-start">
+              <div className="flex flex-col sm:flex-row gap-4 text-sm md:text-lg">
                 <Link
                   href="/journey"
-                  className="inline-block btn-secondary font-bold text-lg sm:text-xl px-8 sm:px-10 py-3 sm:py-4 rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                  className="group inline-flex items-center justify-center gap-2 px-8 py-4 btn-secondary"
                 >
-                  Get Started
+                  Get Started Free
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
-              </motion.div>
-            </div>
-
-            {/* Lottie Animation */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="flex-1 flex justify-center lg:justify-end"
-            >
-              <div className="w-full max-w-[280px] sm:max-w-[350px] md:max-w-[400px] lg:max-w-[500px]">
-                <Player
-                  autoplay
-                  loop
-                  src="/assets/animations/growing.json"
-                  style={{ width: '100%', height: 'auto' }}
-                />
+                <button
+                  onClick={() =>
+                    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })
+                  }
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 btn-border"
+                >
+                  See How It Works
+                </button>
               </div>
-            </motion.div>
-          </div>
-        </div>
+
+              <p className="text-md text-primary-300 py-2">
+                No credit card • No commitment • Just action
+              </p>
+            </div>
+          </motion.div>
+        </motion.div>
+
       </section>
 
       {/* Bridging the Gap Section */}
       <ScrollReveal>
-        <section className="money-image-background flex items-center min-h-[60vh]">
+        <section id="how-it-works" className="money-image-background flex items-center min-h-[60vh]">
           <div className="w-full px-4 md:px-0 p-8 md:p-18">
             <div className="w-full md:max-w-3xl text-left md:px-8">
               <motion.h2 
@@ -98,9 +133,9 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="text-3xl md:text-4xl font-bold mb-4"
+                className="text-5xl md:text-4xl font-bold mb-4"
               >
-                Bridging the gap between learning and doing.
+                Bridging The Gap Between Learning And Doing.
               </motion.h2>
               
               <motion.p 
@@ -168,7 +203,7 @@ export default function HomePage() {
                     transition={{ duration: 0.5 }}
                     className="bg-white/20 backdrop-blur-sm rounded-xl p-6 min-h-[180px] flex flex-col"
                   >
-                    <h3 className="font-semibold text-lg mb-2 text-white">{card.title}</h3>
+                    <h3 className="text-lg mb-2 text-white">{card.title}</h3>
                     <p className="text-primary-200 text-sm flex-1">{card.desc}</p>
                   </motion.div>
                 ))}
@@ -189,7 +224,7 @@ export default function HomePage() {
               transition={{ duration: 0.5 }}
               className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
             >
-              Ready to start growing your wealth?
+              Ready To Stop Thinking About It And Actually Do It?
             </motion.h2>
             
             <motion.p 
@@ -210,9 +245,10 @@ export default function HomePage() {
             >
               <Link
                 href="/journey"
-                className="inline-block btn-secondary text-xl font-bold px-10 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                className="group inline-flex items-center justify-center btn-secondary px-8 py-4 gap-2 text-sm md:text-lg"
               >
-                Start Your Journey →
+                Start Your Journey
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
           </div>

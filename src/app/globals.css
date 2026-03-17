@@ -49,23 +49,31 @@
   --color-accent-green-700: #15803d;
   --color-accent-green-800: #166534;
   --color-accent-green-900: #14532d;
+
+  --font-family-clash: 'ClashGrotesk', sans-serif;
+  --font-family-newsreader: 'Newsreader', serif;
+  --font-family-sans: 'ClashGrotesk', sans-serif;
 }
 
+/* Light - 300 */
 @font-face {
-  font-family: 'Gloock';
-  src: url('/assets/fonts/Gloock-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap; /* Important for performance */
-}
-
-@font-face {
-  font-family: 'Ribes';
-  src: url('/assets/fonts/Gloock.woff2') format('woff2');
+  font-family: 'ClashGrotesk';
+  src: url('/assets/fonts/ClashGrotesk-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
+
+/* Regular - 400 */
+@font-face {
+  font-family: 'ClashGrotesk';
+  src: url('/assets/fonts/ClashGrotesk-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+
 
 /* ============================================
    ANIMATION UTILITIES
@@ -412,7 +420,8 @@
   }
 
   body {
-    font-family: 'Times New Roman', sans-serif;
+    font-family: 'ClashGrotesk', sans-serif;
+    font-weight: 400;
     width: 100%;
    
     background-attachment: fixed;
@@ -422,7 +431,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Gloock', sans-serif;
+    font-family: 'ClashGrotesk', sans-serif;
     font-weight: 700;
   }
 }
@@ -462,8 +471,7 @@
   .btn-secondary {
     padding: 0.5rem 1.5rem;
     background: linear-gradient(135deg, var(--color-accent-green-500), var(--color-accent-green-600));
-    color: white;
-    font-family: 'Inter', sans-serif;
+    color: #f9fafb;
     border-radius: 9999px;
     border: none;
     transition: all 200ms;
@@ -480,8 +488,6 @@
     color: var(--color-accent-purple-600);
     border: 2px solid var(--color-accent-purple-600);
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
-    font-weight: bold;
     transition: all 200ms ease;
   }
   .btn-more-information:hover {
@@ -494,7 +500,6 @@
     background: transparent;
     color: var(--color-accent-green-600);
     
-    font-family: 'Inter', sans-serif;
     border: 1px solid var(--color-accent-green-600);
     border-radius: 9999px; /* makes it pill-shaped */
     transition: all 200ms ease;
