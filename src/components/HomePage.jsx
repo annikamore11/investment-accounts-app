@@ -1,11 +1,10 @@
 'use client'
 
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Link from 'next/link'
-import { motion, scale, useInView } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
-import { ArrowRight, TrendingUp, Shield, Zap, DollarSign } from 'lucide-react'
-
+import { ArrowRight, CheckCircle2 } from 'lucide-react'
 
 
 // Reusable scroll animation component
@@ -25,19 +24,36 @@ const ScrollReveal = ({ children, delay = 0 }) => {
   )
 }
 
+const GOALS = [
+  {
+    emoji: "🏢",
+    title: "Set up my 401(k)",
+    desc: "Make the most of your employer match",
+    href: "/journey",
+  },
+  {
+    emoji: "💰",
+    title: "Open an IRA",
+    desc: "Start a Roth or Traditional IRA",
+    href: "/journey",
+  },
+  {
+    emoji: "📈",
+    title: "Start investing",
+    desc: "Open a brokerage account and invest",
+    href: "/journey",
+  },
+  {
+    emoji: "🤔",
+    title: "I'm not sure yet",
+    desc: "Answer a few questions and we'll guide you",
+    href: "/journey",
+  },
+]
 
 export default function HomePage() {
   const { user } = useAuth()
-  const [showContent, setShowContent] = useState(false)
-
-  useEffect(() => {
-    // Show content after animation completes
-    const timer = setTimeout(() => {
-      setShowContent(true)
-    }, 3500) // Adjust based on your animation duration
-
-    return () => clearTimeout(timer)
-  }, [])
+  const [hovered, setHovered] = useState(null)
 
   if (user) {
     return <LoggedInHome user={user} />
@@ -45,169 +61,169 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-zinc-950">
-      <section className="relative h-screen static-background overflow-hidden pt-20">
+      {/* Hero */}
+      <section className="relative static-background overflow-hidden pt-24 pb-16 px-6 md:px-12">
+        <div className="relative z-10 max-w-4xl mx-auto">
 
-        
-
-        {/* Content - fades in after animation */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: showContent ? 1 : 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-30 max-w-7xl mx-auto px-8 pt-10"
-        >
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-6xl md:text-7xl font-bold text-primary-100 mb-6 pb-2 text-left"
+          {/* Eyebrow */}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-green-400 text-sm font-semibold uppercase tracking-widest mb-4"
           >
-            FundJoi.
-            <span className="block mt-2 pb-4 text-4xl md:text-6xl bg-clip-text bg-gradient-to-r from-green-400 to-green-600 text-transparent">
-              A Path From Learning to{" "}
-              <span className="relative inline-block text-primary-100">
-                <span className="relative z-10 font-extralight italic">
-                  Earning
-                </span>
+            Free • No credit card required
+          </motion.p>
 
-                <img
-                  src="/assets/images/underline.svg"
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute left-0 -bottom-5 w-full h-5 z-0 pointer-events-none"
-                />
+          {/* Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-5xl md:text-6xl font-bold text-white mb-5 leading-tight"
+          >
+            Open your first investment account—{" "}
+            <span className="relative inline-block">
+              <span className="bg-clip-text bg-gradient-to-r from-green-400 to-green-600 text-transparent italic font-extralight">
+                we walk you through every step.
               </span>
+              <img
+                src="/assets/images/underline.svg"
+                alt=""
+                aria-hidden="true"
+                className="absolute left-0 -bottom-3 w-full h-4 z-0 pointer-events-none"
+              />
             </span>
           </motion.h1>
 
+          {/* Subhead */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="max-w-2xl text-primary-300 text-lg md:text-xl mb-8"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg text-zinc-300 mb-10 max-w-2xl"
           >
-            Skip the confusion. Click your way into your first brokerage and retirement accounts with a clear, guided, and interactive experience designed to help you navigate your options and get set up with confidence.
+            Answer a few quick questions about your situation and get a personalized,
+            step-by-step guide to opening a 401(k), IRA, or brokerage account — no
+            financial background needed.
           </motion.p>
 
+          {/* Goal picker — the "first step" */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className="flex flex-col gap-3"
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <div className="flex flex-col gap-2 items-start">
-              <div className="flex flex-col sm:flex-row gap-4 text-sm md:text-lg">
+            <p className="text-zinc-400 text-sm mb-3 font-medium">What do you want to do?</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl">
+              {GOALS.map((goal, i) => (
                 <Link
-                  href="/journey"
-                  className="group inline-flex items-center justify-center gap-2 px-8 py-4 btn-secondary"
+                  key={i}
+                  href={goal.href}
+                  onMouseEnter={() => setHovered(i)}
+                  onMouseLeave={() => setHovered(null)}
+                  className="group flex items-start gap-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-500/50 rounded-xl px-5 py-4 transition-all duration-200"
                 >
-                  Get Started Free
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <span className="text-2xl mt-0.5">{goal.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-medium text-sm group-hover:text-green-400 transition-colors">
+                      {goal.title}
+                    </p>
+                    <p className="text-zinc-400 text-xs mt-0.5">{goal.desc}</p>
+                  </div>
+                  <ArrowRight
+                    className={`w-4 h-4 mt-1 shrink-0 transition-all duration-200 ${
+                      hovered === i ? 'text-green-400 translate-x-1' : 'text-zinc-600'
+                    }`}
+                  />
                 </Link>
-                <button
-                  onClick={() =>
-                    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })
-                  }
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 btn-border"
-                >
-                  See How It Works
-                </button>
-              </div>
-
-              <p className="text-md text-primary-300 py-2">
-                No credit card • No commitment • Just action
-              </p>
+              ))}
             </div>
           </motion.div>
-        </motion.div>
-
+        </div>
       </section>
 
-      {/* Bridging the Gap Section */}
+      {/* How it works — 3 steps */}
       <ScrollReveal>
-        <section id="how-it-works" className="money-image-background flex items-center min-h-[60vh]">
-          <div className="w-full px-4 md:px-0 p-8 md:p-18">
-            <div className="w-full md:max-w-3xl text-left md:px-8">
-              <motion.h2 
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="text-5xl md:text-4xl font-bold mb-4"
-              >
-                Bridging The Gap Between Learning And Doing.
-              </motion.h2>
-              
-              <motion.p 
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-base md:text-lg mb-6 text-primary-100 leading-relaxed"
-              >
-                Our platform was built to make investing accessible, not intimidating. 
-                We've seen how difficult it was for friends and family to actually open and fund accounts, 
-                which is why we focus on guidance, simplicity, and action.
-              </motion.p>
+        <section id="how-it-works" className="money-image-background py-16 px-6 md:px-12">
+          <div className="max-w-4xl mx-auto">
+            <motion.h2
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-3xl md:text-4xl font-bold text-white mb-2"
+            >
+              How it works
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="text-zinc-300 mb-10 text-base"
+            >
+              Three steps from "I don't know where to start" to your account being open.
+            </motion.p>
 
-              {/* Phone mockup - Desktop (right side) */}
-              <motion.div 
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 2.0 }}
-                className="absolute top-1/2 right-[-2%] -translate-y-1/2 w-[120%] h-[120%] rounded-xl overflow-hidden z-0 hidden lg:block"
-              >
-                <img 
-                  src="/assets/images/iphone.png"
-                  alt="Investment app on phone"
-                  className="w-full h-full object-contain object-right pr-20"
-                />
-              </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                {
+                  step: "01",
+                  title: "Tell us about yourself",
+                  desc: "Your age, income, and whether you have an employer plan. Takes about 2 minutes.",
+                },
+                {
+                  step: "02",
+                  title: "Get your personalized plan",
+                  desc: "We recommend the right account type, contribution amount, and where to open it.",
+                },
+                {
+                  step: "03",
+                  title: "Follow the guided steps",
+                  desc: "We link you directly to the right screens and explain exactly what to fill in.",
+                },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className="bg-white/10 backdrop-blur-sm rounded-xl p-6 flex flex-col"
+                >
+                  <span className="text-green-400 font-bold text-sm mb-3">{item.step}</span>
+                  <h3 className="text-white font-semibold text-base mb-2">{item.title}</h3>
+                  <p className="text-zinc-300 text-sm flex-1">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
 
-              {/* Phone mockup - Mobile (below text, centered) */}
-              <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="lg:hidden w-[80%] h-[80%] max-w-xs mx-auto my-8 pl-10"
-              >
-                <img 
-                  src="/assets/images/iphone.png"
-                  alt="Investment app on phone"
-                  className="w-full h-auto object-contain"
-                />
-              </motion.div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-10">
-                {[
-                  {
-                    title: "Guided Onboarding",
-                    desc: "We walk you through each step of starting your investing journey, from account setup to first deposit."
-                  },
-                  {
-                    title: "Simplified Decisions",
-                    desc: "Clear, tailored advice replaces the confusion of endless articles and generic financial tips."
-                  },
-                  {
-                    title: "Action-Focused",
-                    desc: "You don't just learn — you take the real steps toward building long-term wealth."
-                  }
-                ].map((card, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
-                    className="bg-white/20 backdrop-blur-sm rounded-xl p-6 min-h-[180px] flex flex-col"
-                  >
-                    <h3 className="text-lg mb-2 text-white">{card.title}</h3>
-                    <p className="text-primary-200 text-sm flex-1">{card.desc}</p>
-                  </motion.div>
-                ))}
-              </div>
+      {/* Trust / proof */}
+      <ScrollReveal delay={0.1}>
+        <section className="py-14 px-6 md:px-12 bg-zinc-950">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                "No finance degree needed — plain English throughout",
+                "Your data stays private — we never sell or share it",
+                "Completely free — no upsells, no premium tier",
+              ].map((point, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.08 }}
+                  className="flex items-start gap-3"
+                >
+                  <CheckCircle2 className="text-green-400 w-5 h-5 shrink-0 mt-0.5" />
+                  <p className="text-zinc-300 text-sm">{point}</p>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
@@ -215,39 +231,39 @@ export default function HomePage() {
 
       {/* Final CTA */}
       <ScrollReveal delay={0.2}>
-        <section className="py-20 static-background-bottom">
-          <div className="max-w-3xl mx-auto text-center px-6">
-            <motion.h2 
-              initial={{ opacity: 0, scale: 0.9 }}
+        <section className="py-20 static-background-bottom px-6">
+          <div className="max-w-2xl mx-auto text-center">
+            <motion.h2
+              initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
               className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
             >
-              Ready To Stop Thinking About It And Actually Do It?
+              Ready to actually open that account?
             </motion.h2>
-            
-            <motion.p 
+
+            <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg md:text-xl text-gray-800 mb-8"
+              className="text-gray-700 text-lg mb-8"
             >
-              Join thousands taking control of their financial future
+              It takes about 10 minutes. We'll be with you the whole way.
             </motion.p>
-            
+
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{ duration: 0.5, delay: 0.35 }}
             >
               <Link
                 href="/journey"
-                className="group inline-flex items-center justify-center btn-secondary px-8 py-4 gap-2 text-sm md:text-lg"
+                className="group inline-flex items-center justify-center btn-secondary px-8 py-4 gap-2 text-base md:text-lg"
               >
-                Start Your Journey
+                Get started — it's free
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
@@ -262,37 +278,43 @@ export default function HomePage() {
 const LoggedInHome = ({ user }) => {
   return (
     <div className="min-h-screen">
-      <section className="static-background py-20 pb-135">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <motion.h1 
+      <section className="static-background py-20 pb-40 px-6">
+        <div className="max-w-2xl mx-auto text-center">
+          <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-5xl font-bold mb-4 text-primary-100"
+            className="text-4xl md:text-5xl font-bold mb-3 text-white"
           >
-            Welcome Back!
+            Welcome back
+            {user?.email ? (
+              <span className="block text-2xl text-zinc-400 font-normal mt-1">
+                {user.email}
+              </span>
+            ) : null}
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xl mb-8 opacity-90 text-primary-400"
+            className="text-zinc-300 text-lg mb-8"
           >
-            Continue your journey to financial freedom
+            Pick up where you left off or check your progress.
           </motion.p>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex gap-4 justify-center"
+            className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <Link href="/journey" className="btn-border">
-              Continue Journey
+            <Link href="/journey" className="btn-secondary inline-flex items-center justify-center gap-2 px-8 py-4">
+              Continue my journey
+              <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/dashboard" className="btn-secondary">
-              Go to Dashboard
+            <Link href="/dashboard" className="btn-border inline-flex items-center justify-center px-8 py-4">
+              View dashboard
             </Link>
           </motion.div>
         </div>
