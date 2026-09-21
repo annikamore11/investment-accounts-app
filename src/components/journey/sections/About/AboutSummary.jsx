@@ -1,39 +1,37 @@
 'use client'
 
-import { useState } from 'react'
-import { Briefcase, Calendar, Landmark, Building, Building2 } from 'lucide-react'
+import { Briefcase, Calendar, Building, Building2 } from 'lucide-react'
 import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
 import useStepTransition from '@/hooks/useStepTransition'
 
-const AboutSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
+const EMPLOYMENT_LABELS = {
+  'employed-company': 'Employed at a company',
+  'self-employed': 'Self-employed',
+  'unemployed': 'Not currently working',
+}
+
+const BANK_TYPE_LABELS = {
+  large: 'Large National Bank',
+  regional: 'Regional or Credit Union',
+}
+
+const SummaryRow = ({ icon: Icon, label, children }) => (
+  <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
+    <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
+      <Icon className="w-5 h-5 text-primary-500" />
+      <span className="font-semibold text-primary-700">{label}</span>
+    </div>
+    <div className="col-span-2 text-primary-900">{children}</div>
+  </div>
+)
+
+const AboutSummary = ({ journeyData, nextStep, prevStep }) => {
   const { isExiting, transitionTo } = useStepTransition()
-
-  const getEmploymentLabel = (employment) => {
-    const labels = {
-      'employed-company': 'Employed at a company',
-      'self-employed': 'Self-employed',
-      'unemployed': 'Not currently working',
-    }
-    return labels[employment] || employment
-  }
-
-  const getBankTypeLabel = (bankType) => {
-    const labels = {
-      'large': 'Large National Bank',
-      'regional': 'Regional or Credit Union'
-    }
-    return labels[bankType] || bankType
-  }
-
-  const handleNext = () => {
-    transitionTo(nextStep)
-  }
 
   return (
     <StepContainer
       isExiting={isExiting}
-      exitDirection="vertical"
     >
       <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-12 border-2 border-primary-200">
         <div className="border-b-2 border-primary-300 pb-4 mb-6">
@@ -42,67 +40,28 @@ const AboutSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
         </div>
 
         <div className="space-y-1 mb-8">
-          <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
-            <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
-              <Briefcase className="w-5 h-5 text-primary-500" />
-              <span className="font-semibold text-primary-700">Employment Status</span>
-            </div>
-            <div className="col-span-2 text-primary-900">
-              {getEmploymentLabel(journeyData.employment)}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
-            <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
-              <Calendar className="w-5 h-5 text-primary-500" />
-              <span className="font-semibold text-primary-700">Age Range</span>
-            </div>
-            <div className="col-span-2 text-primary-900">
-              {journeyData.age}
-            </div>
-          </div>
-
+          <SummaryRow icon={Briefcase} label="Employment Status">
+            {EMPLOYMENT_LABELS[journeyData.employment] || journeyData.employment}
+          </SummaryRow>
+          <SummaryRow icon={Calendar} label="Age Range">{journeyData.age}</SummaryRow>
           {journeyData.bankType && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
-              <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
-                <Building className="w-5 h-5 text-primary-500" />
-                <span className="font-semibold text-primary-700">Bank Type</span>
-              </div>
-              <div className="col-span-2 text-primary-900">
-                {getBankTypeLabel(journeyData.bankType)}
-              </div>
-            </div>
+            <SummaryRow icon={Building} label="Bank Type">
+              {BANK_TYPE_LABELS[journeyData.bankType] || journeyData.bankType}
+            </SummaryRow>
           )}
-
           {journeyData.bankInstitution && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
-              <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
-                <Building2 className="w-5 h-5 text-primary-500" />
-                <span className="font-semibold text-primary-700">Bank Institution</span>
-              </div>
-              <div className="col-span-2 text-primary-900">
-                {journeyData.bankInstitution.name}
-              </div>
-            </div>
+            <SummaryRow icon={Building2} label="Bank Institution">{journeyData.bankInstitution.name}</SummaryRow>
           )}
-
           {journeyData.employment === 'employed-company' && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
-              <div className="flex items-center space-x-3 col-span-1 mb-2 sm:mb-0">
-                <Building className="w-5 h-5 text-primary-500" />
-                <span className="font-semibold text-primary-700">Employer 401(k)</span>
-              </div>
-              <div className="col-span-2 text-primary-900">
-                {journeyData.hasEmployer401k ? 'Yes' : 'No or Not Sure'}
-              </div>
-            </div>
+            <SummaryRow icon={Building} label="Employer 401(k)">
+              {journeyData.hasEmployer401k ? 'Yes' : 'No or Not Sure'}
+            </SummaryRow>
           )}
         </div>
 
         <StepNavigation
           onBack={prevStep}
-          onNext={handleNext}
-          canGoNext={true}
+          onNext={() => transitionTo(nextStep)}
           isExiting={isExiting}
           nextLabel="Continue →"
         />

@@ -1,37 +1,49 @@
-// hooks/useJourneySave.js
-import { useEffect, useRef } from 'react'
-import { saveJourneyToDatabase } from '../utils/JourneyStorage'
+import { useEffect } from 'react'
+import { saveJourneyToDatabase } from '@/utils/JourneyStorage'
 
 const SAVE_DEBOUNCE_MS = 1000
 
-export const useJourneySave = (user, journeyData, currentSection, currentStepInSection) => {
-  const isFirstRender = useRef(true)
-
+/**
+ * Debounced auto-save of journey progress. Logged-in users save to Convex,
+ * guests save to localStorage (migrated to Convex on signup).
+ *
+ * `enabled` must stay false until the caller has finished loading saved
+ * progress — otherwise the initial empty state would overwrite it.
+ */
+export const useJourneySave = ({ user, journeyData, currentSection, currentStepInSection, enabled }) => {
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
+    if (!enabled) return
 
-    const saveProgress = async () => {
-      if (typeof window === 'undefined') return
-
-      const progressData = {
-        data: journeyData,
-        section: currentSection,
-        stepInSection: currentStepInSection,
-        lastSaved: new Date().toISOString()
-      }
-
+    const save = () => {
       if (user) {
-        await saveJourneyToDatabase(user.id, journeyData, currentSection, currentStepInSection)
-        localStorage.setItem(`journey_${user.id}`, JSON.stringify(progressData))
+        saveJourneyToDatabase(journeyData, currentSection, currentStepInSection)
       } else {
-        localStorage.setItem('journey_guest', JSON.stringify(progressData))
+        localStorage.setItem('journey_guest', JSON.stringify({
+          data: journeyData,
+          section: currentSection,
+          stepInSection: currentStepInSection,
+          lastSaved: new Date().toISOString(),
+        }))
       }
     }
 
-    const timeoutId = setTimeout(saveProgress, SAVE_DEBOUNCE_MS)
-    return () => clearTimeout(timeoutId)
-  }, [journeyData, currentSection, currentStepInSection, user])
+    let timeoutId = setTimeout(() => {
+      timeoutId = null
+      save()
+    }, SAVE_DEBOUNCE_MS)
+
+    // Don't lose the last change if the tab closes before the debounce fires
+    const flush = () => {
+      if (timeoutId === null) return
+      clearTimeout(timeoutId)
+      timeoutId = null
+      save()
+    }
+    window.addEventListener('pagehide', flush)
+
+    return () => {
+      if (timeoutId !== null) clearTimeout(timeoutId)
+      window.removeEventListener('pagehide', flush)
+    }
+  }, [enabled, journeyData, currentSection, currentStepInSection, user])
 }

@@ -31,7 +31,6 @@ const EmploymentStatus = ({ journeyData, updateJourneyData, nextStep, prevStep }
     <StepContainer
       title="Employment Status"
       isExiting={isExiting}
-      exitDirection="horizontal"
     >
       <p className="text-center text-lg sm:text-xl text-primary-700 max-w-2xl mx-auto mb-6">
         Choose the option that best describes your current situation.

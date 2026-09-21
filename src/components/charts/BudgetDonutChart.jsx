@@ -1,80 +1,56 @@
-// src/components/charts/BudgetDonutChart.jsx
-import React from 'react'
+'use client'
+
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 
+const CATEGORY_LABELS = {
+  rent: 'Housing',
+  carPayment: 'Car Payment',
+  food: 'Food',
+  utilities: 'Utilities, Loans, Bills',
+  insurance: 'Insurance',
+  other: 'Other',
+}
+
+const CATEGORY_COLORS = {
+  rent: '#8b5cf6',
+  carPayment: '#ec4899',
+  food: '#f59e0b',
+  utilities: '#3b82f6',
+  insurance: '#06b6d4',
+  other: '#6b7280',
+  expenses: '#f59e0b',
+}
+
+const CustomTooltip = ({ active, payload, total }) => {
+  if (!active || !payload?.length) return null
+  const data = payload[0]
+  const percent = ((data.value / total) * 100).toFixed(1)
+  return (
+    <div className="bg-white border border-gray-300 rounded-lg p-3 shadow-lg">
+      <p className="font-semibold text-gray-900 mb-1">{data.name}</p>
+      <p className="text-sm text-gray-700">
+        <span className="font-semibold">${data.value.toLocaleString()}</span>
+        <span className="text-gray-600 ml-1">({percent}%)</span>
+      </p>
+    </div>
+  )
+}
+
 const BudgetDonutChart = ({ journeyData }) => {
-  const expenses = journeyData.monthlyExpenses || 0
-  const totalExpenses = expenses
-  const hasBreakdown = journeyData.expenseBreakdown && Object.keys(journeyData.expenseBreakdown).length > 0
+  const totalExpenses = journeyData.monthlyExpenses || 0
+  const breakdown = Object.entries(journeyData.expenseBreakdown || {}).filter(([, amount]) => amount > 0)
 
-  const formatCategoryName = (category) => {
-    const names = {
-      rent: 'Housing',
-      carPayment: 'Car Payment',
-      food: 'Food',
-      utilities: 'Utilities, Loans, Bills',
-      insurance: 'Insurance',
-      other: 'Other'
-    }
-    return names[category] || category
-  }
-
-  const getCategoryColor = (category) => {
-    const colors = {
-      rent: '#8b5cf6',
-      carPayment: '#ec4899',
-      food: '#f59e0b',
-      utilities: '#3b82f6',
-      insurance: '#06b6d4',
-      other: '#6b7280',
-      expenses: '#f59e0b'
-    }
-    return colors[category] || '#9ca3af'
-  }
-
-  const generateChartData = () => {
-    const data = []
-
-    if (hasBreakdown) {
-      Object.entries(journeyData.expenseBreakdown).forEach(([category, amount]) => {
-        if (amount > 0) {
-          data.push({
-            name: formatCategoryName(category),
-            value: amount,
-            color: getCategoryColor(category)
-          })
-        }
-      })
-    } else if (expenses > 0) {
-      data.push({
-        name: 'Expenses',
-        value: expenses,
-        color: getCategoryColor('expenses')
-      })
-    }
-
-    return data.sort((a, b) => b.value - a.value)
-  }
-
-  const chartData = generateChartData()
-
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0]
-      const percent = ((data.value / totalExpenses) * 100).toFixed(1)
-      
-      return (
-        <div className="bg-white border border-gray-300 rounded-lg p-3 shadow-lg">
-          <p className="font-semibold text-gray-900 mb-1">{data.name}</p>
-          <p className="text-sm text-gray-700">
-            <span className="font-semibold">${data.value.toLocaleString()}</span>
-            <span className="text-gray-600 ml-1">({percent}%)</span>
-          </p>
-        </div>
-      )
-    }
-    return null
-  }
+  // Per-category slices if they broke expenses down, otherwise one slice
+  const chartData = (breakdown.length > 0
+    ? breakdown.map(([category, amount]) => ({
+        name: CATEGORY_LABELS[category] || category,
+        value: amount,
+        color: CATEGORY_COLORS[category] || '#9ca3af',
+      }))
+    : totalExpenses > 0
+      ? [{ name: 'Expenses', value: totalExpenses, color: CATEGORY_COLORS.expenses }]
+      : []
+  ).sort((a, b) => b.value - a.value)
 
   const renderCenterLabel = () => {
     return (
@@ -114,7 +90,7 @@ const BudgetDonutChart = ({ journeyData }) => {
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<CustomTooltip total={totalExpenses} />} />
               {renderCenterLabel()}
             </PieChart>
           </ResponsiveContainer>

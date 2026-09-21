@@ -70,7 +70,6 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
       title="Monthly Expenses"
       subtitle="Let's get a sense of your spending. Don't worry about being exact!"
       isExiting={isExiting}
-      exitDirection="horizontal"
     >
       {/* Need Help Question */}
       <div className="mb-8">

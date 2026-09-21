@@ -1,221 +1,103 @@
-// Mastercard Open Banking API Utility
-// Documentation: https://developer.mastercard.com/open-banking-us/documentation/
+// Mastercard Open Banking (Finicity) API client. Server-only: relies on
+// secrets from .env.local. See MASTERCARD_SETUP.md.
+// Docs: https://developer.mastercard.com/open-banking-us/documentation/
 
-const MASTERCARD_API_URL = process.env.MASTERCARD_API_URL || 'https://api.finicity.com';
+const MASTERCARD_API_URL = process.env.MASTERCARD_API_URL || 'https://api.finicity.com'
+
+const isXml = (contentType, text) => contentType?.includes('xml') || text.trim().startsWith('<?xml')
 
 /**
- * Parse API response and handle different content types
+ * Finicity returns XML for some error responses even when JSON was requested,
+ * so parse defensively.
  */
 async function parseResponse(response) {
-  const contentType = response.headers.get('content-type');
-  const text = await response.text();
+  const contentType = response.headers.get('content-type')
+  const text = await response.text()
 
-  // Check if response is XML (error response)
-  if (contentType?.includes('xml') || text.trim().startsWith('<?xml')) {
-    console.error('API Error Response:', text); // Add this line to see the actual error
-    throw new Error(`API returned an error: ${text.substring(0, 200)}`); // Show first 200 chars of error
+  if (isXml(contentType, text)) {
+    console.error('Mastercard API error response:', text)
+    throw new Error(`API returned an error: ${text.substring(0, 200)}`)
   }
 
-  // Try to parse as JSON
   try {
-    return JSON.parse(text);
-  } catch (e) {
-    console.error('Response text:', text); // Add this to see what we got
-    throw new Error('Invalid response from API. Please verify your credentials.');
+    return JSON.parse(text)
+  } catch {
+    console.error('Unparseable Mastercard API response:', text)
+    throw new Error('Invalid response from API. Please verify your credentials.')
   }
 }
 
-/**
- * Get access token from Mastercard API
- * Uses Partner ID and Partner Secret to authenticate
- */
-/**
- * Get access token from Mastercard API
- * Uses Partner ID and Partner Secret to authenticate
- */
-async function getAccessToken() {
-  const partnerId = process.env.MASTERCARD_PARTNER_ID;
-  const partnerSecret = process.env.MASTERCARD_PARTNER_SECRET;
-  const appKey = process.env.MASTERCARD_APP_KEY;
+function getCredentials() {
+  const partnerId = process.env.MASTERCARD_PARTNER_ID
+  const partnerSecret = process.env.MASTERCARD_PARTNER_SECRET
+  const appKey = process.env.MASTERCARD_APP_KEY
 
   if (!partnerId || !partnerSecret || !appKey) {
-    throw new Error('Mastercard credentials not configured. Please add credentials to .env.local');
+    throw new Error('Mastercard credentials not configured. Please add credentials to .env.local')
+  }
+  if ([partnerId, partnerSecret, appKey].some(v => v.includes('your_'))) {
+    throw new Error('Please replace placeholder values in .env.local with your actual Mastercard API credentials')
+  }
+  return { partnerId, partnerSecret, appKey }
+}
+
+/** Exchange partner credentials for a short-lived app token */
+async function getAccessToken() {
+  const { partnerId, partnerSecret, appKey } = getCredentials()
+
+  const response = await fetch(`${MASTERCARD_API_URL}/aggregation/v2/partners/authentication`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Finicity-App-Key': appKey,
+    },
+    body: JSON.stringify({ partnerId, partnerSecret }),
+  })
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error('Authentication failed: Invalid Partner ID or Partner Secret')
+    }
+    throw new Error(`Authentication failed (${response.status}): Check your API credentials`)
   }
 
-  // Check for placeholder values
-  if (partnerId.includes('your_') || partnerSecret.includes('your_') || appKey.includes('your_')) {
-    throw new Error('Please replace placeholder values in .env.local with your actual Mastercard API credentials');
+  const text = await response.text()
+  if (isXml(response.headers.get('content-type'), text)) {
+    const token = text.match(/<token>([^<]+)<\/token>/)?.[1]
+    if (!token) throw new Error('Could not parse token from XML response')
+    return token
   }
 
   try {
-    const response = await fetch(`${MASTERCARD_API_URL}/aggregation/v2/partners/authentication`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Finicity-App-Key': appKey,
-      },
-      body: JSON.stringify({
-        partnerId,
-        partnerSecret,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      if (response.status === 401) {
-        throw new Error('Authentication failed: Invalid Partner ID or Partner Secret');
-      }
-      throw new Error(`Authentication failed (${response.status}): Check your API credentials`);
-    }
-
-    const text = await response.text();
-    const contentType = response.headers.get('content-type');
-    
-    // Handle XML response
-    if (contentType?.includes('xml') || text.trim().startsWith('<?xml')) {
-      const tokenMatch = text.match(/<token>([^<]+)<\/token>/);
-      if (tokenMatch && tokenMatch[1]) {
-        return tokenMatch[1];
-      }
-      throw new Error('Could not parse token from XML response');
-    }
-    
-    // Handle JSON response
-    try {
-      const data = JSON.parse(text);
-      return data.token;
-    } catch (e) {
-      throw new Error('Invalid response format from API');
-    }
-    
-  } catch (error) {
-    console.error('Mastercard authentication error:', error);
-    throw error;
+    return JSON.parse(text).token
+  } catch {
+    throw new Error('Invalid response format from API')
   }
 }
 
+/**
+ * Search institutions by name. Each result includes `oauthEnabled`, which
+ * tells us whether the bank supports instant (OAuth) account verification.
+ */
 export async function searchInstitutions(search, limit = 25) {
-  if (!search || search.trim().length < 2) {
-    return [];
+  if (!search || search.trim().length < 2) return []
+
+  const token = await getAccessToken()
+  const params = new URLSearchParams({ search: search.trim(), limit: String(limit) })
+
+  const response = await fetch(`${MASTERCARD_API_URL}/institution/v2/institutions?${params}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Finicity-App-Key': process.env.MASTERCARD_APP_KEY,
+      'Finicity-App-Token': token,
+    },
+  })
+
+  if (!response.ok) {
+    if (response.status === 401) throw new Error('Authentication failed: Invalid API token')
+    throw new Error(`Institution search failed (${response.status}): Check your API credentials`)
   }
 
-  try {
-    const token = await getAccessToken();
-    const params = new URLSearchParams({
-      search: search.trim(),
-      limit: limit.toString(),
-    });
-
-    const response = await fetch(
-      `${MASTERCARD_API_URL}/institution/v2/institutions?${params}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Finicity-App-Key': process.env.MASTERCARD_APP_KEY,
-          'Finicity-App-Token': token,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Authentication failed: Invalid API token');
-      }
-      throw new Error(`Institution search failed (${response.status}): Check your API credentials`);
-    }
-
-    const data = await parseResponse(response);
-    const institutions = data.institutions || [];
-    
-    // Log the first result to see what fields are available
-    if (institutions.length > 0) {
-      console.log('Sample institution data:', JSON.stringify(institutions[0], null, 2));
-    }
-    
-    return institutions;
-  } catch (error) {
-    console.error('Institution search error:', error);
-    throw error;
-  }
-}
-
-/**
- * Get a specific institution by ID
- * @param {string} institutionId - The institution ID
- * @returns {Promise<Object>} Institution details
- */
-export async function getInstitutionById(institutionId) {
-  try {
-    const token = await getAccessToken();
-
-    const response = await fetch(
-      `${MASTERCARD_API_URL}/institution/v2/institutions/${institutionId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Finicity-App-Key': process.env.MASTERCARD_APP_KEY,
-          'Finicity-App-Token': token,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Authentication failed: Invalid API token');
-      }
-      throw new Error(`Get institution failed (${response.status}): Check your API credentials`);
-    }
-
-    const data = await parseResponse(response);
-    return data;
-  } catch (error) {
-    console.error('Get institution error:', error);
-    throw error;
-  }
-}
-
-
-
-/**
- * Check if an institution is supported
- * @param {string} institutionName - Name of the institution to check
- * @returns {Promise<Object>} { supported: boolean, institution: Object|null }
- */
-export async function checkInstitutionSupport(institutionName) {
-  try {
-    const institutions = await searchInstitutions(institutionName, 10);
-
-    if (institutions.length === 0) {
-      return { 
-        supported: false, 
-        institution: null, 
-        instantVerification: false,
-        verificationMethod: 'not-supported',
-        suggestions: [] 
-      };
-    }
-
-    // Look for exact or very close match
-    const exactMatch = institutions.find(
-      inst => inst.name.toLowerCase() === institutionName.toLowerCase()
-    );
-
-    const institution = exactMatch || institutions[0];
-
-    // Check if OAuth is enabled for instant verification
-    const hasInstantVerification = institution.oauthEnabled === true;
-
-    return {
-      supported: true,
-      institution: institution,
-      instantVerification: hasInstantVerification,
-      verificationMethod: hasInstantVerification ? 'instant' : 'micro-deposits',
-      suggestions: institutions.slice(0, 5),
-    };
-  } catch (error) {
-    console.error('Check institution support error:', error);
-    throw error;
-  }
+  const data = await parseResponse(response)
+  return data.institutions || []
 }

@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# FundJoi
 
-## Getting Started
+A guided, step-by-step journey that takes a beginner from "I should probably invest" to having an emergency fund, a retirement plan and a brokerage account actually set up.
 
-First, run the development server:
+## Stack
+
+- [Next.js 16](https://nextjs.org) (App Router) + React 19, Tailwind CSS 4
+- [Clerk](https://clerk.com) for auth, [Convex](https://convex.dev) for saving journey progress
+- Mastercard Open Banking (Finicity) for the bank-institution search
+- Recharts (budget charts)
+
+## Getting started
+
+```bash
+npm install
+cp .env.example .env.local
+npx convex dev   # first run: log in, create/link a Convex project, prints NEXT_PUBLIC_CONVEX_URL
+```
+
+Then, one-time Clerk setup (clerk.com):
+
+1. Create an application, enable email/password sign-in.
+2. Copy the publishable + secret keys into `.env.local`.
+3. Under **JWT Templates**, create a template named `convex` (Clerk has a Convex preset). Copy its issuer URL and run:
+   ```bash
+   npx convex env set CLERK_JWT_ISSUER_DOMAIN https://your-instance.clerk.accounts.dev
+   ```
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>. The journey works without an account (progress is kept in `localStorage`); signing up migrates that progress into Convex — see the invariant in `src/context/AuthContext.jsx` (migrate only if the account has no saved journey yet, so an existing account logging in is never overwritten).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Bank search needs Mastercard credentials — see [MASTERCARD_SETUP.md](MASTERCARD_SETUP.md). Everything else works without them.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## How the journey is structured
 
-## Learn More
+```
+src/components/journey/
+├── JourneyFlow.jsx        # state, navigation, load/save
+├── JourneySidebar.jsx     # section/step list + progress
+└── sections/
+    ├── index.js           # SECTION_CONFIGS + INITIAL_JOURNEY_DATA
+    ├── Welcome/
+    ├── About/
+    ├── BudgetIncome/
+    ├── EmergencyFund/
+    ├── Retirement/
+    └── Investing/
+```
 
-To learn more about Next.js, take a look at the following resources:
+Each section exports a config with `getSteps(journeyData)` returning `[{ name, Component }]`. Steps are computed from the user's answers, so earlier answers can add or remove later steps (e.g. the 401(k) questions only appear for people employed at a company).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Step components receive:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| prop | purpose |
+|---|---|
+| `journeyData` | all answers so far |
+| `updateJourneyData(key, value)` | save an answer (persisted automatically, debounced) |
+| `nextStep()` / `prevStep()` | navigate; safe to call right after `updateJourneyData` |
+| `goToSection(id, stepIndex?)` | jump elsewhere |
 
-## Deploy on Vercel
+Shared building blocks live in `src/components/ui/` (`StepContainer`, `StepNavigation`, `OptionGrid`, `DollarInput`, `InfoBox`, `GlossaryTerm`) and `useStepTransition` handles the exit animation.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Backend
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+convex/
+├── schema.ts        # one `journeys` table, keyed by Clerk user id
+├── journey.ts        # get / save / remove — identity comes from ctx.auth, never a client-passed id
+└── auth.config.ts    # tells Convex to trust Clerk's JWTs
+```
+
+`src/utils/JourneyStorage.jsx` wraps these behind the same three functions the rest of the app already calls (`saveJourneyToDatabase`, `loadJourneyFromDatabase`, `deleteJourneyFromDatabase`), so `JourneyFlow.jsx` and `useJourneySave.jsx` don't need to know Convex is underneath.
+
+## Scripts
+
+- `npm run dev` — dev server
+- `npm run build` / `npm start` — production
+- `npm run lint`

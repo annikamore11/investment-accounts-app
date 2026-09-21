@@ -1,16 +1,20 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '../context/AuthContext'
-import { Menu, X, ChevronDown, PlayCircle, BookOpen, TrendingUp } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
+import { Menu, X } from 'lucide-react'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const [journeyDropdownOpen, setJourneyDropdownOpen] = useState(false)
   const { user, signOut } = useAuth()
   const router = useRouter()
+  const pathname = usePathname()
+  // "/" already handles starting/continuing/resuming the journey itself
+  // (see Landing.jsx), so the nav's journey link would just duplicate
+  // whatever's already on screen there.
+  const showJourneyLink = pathname !== '/'
 
   const handleSignOut = async () => {
     await signOut()
@@ -33,67 +37,12 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-4">
-            {/* Journey Dropdown */}
-            <div 
-              className="relative"
-              onMouseEnter={() => setJourneyDropdownOpen(true)}
-              onMouseLeave={() => setJourneyDropdownOpen(false)}
-            >
-              <button className="text-primary-50 hover:text-primary-200 px-3 py-2 flex items-center gap-1">
-                Your Financial Journey
-                <ChevronDown className={`w-4 h-4 transition-transform ${journeyDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-              
-              {journeyDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 w-64 bg-zinc-900 border border-zinc-800 rounded-xl shadow-xl overflow-hidden">
-                  <Link 
-                    href="/journey/overview" 
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 transition-colors group"
-                  >
-                    <div className="p-2 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors">
-                      <BookOpen className="w-5 h-5 text-green-400" />
-                    </div>
-                    <div>
-                      <div className="text-primary-50 font-medium">How It Works</div>
-                    </div>
-            </Link>
-                  
-                  <Link 
-                    href="/journey" 
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 transition-colors group"
-                  >
-                    <div className="p-2 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors">
-                      <PlayCircle className="w-5 h-5 text-green-400" />
-                    </div>
-                    <div>
-                      <div className="text-primary-50 font-medium">
-                        {user ? 'Continue Journey' : 'Start Journey'}
-                      </div>
-                    </div>
-                  </Link>
+            {showJourneyLink && (
+              <Link href="/journey" className="text-primary-50 hover:text-primary-200 px-3 py-2">
+                {user ? 'Continue Journey' : 'Start Journey'}
+              </Link>
+            )}
 
-                  {user && (
-                    <Link 
-                      href="/dashboard" 
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 transition-colors group border-t border-zinc-800"
-                    >
-                      <div className="p-2 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors">
-                        <TrendingUp className="w-5 h-5 text-green-400" />
-                      </div>
-                      <div>
-                        <div className="text-primary-50 font-medium">View Dashboard</div>
-                        <div className="text-xs text-primary-400">Track your progress</div>
-                      </div>
-                    </Link>
-                  )}
-                </div>
-              )}
-            </div>
-
-            <Link href="/retirement" className="text-primary-50 hover:text-primary-200 px-3 py-2">
-              Learn More
-            </Link>
-            
             {user ? (
               <div className="flex items-center space-x-4">
                 <Link href="/dashboard" className="btn-border">
@@ -142,20 +91,15 @@ const Navbar = () => {
             >
               Home
             </Link>
-            <Link
-              href="/journey/overview"
-              className="block text-primary-100 hover:text-primary-200 hover:bg-zinc-800 px-3 py-2 rounded-md font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              What's the Journey?
-            </Link>
-            <Link
-              href="/journey"
-              className="block text-primary-100 hover:text-primary-200 hover:bg-zinc-800 px-3 py-2 rounded-md font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              {user ? 'Continue Journey' : 'Start Journey'}
-            </Link>
+            {showJourneyLink && (
+              <Link
+                href="/journey"
+                className="block text-primary-100 hover:text-primary-200 hover:bg-zinc-800 px-3 py-2 rounded-md font-medium"
+                onClick={() => setIsOpen(false)}
+              >
+                {user ? 'Continue Journey' : 'Start Journey'}
+              </Link>
+            )}
             {user && (
               <Link
                 href="/dashboard"
@@ -165,24 +109,17 @@ const Navbar = () => {
                 Dashboard
               </Link>
             )}
-            <Link
-              href="/retirement"
-              className="block text-primary-100 hover:text-primary-200 hover:bg-zinc-800 px-3 py-2 rounded-md font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Learn More
-            </Link>
-            
+
             {user ? (
-                <button
-                  onClick={() => {
-                    handleSignOut()
-                    setIsOpen(false)
-                  }}
+              <button
+                onClick={() => {
+                  handleSignOut()
+                  setIsOpen(false)
+                }}
                 className="block w-full text-left text-primary-100 hover:text-primary-200 hover:bg-zinc-800 px-3 py-2 rounded-md font-medium"
-                >
-                  Sign Out
-                </button>
+              >
+                Sign Out
+              </button>
             ) : (
               <Link
                 href="/login"

@@ -27,7 +27,6 @@ const AgeRange = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
     <StepContainer
       title="Age Range"
       isExiting={isExiting}
-      exitDirection="horizontal"
     >
       <p className="text-lg sm:text-xl text-primary-700 max-w-4xl mx-auto text-center mb-6">
         Our site is geared towards beginners. Age helps us recommend the right investment timelines.

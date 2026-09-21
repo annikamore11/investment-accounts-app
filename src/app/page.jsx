@@ -1,7 +1,5 @@
-'use client'
-
-import HomePage from '@/components/HomePage'
+import Landing from '@/components/Landing'
 
 export default function Page() {
-  return <HomePage />
+  return <Landing />
 }

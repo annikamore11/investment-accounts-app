@@ -1,79 +1,48 @@
-import { supabase } from './supabase'
+import { convex } from '@/utils/convex'
+import { api } from '../../convex/_generated/api'
 
-/**
- * Save user's journey progress to database
- */
-export const saveJourneyToDatabase = async (userId, journeyData, currentSection, currentStepInSection) => {
+// Thin wrapper around Convex so the rest of the app (JourneyFlow, the
+// auto-save hook) doesn't need to know it's Convex underneath — same
+// {success, data} / {success, error} shape as the old Supabase version.
+// The user is no longer passed in: Convex derives it from the authenticated
+// request (see convex/journey.ts), so these calls only work once the Convex
+// client has a signed-in Clerk session attached.
+
+export const saveJourneyToDatabase = async (journeyData, currentSection, currentStepInSection) => {
   try {
-    const { data, error } = await supabase
-      .from('user_journey')
-      .upsert({
-        user_id: userId,
-        
-        // Full JSON (for flexibility)
-        journey_data: journeyData,
-        current_section: currentSection,
-        current_step: currentStepInSection,
-        
-        // Extract key fields for easy querying
-        employment: journeyData.employment || null,
-        age: journeyData.age || null,
-        has_employer_401k: journeyData.hasEmployer401k,
-        has_bank_account: journeyData.hasBankAccount,
-        bank_type: journeyData.bankType || null,
-        completed: journeyData.completed || false,
-        
-        last_updated: new Date().toISOString()
-      }, {
-        onConflict: 'user_id'
-      })
-      .select()
-
-    if (error) throw error
-    return { success: true, data }
+    await convex.mutation(api.journey.save, {
+      journeyData,
+      currentSection,
+      currentStep: currentStepInSection,
+    })
+    return { success: true }
   } catch (error) {
     console.error('Error saving journey:', error)
     return { success: false, error }
   }
 }
 
-/**
- * Load user's journey progress from database
- */
-export const loadJourneyFromDatabase = async (userId) => {
+export const loadJourneyFromDatabase = async () => {
   try {
-    const { data, error } = await supabase
-      .from('user_journey')
-      .select('*')
-      .eq('user_id', userId)
-      .single()
-
-    if (error) {
-      // No data found is not an error
-      if (error.code === 'PGRST116') {
-        return { success: true, data: null }
-      }
-      throw error
+    const doc = await convex.query(api.journey.get, {})
+    if (!doc) return { success: true, data: null }
+    return {
+      success: true,
+      data: {
+        journey_data: doc.journeyData,
+        current_section: doc.currentSection,
+        current_step: doc.currentStep,
+      },
     }
-
-    return { success: true, data }
   } catch (error) {
     console.error('Error loading journey:', error)
     return { success: false, error }
   }
 }
 
-/**
- * Delete user's journey progress from database
- */
-export const deleteJourneyFromDatabase = async (userId) => {
+export const deleteJourneyFromDatabase = async () => {
   try {
-    const { error } = await supabase
-      .from('user_journey')
-      .delete()
-      .eq('user_id', userId)
-
-    if (error) throw error
+    await convex.mutation(api.journey.remove, {})
     return { success: true }
   } catch (error) {
     console.error('Error deleting journey:', error)

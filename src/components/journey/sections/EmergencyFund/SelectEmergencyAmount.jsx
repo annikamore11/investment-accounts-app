@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+'use client'
+
+import { useState } from 'react'
 import StepContainer from '@/components/ui/StepContainer'
 import OptionGrid from '@/components/ui/OptionGrid'
 import StepNavigation from '@/components/ui/StepNavigation'
@@ -38,7 +40,6 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
       title="Choose Your Goal"
       subtitle="How much do you want in your emergency fund?"
       isExiting={isExiting}
-      exitDirection="horizontal"
     >
       <InfoBox
         title="Don't worry!"
@@ -70,10 +71,7 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
                 ))}
               </div>
             </>
-          ) : (
-            <div></div>
-          )}
-          
+          ) : null}
         </div>
 
         {/* Custom Amount */}
@@ -106,8 +104,6 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
               className="flex-1 min-w-0 text-xl md:text-2xl font-bold p-2 md:p-3 border-2 border-gray-300 rounded-lg focus:border-accent-green-600 focus:outline-none bg-white"
             />
           </div>
-          
-          
         </div>
 
         {/* Current Savings */}
@@ -175,8 +171,6 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
           </div>
         )}
 
-
-        
       <StepNavigation
         onBack={prevStep}
         onNext={handleNext}

@@ -1,10 +1,11 @@
 'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '../utils/supabase'
-import { saveJourneyToDatabase } from '../utils/JourneyStorage'
+import { createContext, useContext, useEffect, useRef } from 'react'
+import { useUser, useClerk } from '@clerk/nextjs'
+import { loadJourneyFromDatabase, saveJourneyToDatabase } from '@/utils/JourneyStorage'
+import { readGuestJourney, hasAnswers } from '@/utils/guestJourney'
 
-const AuthContext = createContext({})
+const AuthContext = createContext(null)
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
@@ -14,95 +15,37 @@ export const useAuth = () => {
   return context
 }
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Check active sessions and sets the user
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    // Listen for changes on auth state
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
-
-  const signIn = async (email, password) => {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
-  
-  // On login, ALWAYS load existing data, NEVER migrate guest data
-  if (data?.user && typeof window !== 'undefined') {
-    console.log('✅ Login successful - using existing saved data')
-    localStorage.removeItem('journey_guest') // Clean up guest data
-  }
-  
-  return { data, error }
-}
-
-const signUp = async (email, password) => {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-  })
-  
-  // On signup ONLY, migrate guest data if it exists
-  if (data?.user && typeof window !== 'undefined') {
-    const guestData = localStorage.getItem('journey_guest')
-    if (guestData) {
-      try {
-        const parsed = JSON.parse(guestData)
-        
-        // Check if guest data has content
-        const hasContent = parsed.data && Object.values(parsed.data).some(value => {
-          if (typeof value === 'object' && value !== null) {
-            return Object.values(value).some(v => v !== false && v !== null && v !== '')
-          }
-          return value !== '' && value !== null && value !== false
-        })
-        
-        if (hasContent) {
-          console.log('✅ New signup - migrating guest data')
-          await saveJourneyToDatabase(
-            data.user.id,
-            parsed.data,
-            parsed.section || 'welcome',
-            parsed.stepInSection || 0
-          )
-          localStorage.removeItem('journey_guest')
-        } else {
-          console.log('⏭️ Skipping migration - guest data is empty')
-          localStorage.removeItem('journey_guest')
-        }
-      } catch (err) {
-        console.error('Error migrating guest data on signup:', err)
-      }
+// A guest's in-progress journey lives in localStorage; the first time this
+// browser sees a signed-in user, move it into their account — but only if
+// they don't already have a saved journey. That's the invariant that
+// actually matters (never clobber real saved data), and checking it
+// directly is more robust than trying to infer "was this a signup or a
+// login" from Clerk's prebuilt <SignIn>/<SignUp> components.
+const migrateGuestJourney = async () => {
+  const guest = readGuestJourney()
+  if (guest && hasAnswers(guest.data)) {
+    const { data: existing } = await loadJourneyFromDatabase()
+    if (!existing) {
+      await saveJourneyToDatabase(guest.data, guest.section || 'welcome', guest.stepInSection || 0)
     }
   }
-  
-  return { data, error }
+  localStorage.removeItem('journey_guest')
 }
 
-  const signOut = async () => {
-    await supabase.auth.signOut()
-  }
+export const AuthProvider = ({ children }) => {
+  const { user, isLoaded, isSignedIn } = useUser()
+  const { signOut: clerkSignOut } = useClerk()
+  const didMigrate = useRef(false)
 
-  const value = {
-    user,
-    loading,
-    signUp,
-    signIn,
-    signOut,
-  }
+  useEffect(() => {
+    if (!isSignedIn || didMigrate.current) return
+    didMigrate.current = true
+    migrateGuestJourney()
+  }, [isSignedIn])
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, loading: !isLoaded, signOut: clerkSignOut }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }

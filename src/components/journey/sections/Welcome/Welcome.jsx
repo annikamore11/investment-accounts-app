@@ -4,19 +4,20 @@ import { useState, useEffect } from 'react'
 import StepNavigation from '@/components/ui/StepNavigation'
 import useStepTransition from '@/hooks/useStepTransition'
 
+const STEPS = [
+  'Plan emergency fund',
+  'Choose retirement account',
+  'Select investments',
+  'Set up automation',
+]
+
 const Welcome = ({ nextStep }) => {
   const [visibleSteps, setVisibleSteps] = useState(0)
   const { isExiting, transitionTo } = useStepTransition()
 
-  const steps = [
-    { number: 1, text: "Plan emergency fund" },
-    { number: 2, text: "Choose retirement account" },
-    { number: 3, text: "Select investments" },
-    { number: 4, text: "Set up automation" }
-  ]
-
+  // Reveal the list one item at a time
   useEffect(() => {
-    const timers = steps.map((_, index) =>
+    const timers = STEPS.map((_, index) =>
       setTimeout(() => {
         setVisibleSteps(index + 1)
       }, 400 * (index + 1))
@@ -32,20 +33,20 @@ const Welcome = ({ nextStep }) => {
       }`}>
         <div className="text-center mb-8">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-100 mb-3 animate-fadeIn px-2">
-            Welcome to Your Financial Journey
+            Let&apos;s build your plan
           </h1>
 
           <p className="text-base sm:text-lg text-primary-200 max-w-2xl mx-auto animate-fadeIn px-4" style={{ animationDelay: '0.2s' }}>
-            We're here to help you take control of your financial future
+            Tell us your income and expenses — we&apos;ll show you exactly what to do with what&apos;s left over, in order.
           </p>
         </div>
 
         <div className="bg-primary-100 rounded-2xl shadow-xl p-6 mb-6 animate-fadeIn">
 
           <div className="space-y-3 mb-8">
-            {steps.map((step, index) => (
+            {STEPS.map((text, index) => (
               <div
-                key={step.number}
+                key={text}
                 className={`flex items-center space-x-3 border-primary-400 hover:border-primary-600 bg-primary-50 hover:bg-white hover:shadow-md hover:scale-102 rounded-lg p-3.5 transition-all ${
                   visibleSteps > index
                     ? 'translate-x-0 opacity-100'
@@ -58,9 +59,9 @@ const Welcome = ({ nextStep }) => {
                     ? 'bg-accent-green-600 scale-100'
                     : 'bg-primary-300 scale-75'
                 }`}>
-                  <span className="text-white font-bold text-sm">{step.number}</span>
+                  <span className="text-white font-bold text-sm">{index + 1}</span>
                 </div>
-                <span className="text-primary-700 font-medium text-sm sm:text-base">{step.text}</span>
+                <span className="text-primary-700 font-medium text-sm sm:text-base">{text}</span>
               </div>
             ))}
           </div>

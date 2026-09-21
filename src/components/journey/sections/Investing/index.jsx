@@ -1,4 +1,3 @@
-// Investing section configuration
 import InvestingIntro from './InvestingIntro'
 import GoalSelection from './GoalSelection'
 import RiskTolerance from './RiskTolerance'
@@ -12,51 +11,17 @@ export const investingConfig = {
   title: 'Non-Retirement Investing',
   multipleSteps: true,
 
-  getSteps: (journeyData) => {
-    const steps = [
-      InvestingIntro,
-      GoalSelection,
-      RiskTolerance,
-      InvestmentMethodSelection
-    ]
-
-    // If they chose managed (Fidelity Go), show the explanation
-    if (journeyData.investmentMethod === 'managed') {
-      steps.push(FidelityGoExplanation)
-    }
-
-    // If they chose self-directed, show the investment education
-    if (journeyData.investmentMethod === 'self-directed') {
-      steps.push(InvestmentStrategyEducation)
-    }
-
-    // Always end with brokerage account check
-    steps.push(BrokerageAccountCheck)
-
-    return steps
-  },
-
-  getStepNames: (journeyData) => {
-    const names = [
-      'Introduction',
-      'Select Goal',
-      'Risk Tolerance',
-      'Investment Method'
-    ]
-
-    // If they chose managed (Fidelity Go), show the explanation step
-    if (journeyData.investmentMethod === 'managed') {
-      names.push('Fidelity Go')
-    }
-
-    // If they chose self-directed, show the investment education step
-    if (journeyData.investmentMethod === 'self-directed') {
-      names.push('Investment Education')
-    }
-
-    // Always end with brokerage account check
-    names.push('Brokerage Account')
-
-    return names
-  }
+  getSteps: (journeyData) => [
+    { name: 'Introduction', Component: InvestingIntro },
+    { name: 'Select Goal', Component: GoalSelection },
+    { name: 'Risk Tolerance', Component: RiskTolerance },
+    { name: 'Investment Method', Component: InvestmentMethodSelection },
+    ...(journeyData.investmentMethod === 'managed'
+      ? [{ name: 'Fidelity Go', Component: FidelityGoExplanation }]
+      : []),
+    ...(journeyData.investmentMethod === 'self-directed'
+      ? [{ name: 'Investment Education', Component: InvestmentStrategyEducation }]
+      : []),
+    { name: 'Brokerage Account', Component: BrokerageAccountCheck },
+  ],
 }

@@ -1,16 +1,21 @@
-import React from 'react'
+'use client'
+
 import Link from 'next/link'
 import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
 import GlossaryTerm from '@/components/ui/GlossaryTerm'
 import useStepTransition from '@/hooks/useStepTransition'
 import { ExternalLink, Shield, TrendingUp, DollarSign, Wallet } from 'lucide-react'
+import { FIDELITY } from './accountTypes'
 
 const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const { isExiting, transitionTo } = useStepTransition()
 
+  // This page only offers the Fidelity money-market route, so record both
+  // the account type and the institution (later steps key off them).
   const handleNext = () => {
     updateJourneyData('emergencyFundAccountType', 'money-market')
+    updateJourneyData('emergencyFundInstitution', FIDELITY)
     transitionTo(nextStep)
   }
 

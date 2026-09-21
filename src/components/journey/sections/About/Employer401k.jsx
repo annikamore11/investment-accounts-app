@@ -27,7 +27,6 @@ const Employer401k = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
       title="Employer 401(k) or 403(b)"
       subtitle="Does your employer offer a 401(k) or 403(b) retirement plan?"
       isExiting={isExiting}
-      exitDirection="horizontal"
     >
       <InfoBox
         type="why"

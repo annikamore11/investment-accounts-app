@@ -36,7 +36,6 @@ const BankType = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
     <StepContainer
       title="Bank Type"
       isExiting={isExiting}
-      exitDirection="horizontal"
     >
       <p className="text-lg sm:text-xl text-primary-700 max-w-4xl mx-auto mb-6 text-center">
         What type of bank do you use?

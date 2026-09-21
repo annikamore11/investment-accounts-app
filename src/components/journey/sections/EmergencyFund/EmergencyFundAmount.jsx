@@ -37,7 +37,6 @@ const EmergencyFundAmount = ({ journeyData, updateJourneyData, nextStep, prevSte
       title="Your Emergency Fund Goal"
       subtitle="Based on your monthly expenses"
       isExiting={isExiting}
-      exitDirection="horizontal"
     >
       {/* Recommendation */}
       <div className="bg-gradient-to-r from-accent-purple-50 to-accent-purple-100 border-2 border-accent-purple-300 rounded-xl p-6 mb-8">

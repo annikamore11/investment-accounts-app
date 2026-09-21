@@ -1,7 +1,20 @@
-// src/components/charts/IncomeExpensesBar.jsx
-import React from 'react'
+'use client'
+
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { AlertCircle, CheckCircle } from 'lucide-react'
+
+const CustomTooltip = ({ active, payload }) => {
+  if (!active || !payload?.length) return null
+  const data = payload[0]
+  return (
+    <div className="bg-white border border-gray-300 rounded-lg p-3 shadow-lg">
+      <p className="font-semibold text-gray-900">{data.name}</p>
+      <p className="text-sm text-gray-700 mt-1">
+        Value: <span className="font-semibold">${data.value.toLocaleString()}</span>
+      </p>
+    </div>
+  )
+}
 
 const IncomeExpensesBar = ({ journeyData }) => {
   const income = journeyData.monthlyIncome || 0
@@ -25,21 +38,6 @@ const IncomeExpensesBar = ({ journeyData }) => {
       fill: hasDeficit ? '#dc2626' : '#f59e0b'
     }
   ]
-
-  const CustomTooltip = ({ active, payload }) => {
-  if (active && payload && payload.length) {
-    const data = payload[0]
-    return (
-      <div className="bg-white border border-gray-300 rounded-lg p-3 shadow-lg">
-        <p className="font-semibold text-gray-900">{data.name}</p>
-        <p className="text-sm text-gray-700 mt-1">
-          Value: <span className="font-semibold">${data.value.toLocaleString()}</span>
-        </p>
-      </div>
-    )
-  }
-  return null
-}
 
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-xl p-6 h-full flex flex-col">

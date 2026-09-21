@@ -15,7 +15,6 @@ const EmergencyFundIntro = ({ journeyData, nextStep, prevStep }) => {
       title="Why You Need an Emergency Fund"
       subtitle="Protect yourself before you invest"
       isExiting={isExiting}
-      exitDirection="horizontal"
     >
       <InfoBox
         type="why"

@@ -1,44 +1,37 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { SendHorizonal } from 'lucide-react'
 
-const AnimatedFooter = () => {
+const Footer = () => {
   const [isVisible, setIsVisible] = useState(false)
   const footerRef = useRef(null)
 
+  // Play the line animation once, the first time the footer scrolls fully into view
   useEffect(() => {
+    const el = footerRef.current
+    if (!el) return
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !isVisible) {
+        if (entry.isIntersecting) {
           setIsVisible(true)
+          observer.disconnect()
         }
       },
-      { threshold: 1.0 } // Trigger when 30% visible
+      { threshold: 1.0 }
     )
-
-    if (footerRef.current) {
-      observer.observe(footerRef.current)
-    }
-
-    return () => {
-      if (footerRef.current) {
-        observer.unobserve(footerRef.current)
-      }
-    }
-  }, [isVisible])
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <footer ref={footerRef} className="relative bg-zinc-950 text-white py-16 overflow-hidden z-60">
-      {/* Footer content */}
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <div className="grid md:grid-cols-3 gap-8">
           <div>
-            <h3 className="font-bold text-xl mb-4">Investment Journey</h3>
-            <p className="text-gray-400">
-              Guiding you through your financial future, one step at a time.
-            </p>
+            <h3 className="font-bold text-xl mb-4">FundJoi</h3>
+            <p className="text-gray-400">Guiding you through your financial future, one step at a time.</p>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
@@ -56,21 +49,22 @@ const AnimatedFooter = () => {
             </ul>
           </div>
         </div>
-        {/* Animated line with icon */}
+
         {isVisible && (
           <div className="animated-line-container mt-16 pt-8 max-w-6xl mx-auto">
             <div className="animated-line"></div>
-              <div className="line-icon">
-                <SendHorizonal className="w-6 h-6 text-primary-500" />
-              </div>
+            <div className="line-icon">
+              <SendHorizonal className="w-6 h-6 text-primary-500" />
+            </div>
           </div>
         )}
+
         <div className="pt-8 text-center text-gray-400">
-          <p>&copy; 2025 Investment Journey. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} FundJoi. All rights reserved.</p>
         </div>
       </div>
     </footer>
   )
 }
 
-export default AnimatedFooter
+export default Footer

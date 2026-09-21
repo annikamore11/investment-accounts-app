@@ -1,42 +1,21 @@
-import React from 'react'
+'use client'
+
 import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
 import useStepTransition from '@/hooks/useStepTransition'
 import { CheckCircle, AlertCircle, ArrowRight } from 'lucide-react'
+import { accountTypeLabel } from '../EmergencyFund/accountTypes'
 
 const BrokerageAccountCheck = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const { isExiting, transitionTo } = useStepTransition()
   
-  const emergencyFundInstitution = journeyData.emergencyFundInstitution
-  const existingEmergencyFundInstitution = journeyData.existingEmergencyFundInstitution
-  const emergencyFundAccountType = journeyData.emergencyFundAccountType
-  const existingEmergencyFundType = journeyData.existingEmergencyFundType
+  // Prefer the fund they set up in this journey over one they already had
+  const institution = journeyData.emergencyFundInstitution || journeyData.existingEmergencyFundInstitution
+  const accountType = journeyData.emergencyFundAccountType || journeyData.existingEmergencyFundType
 
-  const handleNext = () => {
-    transitionTo(nextStep)
-  }
-
-  const handleBack = () => {
-    transitionTo(prevStep)
-  }
-
-  // Determine which institution they're using (prioritize current setup over existing)
-  const institution = emergencyFundInstitution || existingEmergencyFundInstitution
-  const accountType = emergencyFundAccountType || existingEmergencyFundType
-
-  // Check if they have Fidelity with Money Market
-  const hasFidelityMoneyMarket = 
-    (institution?.toLowerCase().includes('fidelity') || institution === 'fidelity') && 
-    accountType?.toLowerCase().includes('money-market')
-  
-
-  // Check if they have a different institution
-  const hasDifferentInstitution = 
-    institution && 
-    !institution.toLowerCase().includes('fidelity') && 
-    institution !== 'fidelity'
-
-  // No institution set up
+  const isFidelity = institution?.toLowerCase().includes('fidelity')
+  const hasFidelityMoneyMarket = isFidelity && accountType?.includes('money-market')
+  const hasDifferentInstitution = institution && !isFidelity
   const noInstitution = !institution
 
   return (
@@ -56,7 +35,7 @@ const BrokerageAccountCheck = ({ journeyData, updateJourneyData, nextStep, prevS
             </div>
             <div className="flex justify-between">
               <span className="font-medium">Account Type:</span>
-              <span>{accountType || 'Not specified'}</span>
+              <span>{accountType ? accountTypeLabel(accountType) : 'Not specified'}</span>
             </div>
           </div>
         </div>
@@ -152,9 +131,8 @@ const BrokerageAccountCheck = ({ journeyData, updateJourneyData, nextStep, prevS
 
       {/* Navigation */}
       <StepNavigation
-        onBack={handleBack}
-        onNext={handleNext}
-        canGoNext={true}
+        onBack={() => transitionTo(prevStep)}
+        onNext={() => transitionTo(nextStep)}
         nextLabel={hasFidelityMoneyMarket ? "Continue to Investing Steps →" : "Continue to Setup Guide →"}
         isExiting={isExiting}
       />

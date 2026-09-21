@@ -1,48 +1,35 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Info } from 'lucide-react'
+import { useState } from 'react'
 import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
 import InfoBox from '@/components/ui/InfoBox'
 import useStepTransition from '@/hooks/useStepTransition'
 
+const PAYCHECKS_PER_MONTH = {
+  weekly: 4.33,
+  biweekly: 2.17,
+  semimonthly: 2,
+  monthly: 1,
+  irregular: 1,
+}
+
 const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const [frequency, setFrequency] = useState(journeyData.payFrequency || '')
   const [paycheckAmount, setPaycheckAmount] = useState(journeyData.paycheckAmount || 0)
-  const [netIncomeSelfEmployed, setNetIncomeSelfEmployed] = useState(journeyData.netIncomeSelfEmployed || 0)
   const [customPaycheck, setCustomPaycheck] = useState('')
   const [taxPercentage, setTaxPercentage] = useState(journeyData.estimatedTaxPercentage || 25)
-  const [taxDollarAmount, setTaxDollarAmount] = useState('')
   const { isExiting, transitionTo } = useStepTransition()
 
   const isSelfEmployed = journeyData.employment === 'self-employed'
   const displayPaycheck = customPaycheck || paycheckAmount
 
-  const getMonthlyIncome = () => {
-    const multipliers = {
-      'weekly': 4.33,
-      'biweekly': 2.17,
-      'semimonthly': 2,
-      'monthly': 1,
-      'irregular': 1
-    }
-    return Math.round(displayPaycheck * (multipliers[frequency] || 1))
-  }
-
-  const monthlyIncome = getMonthlyIncome()
+  const monthlyIncome = Math.round(displayPaycheck * (PAYCHECKS_PER_MONTH[frequency] || 1))
   const afterTaxMonthly = isSelfEmployed
     ? monthlyIncome * (1 - taxPercentage / 100)
     : monthlyIncome
   const taxAmount = isSelfEmployed ? monthlyIncome - afterTaxMonthly : 0
   const leftover = afterTaxMonthly - (journeyData.monthlyExpenses || 0)
-
-  useEffect(() => {
-    if (isSelfEmployed && taxPercentage && monthlyIncome > 0) {
-      const calculatedAmount = Math.round(monthlyIncome * (taxPercentage / 100))
-      setTaxDollarAmount(calculatedAmount.toString())
-    }
-  }, [monthlyIncome, taxPercentage, isSelfEmployed])
 
   const handleNext = () => {
     updateJourneyData('payFrequency', frequency)
@@ -51,8 +38,7 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
 
     if (isSelfEmployed) {
       updateJourneyData('estimatedTaxPercentage', taxPercentage)
-      const calculatedTaxAmount = Math.round(monthlyIncome * (taxPercentage / 100))
-      updateJourneyData('estimatedTaxDollarAmount', calculatedTaxAmount)
+      updateJourneyData('estimatedTaxDollarAmount', Math.round(taxAmount))
       updateJourneyData('netIncomeSelfEmployed', afterTaxMonthly)
     }
 
@@ -84,7 +70,6 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
         ? "Let's figure out your monthly income and set aside money for taxes"
         : "Tell us about your pay schedule so we can calculate monthly income"}
       isExiting={isExiting}
-      exitDirection="horizontal"
     >
       
       {/* Pay Frequency */}

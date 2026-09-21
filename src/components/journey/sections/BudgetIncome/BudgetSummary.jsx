@@ -1,10 +1,21 @@
-import React, {useState} from 'react'
+'use client'
+
 import { DollarSign, TrendingUp, Calendar, PiggyBank, Scale, HandCoins } from 'lucide-react'
 import BudgetDonutChart from '@/components/charts/BudgetDonutChart'
-import IncomeExpensesBar from '@/components/charts/IncomeExpensesBar' 
+import IncomeExpensesBar from '@/components/charts/IncomeExpensesBar'
+import StepNavigation from '@/components/ui/StepNavigation'
+import useStepTransition from '@/hooks/useStepTransition'
+
+const PAY_FREQUENCY_LABELS = {
+  weekly: 'Weekly',
+  biweekly: 'Every 2 weeks',
+  semimonthly: 'Twice per month',
+  monthly: 'Once per month',
+  irregular: 'Irregular/Variable',
+}
 
 const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
-  const [isExiting, setIsExiting] = useState(false)
+  const { isExiting, transitionTo } = useStepTransition()
   const income = journeyData.monthlyIncome || 0
   const expenses = journeyData.monthlyExpenses || 0
   const taxes = journeyData.estimatedTaxDollarAmount || 0
@@ -14,33 +25,14 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
     : income - expenses
   const savingsRate = income > 0 ? ((leftover / income) * 100).toFixed(1) : 0
 
-  const getFrequencyLabel = (freq) => {
-    const labels = {
-      'weekly': 'Weekly',
-      'biweekly': 'Every 2 weeks',
-      'semimonthly': 'Twice per month',
-      'monthly': 'Once per month',
-      'irregular': 'Irregular/Variable'
-    }
-    return labels[freq] || freq
-  }
-
-  const handleNext = () => {
-    setIsExiting(true)
-    setTimeout(() => {
-      nextStep()
-    }, 500)
-  }
-
   return (
     <div className={`w-full max-w-6xl mx-auto transition-all duration-500 ${
       isExiting ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
     }`}>
       
-      {/* Remove auto-rows-fr, use items-start instead */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
         
-        {/* Left Column - Summary Table - Natural height, sets the standard */}
+        {/* Summary table */}
         <div className="bg-white rounded-xl shadow-xl p-4 border-2 border-gray-200">
           
           {/* Report Header */}
@@ -110,7 +102,7 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
                 <span className="font-semibold text-gray-700 text-sm">Pay Frequency</span>
               </div>
               <div className="text-right text-gray-900 text-sm">
-                {getFrequencyLabel(journeyData.payFrequency)}
+                {PAY_FREQUENCY_LABELS[journeyData.payFrequency] || journeyData.payFrequency}
               </div>
             </div>
 
@@ -134,34 +126,22 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
           </div>
         </div>
 
-        {/* Middle Column - Income vs Expenses Bar - Stretches to match left */}
         <div className="h-full">
           <IncomeExpensesBar journeyData={journeyData} />
         </div>
 
-        {/* Right Column - Expense Breakdown Donut - Stretches to match left */}
         <div className="h-full">
           <BudgetDonutChart journeyData={journeyData} />
         </div>
       </div>
 
-      {/* Navigation */}
-      <div className="flex gap-4 mt-4">
-        <button 
-          onClick={prevStep}
-          disabled={isExiting} 
-          className="btn-journey-back"
-        >
-          ← Back
-        </button>
-        <button 
-          onClick={handleNext} 
-          disabled={isExiting}
-          className="flex-1 btn-journey-next"
-        >
-          Continue to Next Section →
-        </button>
-      </div>
+      <StepNavigation
+        onBack={prevStep}
+        onNext={() => transitionTo(nextStep)}
+        isExiting={isExiting}
+        nextLabel="Continue to Next Section →"
+        className="mt-4"
+      />
     </div>
   )
 }
