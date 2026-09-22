@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Compass, Target, Timer } from 'lucide-react'
+import { ArrowRight, Compass, Target, Coins, TrendingUp } from 'lucide-react'
 
 // Lightweight scroll-reveal (IntersectionObserver), no animation library —
 // reuses the same fadeIn/slideUp vocabulary already used across the journey
@@ -41,22 +41,29 @@ const Reveal = ({ children, className = '', delayMs = 0 }) => {
 }
 
 // Niche: people just getting started, especially those who find investing
-// overwhelming or confusing — not "beginners" in the abstract.
+// overwhelming or confusing — not "beginners" in the abstract. Four pillars
+// of the core value prop: simple, personalized, actionable, and a path
+// forward — not just "beginner-friendly."
 const FEATURES = [
   {
     icon: Compass,
-    title: 'Built for total beginners',
-    desc: "No prior knowledge assumed, no jargon left unexplained. We start exactly where you are, even if you've never opened a brokerage account.",
+    title: 'Radically simple',
+    desc: "No jargon left unexplained, no 47-tab research rabbit hole. A few plain questions about your life, and we handle the rest.",
   },
   {
     icon: Target,
-    title: 'Exact steps, not just advice',
-    desc: "We don't just say \"open a Roth IRA.\" We walk you through exactly how, with the real account and provider steps in order.",
+    title: 'Built around you',
+    desc: 'Every recommendation is based on your real income, expenses, and goals, not generic advice written for someone else.',
   },
   {
-    icon: Timer,
-    title: 'About 10 minutes to a real plan',
-    desc: 'Answer a few questions about your income and expenses and walk away with an actual plan, not just more to read.',
+    icon: Coins,
+    title: 'Free money, fast',
+    desc: "Finish the journey with real accounts open and money that's already yours claimed, like your 401(k) match, not just a to-do list.",
+  },
+  {
+    icon: TrendingUp,
+    title: 'A clear next step',
+    desc: "Once the basics are handled, we point you toward what's next: passive income, growing your retirement, and beyond.",
   },
 ]
 
@@ -89,12 +96,11 @@ export default function MarketingLanding() {
                 className="animate-underline absolute left-0 -bottom-2 w-full h-auto pointer-events-none"
               />
             </span>
-            . In about 10 minutes.
+            . In 10 minutes.
           </h1>
           <p className="max-w-xl text-primary-300 text-lg md:text-xl mb-8">
-            Most advice stops at "you should open a Roth IRA." We don't just tell you what to
-            do. We show you the exact steps to actually open the accounts, in order, using
-            your own numbers. No bank account linking, no jargon, just action.
+            Simple, personalized to your numbers, and actually actionable. From retirement to
+            savings, we'll help you feel confident and get set up. Watch money start working for you.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
@@ -113,19 +119,20 @@ export default function MarketingLanding() {
 
       {/* ── Bridging the Gap ── */}
       <section id="how-it-works" className="bg-primary-50 py-20 px-6 md:px-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <Reveal>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-900 mb-4">
               Investing doesn't have to feel overwhelming.
             </h2>
             <p className="text-base md:text-lg text-primary-700 leading-relaxed mb-12 max-w-2xl">
               Most advice stops at telling you that you should open an account. FundJoi is
-              built for the moment after that: no more articles telling you what to do, just
-              the exact steps for how to actually do it, in order.
+              built for the moment after that: a simple, personalized plan with the exact
+              steps to actually do it, so you finish having claimed free money, not just
+              read about it.
             </p>
           </Reveal>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {FEATURES.map((feature, i) => (
               <Reveal key={feature.title} delayMs={i * 100}>
                 <div className="bg-white rounded-lg border border-primary-200 p-6 h-full">

@@ -40,7 +40,7 @@ const Navbar = () => {
               <div className="flex items-center space-x-4">
                 <button
                   onClick={handleSignOut}
-                  className="px-5 py-2 rounded-lg font-semibold text-sm bg-accent-green-600 text-primary-50 hover:bg-accent-green-700 transition-colors"
+                  className="px-5 py-2 rounded-lg text-sm bg-accent-green-600 text-primary-50 hover:bg-accent-green-700 transition-colors"
                 >
                   Sign Out
                 </button>
@@ -49,13 +49,13 @@ const Navbar = () => {
               <div className="flex items-center space-x-4">
                 <Link
                   href="/login"
-                  className="px-5 py-2 rounded-lg font-semibold text-sm border border-accent-green-500 text-accent-green-400 hover:bg-accent-green-950/40 transition-colors"
+                  className="px-5 py-2 rounded-lg text-sm border border-accent-green-500 text-accent-green-400 hover:bg-accent-green-950/40 transition-colors"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/login?mode=signup"
-                  className="px-5 py-2 rounded-lg font-semibold text-sm bg-accent-green-600 text-primary-50 hover:bg-accent-green-700 transition-colors"
+                  className="px-5 py-2 rounded-lg text-sm bg-accent-green-600 text-primary-50 hover:bg-accent-green-700 transition-colors"
                 >
                   Sign Up
                 </Link>

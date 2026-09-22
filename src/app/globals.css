@@ -588,6 +588,38 @@
     max-width: 100%;
     background-color: #09090b;
     overflow-y: scroll;
+    /* Match the themed scrollbar below (.journey-theme) — without this,
+       the page-level scrollbar (html/body's own, used on the landing page
+       and anywhere content isn't locked inside a journey-theme-scoped
+       h-screen shell) falls back to the browser's default off-white
+       track, which reads as a separate white scroll strip against the
+       near-black background instead of the same scrollbar just being
+       themed. */
+    scrollbar-width: thin;
+    scrollbar-color: #4b5563 #18181b;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  html::-webkit-scrollbar-track,
+  body::-webkit-scrollbar-track {
+    background: #18181b;
+  }
+
+  html::-webkit-scrollbar-thumb,
+  body::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+    border-radius: 9999px;
+    border: 2px solid #18181b;
+  }
+
+  html::-webkit-scrollbar-thumb:hover,
+  body::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280;
   }
 
   body {

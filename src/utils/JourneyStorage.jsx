@@ -32,6 +32,7 @@ export const loadJourneyFromDatabase = async () => {
         journey_data: doc.journeyData,
         current_section: doc.currentSection,
         current_step: doc.currentStep,
+        last_updated: doc.lastUpdated,
       },
     }
   } catch (error) {
