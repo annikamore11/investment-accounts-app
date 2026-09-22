@@ -2,23 +2,40 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import { UserButton } from '@clerk/nextjs'
+import { dark } from '@clerk/themes'
 import { useAuth } from '@/context/AuthContext'
 import { Menu, X } from 'lucide-react'
 
+// Themes Clerk's own avatar+name popover to sit on the dark nav bar instead
+// of Clerk's light default — handles the avatar image, initials fallback,
+// "Manage account"/"Sign out" popover, and sign-out redirect itself, so
+// there's no custom dropdown to build or keep in sync with Clerk's UI.
+//
+// baseTheme: dark (not just an `elements` className override) matters here:
+// Clerk's default text color is `inherit`, and nothing in the navbar sets
+// an ambient light text color, so without this the name renders as dark
+// text on the dark navbar — present in the DOM, just invisible. The dark
+// base theme sets a consistent light-on-dark palette for both the navbar
+// trigger AND the popover card (which needs the opposite background), so
+// overriding just one element's text color would have fixed the trigger
+// while breaking the popover's own contrast.
+const userButtonAppearance = {
+  baseTheme: dark,
+  elements: {
+    userButtonOuterIdentifier: 'text-primary-50 text-sm font-medium',
+    avatarBox: 'w-9 h-9',
+  },
+}
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const { user, signOut } = useAuth()
-  const router = useRouter()
+  const { user } = useAuth()
   const pathname = usePathname()
   // /journey already has its own in-page navigation, so the nav's link
   // there would just duplicate what's on screen.
   const showJourneyLink = pathname !== '/journey'
-
-  const handleSignOut = async () => {
-    await signOut()
-    router.push('/')
-  }
 
   return (
     <nav className="journey-theme bg-primary-900 z-50 fixed top-0 left-0 right-0 border-b border-primary-700/60">
@@ -37,14 +54,7 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-4">
             {user ? (
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={handleSignOut}
-                  className="px-5 py-2 rounded-lg text-sm bg-accent-green-600 text-primary-50 hover:bg-accent-green-700 transition-colors"
-                >
-                  Sign Out
-                </button>
-              </div>
+              <UserButton afterSignOutUrl="/" showName appearance={userButtonAppearance} />
             ) : (
               <div className="flex items-center space-x-4">
                 <Link
@@ -63,26 +73,33 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile: signed in, just the avatar — its own popover covers
+              account/sign-out, and there's nowhere else to send a signed-in
+              user (they get home via the logo or the back button). Signed
+              out, the hamburger still opens Home/Start Journey/Login. */}
           <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label={isOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={isOpen}
-              className="min-h-11 min-w-11 flex items-center justify-center -mr-2 text-primary-100 hover:text-primary-50"
-            >
-              {isOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
+            {user ? (
+              <UserButton afterSignOutUrl="/" appearance={userButtonAppearance} />
+            ) : (
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                aria-label={isOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={isOpen}
+                className="min-h-11 min-w-11 flex items-center justify-center -mr-2 text-primary-100 hover:text-primary-50"
+              >
+                {isOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      {isOpen && (
+      {/* Mobile Navigation (signed-out only) */}
+      {isOpen && !user && (
         <div className="md:hidden bg-primary-800 border-t border-primary-700/60">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link
@@ -98,28 +115,16 @@ const Navbar = () => {
                 className="block text-primary-100 hover:text-primary-50 hover:bg-primary-700/60 px-3 py-2 rounded-md font-medium"
                 onClick={() => setIsOpen(false)}
               >
-                {user ? 'Continue Journey' : 'Start Journey'}
+                Start Journey
               </Link>
             )}
-            {user ? (
-              <button
-                onClick={() => {
-                  handleSignOut()
-                  setIsOpen(false)
-                }}
-                className="block w-full text-left text-primary-100 hover:text-primary-50 hover:bg-primary-700/60 px-3 py-2 rounded-md font-medium"
-              >
-                Sign Out
-              </button>
-            ) : (
-              <Link
-                href="/login"
-                className="block text-primary-100 hover:text-primary-50 hover:bg-primary-700/60 px-3 py-2 rounded-md font-medium"
-                onClick={() => setIsOpen(false)}
-              >
-                Login
-              </Link>
-            )}
+            <Link
+              href="/login"
+              className="block text-primary-100 hover:text-primary-50 hover:bg-primary-700/60 px-3 py-2 rounded-md font-medium"
+              onClick={() => setIsOpen(false)}
+            >
+              Login
+            </Link>
           </div>
         </div>
       )}

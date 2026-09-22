@@ -44,8 +44,13 @@ export default function Home() {
   // there's no server-render to mismatch against.
   const [guestJourney] = useState(() => (user ? null : readGuestJourney()))
 
-  if (authLoading) return null
-  if (user && doc === undefined) return null
+  // min-h-screen, not null: rendering nothing here collapses <main> to zero
+  // height for the brief window auth/Convex are still resolving, which
+  // pulls everything below it (the footer included) up to the top of the
+  // page — enough for a scroll-reveal observer watching the footer to see
+  // it as "in view" immediately and fire before real content ever renders.
+  if (authLoading) return <div className="min-h-screen" />
+  if (user && doc === undefined) return <div className="min-h-screen" />
 
   const rawData = user ? doc?.journeyData : guestJourney?.data
   const journeyData = { ...INITIAL_JOURNEY_DATA, ...(rawData || {}) }
