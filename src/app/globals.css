@@ -552,6 +552,46 @@
   animation-delay: 1s;
 }
 
+/* Hero paper airplane (HeroPlaneFlight.jsx): rides a CSS motion path
+   that enters off-screen on the left, climbs up and across the full
+   width of the hero — banking through one loose loop partway through —
+   and exits off-screen on the right, trail drawing in behind it via the
+   same synced-duration technique as the footer/sidebar
+   (a masked dashed line revealed by animating stroke-dashoffset on the
+   mask's own stroke, not the visible dashes — the visible dashes never
+   move). Starts early (0.8s) so it's already moving well before the
+   underline finishes (2.5s), and the ease is gentle at both ends
+   (cubic-bezier's first/last control points close to the midline) rather
+   than a sharp dart-then-stop, so the whole 6.5s reads as one unhurried
+   glide. Path here must match FLIGHT_PATH in HeroPlaneFlight.jsx exactly
+   — coordinates are in the 0-1000/0-400 viewBox space that maps directly
+   to 0-100% of the hero's width/height (preserveAspectRatio="none"), so
+   x < 0 and x > 1000 are what put the plane fully off-screen. */
+@keyframes heroPlaneFly {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+.hero-plane-fly {
+  offset-path: path(
+    'M -150 420 C -36 325.1 169.3 301.3 351.8 271.6 C 534.2 242 659.6 180.3 602.6 120.9 C 552.5 68.7 415.6 71.1 388.2 130.4 C 356.3 201.6 511.4 268.1 671.1 244.3 C 842.1 218.2 803.3 111.4 844.4 54.4 C 890 -7.3 1013.2 -31 1150 -50'
+  );
+  offset-distance: 0%;
+  offset-rotate: auto;
+  animation: heroPlaneFly 6.5s cubic-bezier(0.45, 0, 0.35, 1) 0.8s both;
+}
+
+@keyframes heroTrailDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.hero-trail-draw {
+  animation: heroTrailDraw 6.5s cubic-bezier(0.45, 0, 0.35, 1) 0.8s both;
+}
+
 /* Journey sidebar: clicking a section to expand it grows that section's
    own connector line into place, paper airplane riding its leading edge —
    the vertical counterpart of the footer's line-and-icon further down this
@@ -902,7 +942,9 @@
   .animated-line,
   .line-icon,
   .rail-line-grow,
-  .rail-plane-fall {
+  .rail-plane-fall,
+  .hero-plane-fly,
+  .hero-trail-draw {
     animation: none !important;
   }
 
@@ -921,5 +963,13 @@
   .rail-plane-fall {
     top: calc(100% - 16px);
     opacity: 1;
+  }
+
+  .hero-plane-fly {
+    offset-distance: 100%;
+  }
+
+  .hero-trail-draw {
+    stroke-dashoffset: 0;
   }
 }

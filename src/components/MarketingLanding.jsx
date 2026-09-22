@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Compass, Target, Coins, TrendingUp } from 'lucide-react'
+import HeroPlaneFlight from './HeroPlaneFlight'
 
 // Lightweight scroll-reveal (IntersectionObserver), no animation library —
 // reuses the same fadeIn/slideUp vocabulary already used across the journey
@@ -77,7 +78,8 @@ export default function MarketingLanding() {
   return (
     <div className="journey-theme">
       {/* ── Hero ── */}
-      <section className="journey-background min-h-screen flex items-center pt-24 pb-16">
+      <section className="relative journey-background min-h-screen flex items-center pt-24 pb-16 overflow-hidden">
+        <HeroPlaneFlight />
         <div className="max-w-4xl mx-auto px-6 md:px-8 w-full">
           <img
             src="/assets/logo/Sprout.svg"
