@@ -57,9 +57,9 @@ const Employer401kFollowup = ({
   if (!has401k) {
     return (
       <StepContainer title="Next Steps" isExiting={isExiting}>
-        <div className="bg-purple-50 border border-purple-200 rounded-xl p-6 text-center">
-          <AlertCircle className="w-8 h-8 text-purple-500 mx-auto mb-3" />
-          <p className="text-lg text-gray-800 mb-6">
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
+          <AlertCircle className="w-8 h-8 text-amber-500 mx-auto mb-3" />
+          <p className="text-lg text-primary-800 mb-6">
             You indicated that you&apos;re {EMPLOYMENT_LABELS[journeyData.employment] || journeyData.employment} and{' '}
             <strong>do not have a 401(k)</strong>.
           </p>

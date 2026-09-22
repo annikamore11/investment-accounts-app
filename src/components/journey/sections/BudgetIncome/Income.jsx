@@ -5,6 +5,7 @@ import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
 import InfoBox from '@/components/ui/InfoBox'
 import useStepTransition from '@/hooks/useStepTransition'
+import { getDebtMinPayments } from '@/utils/budgetMath'
 
 const PAYCHECKS_PER_MONTH = {
   weekly: 4.33,
@@ -29,7 +30,9 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
     ? monthlyIncome * (1 - taxPercentage / 100)
     : monthlyIncome
   const taxAmount = isSelfEmployed ? monthlyIncome - afterTaxMonthly : 0
-  const leftover = afterTaxMonthly - (journeyData.monthlyExpenses || 0)
+  const debtMinPayments = getDebtMinPayments(journeyData)
+  const totalExpenses = (journeyData.monthlyExpenses || 0) + debtMinPayments
+  const leftover = afterTaxMonthly - totalExpenses
 
   const handleNext = () => {
     updateJourneyData('payFrequency', frequency)
@@ -83,7 +86,7 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
             <button
               key={option.value}
               onClick={() => setFrequency(option.value)}
-              className={`p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 text-center ${
+              className={`p-3 sm:p-4 rounded-lg border-2 transition-all duration-300 text-center ${
                 frequency === option.value
                   ? 'border-accent-green-600 bg-accent-green-50 shadow-lg scale-105'
                   : 'border-primary-400 hover:border-primary-600 hover:bg-white bg-primary-50 hover:shadow-md hover:scale-102'
@@ -112,7 +115,7 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
           </label>
 
           {/* Display Box */}
-          <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-4 sm:p-6 mb-4 text-center border-2 border-accent-green-700">
+          <div className="bg-gradient-to-r from-accent-green-50 to-accent-green-100 rounded-xl p-4 sm:p-6 mb-4 text-center border-2 border-accent-green-700">
             <p className="text-xs sm:text-sm text-primary-700 mb-1">
               {frequency === 'irregular' ? 'Monthly Estimate' : 'Per Paycheck'}
             </p>
@@ -149,7 +152,7 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
 
       {/* Self-Employed Tax Estimation */}
       {isSelfEmployed && frequency && displayPaycheck > 0 && (
-        <div className="bg-accent-purple-50 border-2 border-accent-purple-300 rounded-xl p-4 sm:p-6 mb-6 animate-fadeIn">
+        <div className="bg-amber-50 border-2 border-amber-300 rounded-xl p-4 sm:p-6 mb-6 animate-fadeIn">
           <h3 className="font-bold text-primary-900 mb-3">Estimated Tax Percentage</h3>
           <p className="text-sm text-primary-700 mb-4">
             Self-employment taxes are typically 25-35% of your income. Choose the percentage you set aside.
@@ -187,13 +190,13 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
                     setTaxPercentage(value === '' ? '' : parseInt(value))
                   }
                 }}
-                className="flex-1 text-xl font-bold p-2 border-2 border-primary-300 rounded-lg focus:border-accent-purple-500 focus:outline-none bg-white"
+                className="flex-1 text-xl font-bold p-2 border-2 border-primary-300 rounded-lg focus:border-amber-500 focus:outline-none bg-white"
               />
               <span className="text-primary-600 ml-2 font-semibold">%</span>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-4 border border-accent-purple-300">
+          <div className="bg-white rounded-lg p-4 border border-amber-300">
             <div className="grid grid-cols-2 gap-4 text-sm mb-3">
               <div>
                 <p className="text-primary-600 mb-1">Monthly Gross</p>
@@ -201,7 +204,7 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
               </div>
               <div>
                 <p className="text-primary-600 mb-1">Taxes ({taxPercentage}%)</p>
-                <p className="font-bold text-red-700">-${taxAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+                <p className="font-bold text-rust-700">-${taxAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
               </div>
             </div>
             <div className="border-t border-primary-300 pt-3">
@@ -218,19 +221,19 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
       {journeyData.monthlyExpenses && frequency && displayPaycheck > 0 && (
         <div className={`rounded-xl p-4 mb-6 border-2 ${
           leftover >= 0
-            ? 'bg-gradient-to-r from-green-50 to-green-100 border-accent-green-700'
-            : 'bg-red-50 border-red-300'
+            ? 'bg-gradient-to-r from-accent-green-50 to-accent-green-100 border-accent-green-700'
+            : 'bg-rust-50 border-rust-300'
         }`}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-primary-700 mb-1">
-                After {isSelfEmployed && `taxes and `}expenses of ${journeyData.monthlyExpenses.toLocaleString()}
+                After {isSelfEmployed && `taxes and `}expenses{debtMinPayments > 0 ? ' & minimum debt payments' : ''} of ${totalExpenses.toLocaleString()}
               </p>
               <p className="text-xl font-bold">
                 {leftover >= 0 ? (
                   <span className="text-accent-green-700">${leftover.toLocaleString(undefined, {maximumFractionDigits: 0})} left over per month</span>
                 ) : (
-                  <span className="text-red-700">${Math.abs(leftover).toLocaleString(undefined, {maximumFractionDigits: 0})} short per month</span>
+                  <span className="text-rust-700">${Math.abs(leftover).toLocaleString(undefined, {maximumFractionDigits: 0})} short per month</span>
                 )}
               </p>
             </div>

@@ -7,9 +7,9 @@ import useStepTransition from '@/hooks/useStepTransition'
 const RETIREMENT_GOAL_PERCENT = 15
 
 const StatCard = ({ label, value, highlight }) => (
-  <div className={`p-4 rounded-xl border ${highlight ? 'bg-red-100 border-red-200' : 'bg-gray-100 border-gray-200'}`}>
-    <p className="text-sm text-gray-600">{label}</p>
-    <p className={`text-2xl font-bold ${highlight ? 'text-red-700' : 'text-gray-800'}`}>{value}%</p>
+  <div className={`p-4 rounded-xl border ${highlight ? 'bg-rust-100 border-rust-200' : 'bg-primary-100 border-primary-200'}`}>
+    <p className="text-sm text-primary-600">{label}</p>
+    <p className={`text-2xl font-bold ${highlight ? 'text-rust-700' : 'text-primary-800'}`}>{value}%</p>
   </div>
 )
 
@@ -33,7 +33,7 @@ const RetirementOutcomes = ({ journeyData, nextStep, prevStep }) => {
 
         <div
           className={`p-4 rounded-lg border text-center ${
-            missingMatch ? 'border-red-700 bg-red-100 text-red-700' : 'border-green-500 bg-green-100 text-green-700'
+            missingMatch ? 'border-rust-700 bg-rust-100 text-rust-700' : 'border-accent-green-500 bg-accent-green-100 text-accent-green-700'
           }`}
         >
           {missingMatch ? (
@@ -53,27 +53,27 @@ const RetirementOutcomes = ({ journeyData, nextStep, prevStep }) => {
         </div>
 
         {belowGoal && (
-          <div className="p-4 rounded-lg border border-red-700 bg-red-100 text-center text-lg text-red-700">
+          <div className="p-4 rounded-lg border border-rust-700 bg-rust-100 text-center text-lg text-rust-700">
             You are {RETIREMENT_GOAL_PERCENT - total}% away from the {RETIREMENT_GOAL_PERCENT}% goal.
           </div>
         )}
 
         <div className="space-y-1">
-          <div className="flex justify-between text-sm font-semibold text-gray-600">
+          <div className="flex justify-between text-sm font-semibold text-primary-600">
             <span>Progress Toward {RETIREMENT_GOAL_PERCENT}% Goal</span>
             <span>{total}% / {RETIREMENT_GOAL_PERCENT}%</span>
           </div>
-          <div className="relative h-4 w-full bg-gray-100 rounded-full overflow-hidden">
-            <div className="absolute top-0 left-0 h-full bg-green-500 opacity-60" style={{ width: pct(total) }} />
-            <div className="absolute top-0 left-0 h-full bg-green-800" style={{ width: pct(user) }} />
+          <div className="relative h-4 w-full bg-primary-100 rounded-full overflow-hidden">
+            <div className="absolute top-0 left-0 h-full bg-accent-green-500 opacity-60" style={{ width: pct(total) }} />
+            <div className="absolute top-0 left-0 h-full bg-accent-green-800" style={{ width: pct(user) }} />
           </div>
-          <div className="flex gap-6 text-sm text-gray-600 leading-tight">
+          <div className="flex gap-6 text-sm text-primary-600 leading-tight">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-800 rounded-sm" />
+              <div className="w-3 h-3 bg-accent-green-800 rounded-sm" />
               <span>Your Contribution</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-500 rounded-sm opacity-60" />
+              <div className="w-3 h-3 bg-accent-green-500 rounded-sm opacity-60" />
               <span>Company Match</span>
             </div>
           </div>

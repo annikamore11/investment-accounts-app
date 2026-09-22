@@ -81,23 +81,23 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
       direction={direction}
     >
       <div className="space-y-6">
-        <p className="text-gray-700 leading-relaxed">
+        <p className="text-primary-700 leading-relaxed">
           Let's start with your main investment goal. Include how much you want to save and when you'd like to reach it.
         </p>
 
         {/* Goal form */}
-        <div className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-accent-green-500 transition-colors">
+        <div className="bg-white border-2 border-primary-200 rounded-xl p-5 hover:border-accent-green-500 transition-colors">
           <div className="flex items-center gap-2 mb-4">
             <div className="bg-accent-green-100 p-2 rounded-lg">
               <Target className="w-4 h-4 text-accent-green-700" />
             </div>
-            <span className="font-semibold text-gray-900">Your Investment Goal</span>
+            <span className="font-semibold text-primary-900">Your Investment Goal</span>
           </div>
 
           <div className="space-y-4">
             {/* Goal name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-primary-700 mb-2">
                 What are you saving for?
               </label>
               <input
@@ -105,18 +105,18 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
                 value={goal.name}
                 onChange={(e) => updateGoal('name', e.target.value)}
                 placeholder="House down payment, kids' college, wedding..."
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-green-500 focus:border-accent-green-500 transition-all"
+                className="w-full px-4 py-3 border-2 border-primary-300 rounded-lg focus:ring-2 focus:ring-accent-green-500 focus:border-accent-green-500 transition-all"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Target amount */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-primary-700 mb-2">
                   Target amount
                 </label>
                 <div className="relative">
-                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary-400" />
                   <input
                     type="text"
                     value={goal.amount}
@@ -127,13 +127,13 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
                     placeholder="25000"
                     className={`w-full pl-9 pr-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-accent-green-500 transition-all ${
                       errors.amount
-                        ? 'border-red-300 focus:border-red-500'
-                        : 'border-gray-300 focus:border-accent-green-500'
+                        ? 'border-rust-300 focus:border-rust-500'
+                        : 'border-primary-300 focus:border-accent-green-500'
                     }`}
                   />
                 </div>
                 {errors.amount && (
-                  <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                  <div className="flex items-center gap-1 mt-1 text-rust-600 text-xs">
                     <AlertCircle className="w-3 h-3" />
                     <span>{errors.amount}</span>
                   </div>
@@ -142,11 +142,11 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
 
               {/* Timeframe */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-primary-700 mb-2">
                   Years until you need it
                 </label>
                 <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary-400" />
                   <input
                     type="text"
                     value={goal.timeframe}
@@ -154,13 +154,13 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
                     placeholder="<1, 5, 10, none"
                     className={`w-full pl-9 pr-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-accent-green-500 transition-all ${
                       errors.timeframe
-                        ? 'border-red-300 focus:border-red-500'
-                        : 'border-gray-300 focus:border-accent-green-500'
+                        ? 'border-rust-300 focus:border-rust-500'
+                        : 'border-primary-300 focus:border-accent-green-500'
                     }`}
                   />
                 </div>
                 {errors.timeframe && (
-                  <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                  <div className="flex items-center gap-1 mt-1 text-rust-600 text-xs">
                     <AlertCircle className="w-3 h-3" />
                     <span>{errors.timeframe}</span>
                   </div>
@@ -171,11 +171,11 @@ const GoalSelection = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
         </div>
 
         {/* Info box about adding more goals later */}
-        <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+        <div className="bg-accent-green-50 rounded-lg p-4 border border-accent-green-200">
           <div className="flex gap-3">
-            <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-            <div className="text-sm text-gray-700 space-y-1">
-              <p className="font-medium text-gray-900">Have multiple goals?</p>
+            <Info className="w-5 h-5 text-accent-green-600 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-primary-700 space-y-1">
+              <p className="font-medium text-primary-900">Have multiple goals?</p>
               <p>
                 For now, choose your most important goal to help you get started. You'll be able to add more goals in your dashboard, and we'll provide advice on how to organize and prioritize multiple investment goals.
               </p>

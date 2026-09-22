@@ -2,7 +2,6 @@ import EmploymentStatus from './Employment'
 import Employer401k from './Employer401k'
 import AgeRange from './AgeRange'
 import BankType from './BankType'
-import BankInstitution from './BankInstitution'
 import AboutSummary from './AboutSummary'
 
 export const aboutConfig = {
@@ -18,7 +17,6 @@ export const aboutConfig = {
       : []),
     { name: 'Age Range', Component: AgeRange },
     { name: 'Bank Type', Component: BankType },
-    { name: 'Bank Institution', Component: BankInstitution },
     { name: 'Summary', Component: AboutSummary },
   ],
 }

@@ -41,18 +41,18 @@ const Employer401k = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
 
       {/* Warning if no 401k */}
       {has401k === false && (
-        <div className="bg-orange-50 border-2 border-orange-300 rounded-xl p-4 sm:p-5 mb-6 animate-fadeIn">
+        <div className="bg-amber-50 border-2 border-amber-300 rounded-xl p-4 sm:p-5 mb-6 animate-fadeIn">
           <div className="flex items-start space-x-3">
-            <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 flex-shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-orange-900 mb-2">Worth Checking!</h3>
-              <p className="text-sm text-orange-800 mb-3">
+              <h3 className="font-semibold text-amber-900 mb-2">Worth Checking!</h3>
+              <p className="text-sm text-amber-800 mb-3">
                 Not sure if your employer offers a 401(k)? We highly recommend checking with your HR department or benefits portal.
               </p>
-              <p className="text-sm text-orange-800 mb-3">
+              <p className="text-sm text-amber-800 mb-3">
                 Employer 401(k) plans often include free matching contributions—which can significantly accelerate your wealth-building journey.
               </p>
-              <p className="text-sm text-orange-800 mt-3">
+              <p className="text-sm text-amber-800 mt-3">
                 Feel free to continue and come back to update your answer once you've confirmed.
               </p>
             </div>

@@ -22,11 +22,11 @@ const RetirementOptionsPage = ({ journeyData, updateJourneyData, nextStep, prevS
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
             <h2 className="text-xl font-bold text-accent-green-700 mb-3">Increase Your 401(k) Contribution</h2>
-            <p className="text-gray-900">You currently contribute {user}% to your 401(k).</p>
+            <p className="text-primary-900">You currently contribute {user}% to your 401(k).</p>
           </div>
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
             <h2 className="text-xl font-bold text-accent-green-700 mb-3">Open a Roth IRA</h2>
-            <p className="text-gray-900">Start building tax-free retirement savings.</p>
+            <p className="text-primary-900">Start building tax-free retirement savings.</p>
           </div>
         </div>
 
@@ -34,18 +34,18 @@ const RetirementOptionsPage = ({ journeyData, updateJourneyData, nextStep, prevS
           type="button"
           onClick={() => setOpen(!open)}
           aria-expanded={open}
-          className="relative w-full bg-white rounded-xl border border-gray-300 p-4 flex justify-center items-center"
+          className="relative w-full bg-white rounded-xl border border-primary-300 p-4 flex justify-center items-center"
         >
           <span className="text-xl font-bold text-accent-green-700">Which option is better for me?</span>
           <ChevronDown
-            className={`h-5 w-5 text-gray-700 transition-transform absolute right-4 top-1/2 -translate-y-1/2 ${open ? 'rotate-180' : ''}`}
+            className={`h-5 w-5 text-primary-700 transition-transform absolute right-4 top-1/2 -translate-y-1/2 ${open ? 'rotate-180' : ''}`}
           />
         </button>
 
         {open && (
-          <div className="text-left bg-white border border-gray-200 p-4 rounded-xl animate-fadeIn">
-            <p className="text-sm text-gray-800 mb-3">The best option depends on a few factors:</p>
-            <ul className="list-disc pl-5 text-sm text-gray-800 space-y-2">
+          <div className="text-left bg-white border border-primary-200 p-4 rounded-xl animate-fadeIn">
+            <p className="text-sm text-primary-800 mb-3">The best option depends on a few factors:</p>
+            <ul className="list-disc pl-5 text-sm text-primary-800 space-y-2">
               <li><strong>Increase your 401(k)</strong> if you aren&apos;t getting the full employer match yet.</li>
               <li><strong>Open a Roth IRA</strong> if you want tax-free withdrawals later.</li>
               <li>You can do both — many people contribute to a 401(k) <em>and</em> a Roth IRA.</li>

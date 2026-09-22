@@ -34,33 +34,33 @@ const RiskTolerance = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
       <div className="space-y-6">
         {/* Description */}
         <div className="space-y-4">
-          <p className="text-gray-700 leading-relaxed">
+          <p className="text-primary-700 leading-relaxed">
             Investment risk tolerance measures how comfortable you are with the possibility of your investments losing value in the short term for the potential of higher returns over time.
           </p>
           
-          <div className="bg-gray-50 rounded-lg p-5 border border-gray-200 space-y-3">
+          <div className="bg-primary-50 rounded-lg p-5 border border-primary-200 space-y-3">
             <div>
-              <span className="font-semibold text-gray-900">Level 1:</span>
-              <span className="text-gray-700 ml-2">You prioritize protecting your money above all else and cannot tolerate seeing it decrease, even temporarily.</span>
+              <span className="font-semibold text-primary-900">Level 1:</span>
+              <span className="text-primary-700 ml-2">You prioritize protecting your money above all else and cannot tolerate seeing it decrease, even temporarily.</span>
             </div>
             <div>
-              <span className="font-semibold text-gray-900">Levels 2-6:</span>
-              <span className="text-gray-700 ml-2">You can handle some market fluctuations and are willing to accept moderate ups and downs for better long-term growth potential.</span>
+              <span className="font-semibold text-primary-900">Levels 2-6:</span>
+              <span className="text-primary-700 ml-2">You can handle some market fluctuations and are willing to accept moderate ups and downs for better long-term growth potential.</span>
             </div>
             <div>
-              <span className="font-semibold text-gray-900">Levels 7-10:</span>
-              <span className="text-gray-700 ml-2">You're comfortable with significant market volatility and are willing to accept large swings in your account balance to maximize long-term growth.</span>
+              <span className="font-semibold text-primary-900">Levels 7-10:</span>
+              <span className="text-primary-700 ml-2">You're comfortable with significant market volatility and are willing to accept large swings in your account balance to maximize long-term growth.</span>
             </div>
           </div>
 
-          <p className="text-sm text-gray-600 italic">
+          <p className="text-sm text-primary-600 italic">
             There's no right or wrong answer—everyone has different comfort levels with risk.
           </p>
         </div>
 
         {/* Risk Level Display */}
         <div className={`bg-accent-green-100 border-2 border-accent-green-700 rounded-xl p-8 text-center transition-all`}>
-          <div className={`text-6xl font-bold mb-2 text-accent-green-700`}>
+          <div className={`font-display text-6xl font-bold mb-2 text-accent-green-700 tabular-nums`}>
             {riskLevel}
           </div>
           <div className={`text-2xl font-semibold text-accent-green-700`}>
@@ -70,15 +70,18 @@ const RiskTolerance = ({ journeyData, updateJourneyData, nextStep, prevStep }) =
 
         {/* Slider */}
         <div>
+          <label htmlFor="risk-tolerance-slider" className="sr-only">Risk tolerance level, 1 to 10</label>
           <input
+            id="risk-tolerance-slider"
             type="range"
             min="1"
             max="10"
             value={riskLevel}
             onChange={(e) => setRiskLevel(parseInt(e.target.value))}
-            className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-accent-green-600"
+            aria-valuetext={`${riskLevel}, ${getRiskLabel()}`}
+            className="w-full h-3 bg-primary-200 rounded-lg appearance-none cursor-pointer accent-accent-green-600"
           />
-          <div className="flex justify-between text-sm text-gray-600 mt-2">
+          <div className="flex justify-between text-sm text-primary-600 mt-2" aria-hidden="true">
             <span>1</span>
             <span>2</span>
             <span>3</span>

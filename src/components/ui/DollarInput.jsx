@@ -31,7 +31,7 @@ export default function DollarInput({
 
   return (
     <div
-      className={`flex items-center gap-2 bg-white rounded-xl p-4 border-2 border-primary-300 focus-within:border-accent-green-500 transition-all duration-300 ${className}`}
+      className={`flex items-center gap-2 bg-primary-50 rounded-xl p-4 border-2 border-primary-300 focus-within:border-accent-green-500 transition-all duration-300 ${className}`}
     >
       <span className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-800">$</span>
       <input

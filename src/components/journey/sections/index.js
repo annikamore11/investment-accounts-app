@@ -25,9 +25,6 @@ export const INITIAL_JOURNEY_DATA = {
   hasEmployer401k: null,
   age: '',
   bankType: '',
-  bankInstitution: null,
-  bankInstitutionName: '',
-  bankVerificationMethod: '',
 
   // Expenses & Income
   needsExpenseHelp: null,
@@ -39,6 +36,8 @@ export const INITIAL_JOURNEY_DATA = {
   estimatedTaxPercentage: '',
   estimatedTaxDollarAmount: '',
   netIncomeSelfEmployed: '',
+  hasDebt: null,
+  debts: [], // [{ name, balance, apr, minPayment }]
 
   // Emergency Fund
   hasEmergencyFund: null,
@@ -75,3 +74,17 @@ export const INITIAL_JOURNEY_DATA = {
 // Each section's getSteps(journeyData) returns [{ name, Component }] so the
 // sidebar labels and the rendered steps always come from the same list.
 export const getSectionSteps = (section, journeyData) => section.getSteps(journeyData)
+
+// Shared by the sidebar and the overall progress tracker. Steps can
+// disappear when earlier answers change (e.g. employment), so completed
+// indices beyond the current step count are ignored rather than counted.
+export const getSectionCompletion = (section, journeyData) => {
+  const steps = getSectionSteps(section, journeyData)
+  const completedSteps = (journeyData.completedSteps?.[section.id] || [])
+    .filter(i => i < steps.length)
+  return {
+    steps,
+    completedSteps,
+    isFullyCompleted: steps.length > 0 && completedSteps.length === steps.length,
+  }
+}

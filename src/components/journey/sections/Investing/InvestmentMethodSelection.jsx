@@ -53,30 +53,30 @@ const InvestmentMethodSelection = ({ journeyData, updateJourneyData, nextStep, p
               <button
                 key={method.id}
                 onClick={() => setSelectedMethod(method.id)}
-                className={`w-full p-6 rounded-xl border-2 transition-all text-left hover:shadow-md ${
+                className={`w-full p-6 rounded-lg border-2 transition-all text-left hover:shadow-md ${
                   isSelected
                     ? `border-accent-green-500 bg-accent-green-50 shadow-md`
-                    : 'border-gray-200 hover:border-gray-300'
+                    : 'border-primary-200 hover:border-primary-300'
                 }`}
               >
                 <div className="flex items-start gap-4">
-                  <div className={`p-3 rounded-lg text-green-700 flex-shrink-0`}>
-                    <Icon className={`w-6 h-6 text-green-700`} />
+                  <div className={`p-3 rounded-lg text-accent-green-700 flex-shrink-0`}>
+                    <Icon className={`w-6 h-6 text-accent-green-700`} />
                   </div>
 
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <h3 className="font-semibold text-gray-900 text-lg mb-2">
+                        <h3 className="font-semibold text-primary-900 text-lg mb-2">
                           {method.title}
                         </h3>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-primary-600">
                           {method.description}
                         </p>
                       </div>
 
                       {isSelected && (
-                        <div className={`'bg-green-50' rounded-full p-1 flex-shrink-0`}>
+                        <div className={`'bg-accent-green-50' rounded-full p-1 flex-shrink-0`}>
                           <Check className="w-5 h-5 text-white" />
                         </div>
                       )}

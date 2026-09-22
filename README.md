@@ -6,7 +6,6 @@ A guided, step-by-step journey that takes a beginner from "I should probably inv
 
 - [Next.js 16](https://nextjs.org) (App Router) + React 19, Tailwind CSS 4
 - [Clerk](https://clerk.com) for auth, [Convex](https://convex.dev) for saving journey progress
-- Mastercard Open Banking (Finicity) for the bank-institution search
 - Recharts (budget charts)
 
 ## Getting started
@@ -31,8 +30,6 @@ npm run dev
 ```
 
 Open <http://localhost:3000>. The journey works without an account (progress is kept in `localStorage`); signing up migrates that progress into Convex — see the invariant in `src/context/AuthContext.jsx` (migrate only if the account has no saved journey yet, so an existing account logging in is never overwritten).
-
-Bank search needs Mastercard credentials — see [MASTERCARD_SETUP.md](MASTERCARD_SETUP.md). Everything else works without them.
 
 ## How the journey is structured
 

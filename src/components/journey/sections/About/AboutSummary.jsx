@@ -1,6 +1,6 @@
 'use client'
 
-import { Briefcase, Calendar, Building, Building2 } from 'lucide-react'
+import { Briefcase, Calendar, Building } from 'lucide-react'
 import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
 import useStepTransition from '@/hooks/useStepTransition'
@@ -48,9 +48,6 @@ const AboutSummary = ({ journeyData, nextStep, prevStep }) => {
             <SummaryRow icon={Building} label="Bank Type">
               {BANK_TYPE_LABELS[journeyData.bankType] || journeyData.bankType}
             </SummaryRow>
-          )}
-          {journeyData.bankInstitution && (
-            <SummaryRow icon={Building2} label="Bank Institution">{journeyData.bankInstitution.name}</SummaryRow>
           )}
           {journeyData.employment === 'employed-company' && (
             <SummaryRow icon={Building} label="Employer 401(k)">

@@ -24,7 +24,7 @@ const Login = () => {
 
   // Already signed in? There's nothing to do here.
   useEffect(() => {
-    if (!loading && user) router.replace('/dashboard')
+    if (!loading && user) router.replace('/journey')
   }, [loading, user, router])
 
   if (loading || user) return null
@@ -42,7 +42,7 @@ const Login = () => {
         <SignIn
           routing="hash"
           signUpUrl="/login?mode=signup"
-          fallbackRedirectUrl="/dashboard"
+          fallbackRedirectUrl="/journey"
           appearance={CLERK_APPEARANCE}
         />
       )}

@@ -29,7 +29,7 @@ export default function StepContainer({
       {(title || subtitle) && (
         <div className="text-center mt-4 sm:mt-8 md:mt-10 mb-4 sm:mb-6 lg:mb-10 animate-fadeIn">
           {title && (
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-100 mb-2 sm:mb-3 px-2">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-primary-100 mb-2 sm:mb-3 px-2">
               {title}
             </h1>
           )}

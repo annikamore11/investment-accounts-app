@@ -34,15 +34,15 @@ const RetirementOutcomesContinued = ({ nextStep, prevStep }) => {
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {TIPS.map((tip) => (
-          <div key={tip.title} className="bg-white rounded-xl p-5 shadow-sm text-gray-800 text-lg space-y-4">
+          <div key={tip.title} className="bg-white rounded-xl p-5 shadow-sm text-primary-800 text-lg space-y-4">
             <p className="font-bold text-accent-green-700 text-xl">{tip.title}</p>
             {tip.paragraphs.map((text) => <p key={text}>{text}</p>)}
           </div>
         ))}
       </div>
 
-      <div className="bg-white rounded-xl p-5 shadow-sm text-gray-800 text-lg text-center">
-        <p className="font-bold text-red-800 inline-flex items-center justify-center gap-2">
+      <div className="bg-white rounded-xl p-5 shadow-sm text-primary-800 text-lg text-center">
+        <p className="font-bold text-rust-800 inline-flex items-center justify-center gap-2">
           <AlertTriangle className="w-6 h-6" />
           Next Steps
         </p>

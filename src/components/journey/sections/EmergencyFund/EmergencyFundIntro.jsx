@@ -51,7 +51,7 @@ const EmergencyFundIntro = ({ journeyData, nextStep, prevStep }) => {
 
         <div>
           <h3 className="text-lg sm:text-xl font-bold text-primary-700 mb-4 flex items-center">
-            <AlertTriangle className="w-6 h-6 text-orange-600 mr-2" />
+            <AlertTriangle className="w-6 h-6 text-amber-600 mr-2" />
             Why It's Important
           </h3>
           <ul className="space-y-3 text-primary-700 text-sm sm:text-base">

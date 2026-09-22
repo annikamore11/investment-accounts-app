@@ -18,11 +18,11 @@ const IncreaseContributionPrompt = ({ journeyData, updateJourneyData, nextStep, 
   return (
     <StepContainer title="Your 401(k) Contribution" isExiting={isExiting}>
       <div className="text-center space-y-6">
-        <p className="text-lg text-gray-800 max-w-2xl mx-auto">
+        <p className="text-lg text-primary-800 max-w-2xl mx-auto">
           You are currently contributing <strong>{user}%</strong> of your salary to your 401(k). Your
           employer contributes <strong>{company}%</strong>, for a total of <strong>{total}%</strong>.
         </p>
-        <p className="text-lg text-gray-800">
+        <p className="text-lg text-primary-800">
           Would you like to save more than the <strong>{total}%</strong> that you are already saving for
           retirement?
         </p>

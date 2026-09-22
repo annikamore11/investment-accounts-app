@@ -120,7 +120,7 @@ const buildSteps = ({ bankType, startingAmount }) => {
           When asked about &quot;Core Position&quot;, select{' '}
           <GlossaryTerm term="Fidelity Government Money Market Fund (SPAXX)">
             <div className="space-y-2">
-              <p className="font-semibold text-gray-900">What is SPAXX?</p>
+              <p className="font-semibold text-primary-900">What is SPAXX?</p>
               <p>
                 SPAXX is Fidelity&apos;s government money market fund. It&apos;s a very safe investment that
                 essentially acts the same as a high yield savings account.
@@ -130,7 +130,7 @@ const buildSteps = ({ bankType, startingAmount }) => {
                 goes into this fund and earns interest (typically 2-5% annually), instead of sitting idle earning
                 nothing.
               </p>
-              <p className="text-gray-600 text-xs border-t border-gray-200 pt-2 mt-2">
+              <p className="text-primary-600 text-xs border-t border-primary-200 pt-2 mt-2">
                 This is perfect for your emergency fund because it&apos;s safe, liquid (you can access your money
                 anytime), and earns much more than a typical bank account.
               </p>
@@ -216,7 +216,7 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
 
       <div className="bg-primary-100 rounded-xl shadow-xl p-4 md:p-8 lg:p-12">
         {showDisclaimer && (
-          <Dismissible onDismiss={() => setShowDisclaimer(false)} className="bg-yellow-50 border-2 border-yellow-600 text-yellow-900">
+          <Dismissible onDismiss={() => setShowDisclaimer(false)} className="bg-amber-50 border-2 border-amber-600 text-amber-900">
             <p className="text-sm">
               <strong>Disclaimer:</strong> This is educational information only, not financial advice. We are not
               affiliated with Fidelity and receive no compensation. Please research multiple options and consider
@@ -226,7 +226,7 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
         )}
 
         {BANK_NOTICE[bankType] && showBankNotice && (
-          <Dismissible onDismiss={() => setShowBankNotice(false)} className="bg-blue-50 border border-blue-300 text-blue-900">
+          <Dismissible onDismiss={() => setShowBankNotice(false)} className="bg-accent-green-50 border border-accent-green-300 text-accent-green-900">
             <p className="text-sm">{BANK_NOTICE[bankType]}</p>
           </Dismissible>
         )}
@@ -243,21 +243,21 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
                     onClick={() => setStepIndex(index)}
                     className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all relative z-10 ${
                       isActive
-                        ? 'bg-accent-green-600 text-white ring-4 ring-green-200'
+                        ? 'bg-accent-green-600 text-white ring-4 ring-accent-green-200'
                         : isPast
-                          ? 'bg-green-400 text-white'
-                          : 'bg-gray-200 text-gray-500'
+                          ? 'bg-accent-green-400 text-white'
+                          : 'bg-primary-200 text-primary-500'
                     }`}
                   >
                     {index + 1}
                   </button>
-                  <span className={`text-xs mt-2 text-center font-medium hidden md:block ${isActive ? 'text-gray-900' : 'text-gray-600'}`}>
+                  <span className={`text-xs mt-2 text-center font-medium hidden md:block ${isActive ? 'text-primary-900' : 'text-primary-600'}`}>
                     {s.label}
                   </span>
                 </div>
                 {index < steps.length - 1 && (
                   <div className="absolute top-5 left-1/2 w-full h-0.5 z-0">
-                    <div className={`h-full ${isPast ? 'bg-green-400' : 'bg-gray-300'}`} />
+                    <div className={`h-full ${isPast ? 'bg-accent-green-400' : 'bg-primary-300'}`} />
                   </div>
                 )}
               </div>
@@ -267,30 +267,30 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
 
         {/* Step content */}
         <div className="mb-6">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{step.title}</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-primary-900 mb-4">{step.title}</h2>
 
-          <div className="bg-white border border-gray-300 rounded-lg p-4 md:p-6 mb-4">
-            <h3 className="font-semibold text-gray-900 mb-3">{step.listHeading || 'Instructions:'}</h3>
+          <div className="bg-white border border-primary-300 rounded-lg p-4 md:p-6 mb-4">
+            <h3 className="font-semibold text-primary-900 mb-3">{step.listHeading || 'Instructions:'}</h3>
             <ol className="space-y-2">
               {step.instructions.map((instruction, i) => (
                 <li key={i} className="flex items-start space-x-3">
-                  <span className="shrink-0 w-6 h-6 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center text-sm font-semibold">
+                  <span className="shrink-0 w-6 h-6 bg-primary-200 text-primary-700 rounded-full flex items-center justify-center text-sm font-semibold">
                     {i + 1}
                   </span>
-                  <span className="text-gray-700 text-sm md:text-base">{instruction}</span>
+                  <span className="text-primary-700 text-sm md:text-base">{instruction}</span>
                 </li>
               ))}
             </ol>
           </div>
 
-          <div className="bg-blue-50 border border-blue-300 rounded-lg p-4">
+          <div className="bg-accent-green-50 border border-accent-green-300 rounded-lg p-4">
             <div className="flex items-start space-x-2">
-              <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+              <Info className="w-5 h-5 text-accent-green-600 shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-semibold text-blue-900 mb-2">Helpful Notes:</h4>
+                <h4 className="font-semibold text-accent-green-900 mb-2">Helpful Notes:</h4>
                 <ul className="space-y-1">
                   {step.notes.map((note) => (
-                    <li key={note} className="text-sm text-blue-800">• {note}</li>
+                    <li key={note} className="text-sm text-accent-green-800">• {note}</li>
                   ))}
                 </ul>
               </div>
@@ -303,7 +303,7 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
           <button
             onClick={() => setStepIndex(i => i - 1)}
             disabled={isFirst}
-            className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors bg-gray-300 hover:bg-gray-400 text-gray-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+            className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors bg-primary-300 hover:bg-primary-400 text-primary-700 disabled:bg-primary-200 disabled:text-primary-400 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="w-5 h-5" />
             <span className="hidden md:inline">Previous</span>
@@ -316,7 +316,7 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
                 onClick={() => setStepIndex(index)}
                 aria-label={`Go to ${s.label}`}
                 className={`w-3 h-3 rounded-full transition-colors ${
-                  index === stepIndex ? 'bg-green-600' : index < stepIndex ? 'bg-green-400' : 'bg-gray-300'
+                  index === stepIndex ? 'bg-accent-green-600' : index < stepIndex ? 'bg-accent-green-400' : 'bg-primary-300'
                 }`}
               />
             ))}
@@ -325,15 +325,15 @@ const FidelitySetupGuide = ({ journeyData, nextStep, prevStep }) => {
           <button
             onClick={() => setStepIndex(i => i + 1)}
             disabled={isLast}
-            className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors bg-gray-300 hover:bg-gray-400 text-gray-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+            className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors bg-primary-300 hover:bg-primary-400 text-primary-700 disabled:bg-primary-200 disabled:text-primary-400 disabled:cursor-not-allowed"
           >
             <span className="hidden md:inline">Next</span>
             <ChevronRight className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="bg-gray-50 border border-gray-300 rounded-lg p-3">
-          <p className="text-sm text-gray-700">
+        <div className="bg-primary-50 border border-primary-300 rounded-lg p-3">
+          <p className="text-sm text-primary-700">
             <strong>Need help?</strong> Call Fidelity 24/7: {FIDELITY_PHONE}
           </p>
         </div>

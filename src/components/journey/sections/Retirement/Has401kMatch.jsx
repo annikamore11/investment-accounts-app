@@ -9,7 +9,7 @@ import useStepTransition from '@/hooks/useStepTransition'
 
 const PercentInput = ({ label, value, onChange, placeholder }) => (
   <div>
-    <label className="text-center block text-xl font-medium text-gray-800 mb-2">{label}</label>
+    <label className="text-center block text-xl font-medium text-primary-800 mb-2">{label}</label>
     <div className="relative">
       <input
         type="text"
@@ -17,7 +17,7 @@ const PercentInput = ({ label, value, onChange, placeholder }) => (
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value.replace(/[^\d]/g, ''))}
-        className="w-full border border-accent-green-600 rounded-xl px-4 py-3 text-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-accent-green-600"
+        className="w-full border border-accent-green-600 rounded-xl px-4 py-3 text-lg text-primary-800 focus:outline-none focus:ring-2 focus:ring-accent-green-600"
       />
       <Percent className="absolute right-4 top-3.5 text-primary-500 w-5 h-5" />
     </div>

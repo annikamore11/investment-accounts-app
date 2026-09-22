@@ -39,14 +39,14 @@ const EmergencyFundAmount = ({ journeyData, updateJourneyData, nextStep, prevSte
       isExiting={isExiting}
     >
       {/* Recommendation */}
-      <div className="bg-gradient-to-r from-accent-purple-50 to-accent-purple-100 border-2 border-accent-purple-300 rounded-xl p-6 mb-8">
-        <p className="text-accent-purple-900 font-semibold mb-2">
+      <div className="bg-gradient-to-r from-amber-50 to-amber-100 border-2 border-amber-300 rounded-xl p-6 mb-8">
+        <p className="text-amber-900 font-semibold mb-2">
           Your monthly expenses: ${monthlyExpenses.toLocaleString()}
         </p>
-        <p className="text-3xl font-bold text-accent-purple-900 mb-2">
+        <p className="text-3xl font-bold text-amber-900 mb-2">
           Common Guideline: ${minRecommended.toLocaleString()} - ${maxRecommended.toLocaleString()}
         </p>
-        <p className="text-sm text-accent-purple-700">That's 3-6 months of expenses</p>
+        <p className="text-sm text-amber-700">That's 3-6 months of expenses</p>
       </div>
 
       <div className="mb-8">

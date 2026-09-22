@@ -1,5 +1,7 @@
 'use client'
 
+import { Info, Sprout, Lightbulb, TriangleAlert, CircleAlert } from 'lucide-react'
+
 /**
  * Standardized info box component for displaying contextual information
  * Supports different types with appropriate styling
@@ -11,42 +13,15 @@ export default function InfoBox({
   children,
   className = ''
 }) {
+  // Consolidated to three tones (neutral / amber / rust) instead of a
+  // different hue per variant — each variant still gets its own icon and
+  // default label so the meaning stays distinct without the color soup.
   const typeStyles = {
-    info: {
-      className: 'border-purple-300 text-purple-900',
-      style: {
-        background: 'radial-gradient(circle, rgba(233, 213, 255, 0.5) 0%, rgba(233, 213, 255, 0.9) 100%)',
-        backdropFilter: 'blur(8px)'
-      }
-    },
-    why: {
-      className: 'border-accent-purple-300 text-accent-purple-900',
-      style: {
-        background: 'radial-gradient(circle, rgba(243, 232, 255, 0.5) 0%, rgba(243, 232, 255, 0.9) 100%)',
-        backdropFilter: 'blur(8px)'
-      }
-    },
-    warning: {
-      className: 'border-yellow-400 text-yellow-900',
-      style: {
-        background: 'radial-gradient(circle, rgba(254, 249, 195, 0.5) 0%, rgba(254, 249, 195, 0.9) 100%)',
-        backdropFilter: 'blur(8px)'
-      }
-    },
-    alert: {
-      className: 'border-orange-300 text-orange-900',
-      style: {
-        background: 'radial-gradient(circle, rgba(255, 247, 237, 0.5) 0%, rgba(255, 247, 237, 0.9) 100%)',
-        backdropFilter: 'blur(8px)'
-      }
-    },
-    tip: {
-      className: 'border-blue-300 text-blue-900',
-      style: {
-        background: 'radial-gradient(circle, rgba(239, 246, 255, 0.5) 0%, rgba(239, 246, 255, 0.9) 100%)',
-        backdropFilter: 'blur(8px)'
-      }
-    }
+    info: { icon: Info, className: 'border-primary-300 bg-primary-100 text-primary-800' },
+    why: { icon: Sprout, className: 'border-accent-green-200 bg-accent-green-50 text-accent-green-900' },
+    tip: { icon: Lightbulb, className: 'border-amber-200 bg-amber-50 text-amber-900' },
+    warning: { icon: TriangleAlert, className: 'border-amber-400 bg-amber-100 text-amber-900' },
+    alert: { icon: CircleAlert, className: 'border-rust-300 bg-rust-50 text-rust-900' },
   }
 
   const defaultTitles = {
@@ -58,19 +33,22 @@ export default function InfoBox({
   }
 
   const currentStyle = typeStyles[type] || typeStyles.info
+  const Icon = currentStyle.icon
   const displayTitle = title || defaultTitles[type]
 
   return (
-    <div 
-      className={`${currentStyle.className} border-2 rounded-xl p-4 mb-6 animate-fadeIn ${className}`}
-      style={currentStyle.style}
+    <div
+      className={`${currentStyle.className} border rounded-xl p-4 mb-6 flex gap-3 animate-fadeIn ${className}`}
     >
-      {children || (
-        <p className="text-sm sm:text-base leading-relaxed">
-          {displayTitle && <strong>{displayTitle} </strong>}
-          {message}
-        </p>
-      )}
+      <Icon className="w-5 h-5 shrink-0 mt-0.5" aria-hidden="true" />
+      <div className="flex-1">
+        {children || (
+          <p className="text-sm sm:text-base leading-relaxed">
+            {displayTitle && <strong>{displayTitle} </strong>}
+            {message}
+          </p>
+        )}
+      </div>
     </div>
   )
 }

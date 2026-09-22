@@ -13,7 +13,7 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
   const [monthlyExpenses, setMonthlyExpenses] = useState(journeyData.monthlyExpenses || '')
   const [expenses, setExpenses] = useState({
     rent: journeyData.expenseBreakdown?.rent || '',
-    carPayment: journeyData.expenseBreakdown?.carPayment || '',
+    transportation: journeyData.expenseBreakdown?.transportation || '',
     food: journeyData.expenseBreakdown?.food || '',
     insurance: journeyData.expenseBreakdown?.insurance || '',
     utilities: journeyData.expenseBreakdown?.utilities || '',
@@ -41,7 +41,7 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
     } else {
       setExpenses({
         rent: '',
-        carPayment: '',
+        transportation: '',
         food: '',
         insurance: '',
         utilities: '',
@@ -91,7 +91,8 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
             What are your total monthly expenses?
           </label>
           <p className="text-sm text-primary-600 mb-3">
-            Don't include <strong> deductions</strong> like taxes or 401(k) contributions.
+            Don't include <strong>deductions</strong> like taxes or 401(k) contributions, or{' '}
+            <strong>debt payments</strong> like credit cards, car loans, or student loans — we'll ask about those separately.
           </p>
           <DollarInput
             value={monthlyExpenses}
@@ -108,7 +109,8 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
             Break down your major expenses:
           </label>
           <p className="text-sm text-primary-600 mb-3">
-            Don't include <strong> deductions</strong> like taxes or 401(k) contributions.
+            Don't include <strong>deductions</strong> like taxes or 401(k) contributions, or{' '}
+            <strong>debt payments</strong> like credit cards, car loans, or student loans — we'll ask about those on the next page.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
             {/* Rent */}
@@ -125,18 +127,19 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
               />
             </div>
 
-            {/* Car Payment */}
+            {/* Transportation */}
             <div className="bg-white rounded-lg p-4 border-2 border-primary-300 hover:border-accent-green-500 transition-colors">
               <div className='flex space-x-2 mb-2'>
                 <Car className="w-5 h-5 text-primary-700" />
-                <label className="block font-semibold text-primary-900">Car Payment</label>
+                <label className="block font-semibold text-primary-900">Transportation</label>
               </div>
               <DollarInput
-                value={expenses.carPayment}
-                onChange={(val) => handleExpenseChange('carPayment', val)}
+                value={expenses.transportation}
+                onChange={(val) => handleExpenseChange('transportation', val)}
                 placeholder="e.g. 300"
                 showCommas={false}
               />
+              <p className="text-xs text-primary-500 mt-1">Gas, transit, parking — not a car loan payment</p>
             </div>
 
             {/* Food */}
@@ -180,7 +183,7 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
                 placeholder="e.g. 200"
                 showCommas={false}
               />
-              <p className="text-xs text-primary-500 mt-1">Electric, Phone, Internet, Student Loans</p>
+              <p className="text-xs text-primary-500 mt-1">Electric, Phone, Internet</p>
             </div>
 
             {/* Other */}
@@ -201,7 +204,7 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
 
           {/* Total */}
           {breakdownTotal > 0 && (
-            <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-4 sm:p-6 border-2 border-accent-green-600 animate-fadeIn">
+            <div className="bg-gradient-to-r from-accent-green-50 to-accent-green-100 rounded-xl p-4 sm:p-6 border-2 border-accent-green-600 animate-fadeIn">
               <div className="text-center">
                 <p className="text-primary-700 mb-2">Your Estimated Monthly Total</p>
                 <p className="text-3xl sm:text-4xl font-bold text-accent-green-700">

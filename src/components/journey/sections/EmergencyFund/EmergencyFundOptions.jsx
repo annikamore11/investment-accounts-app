@@ -36,16 +36,16 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
             <Wallet className="w-5 h-5 text-accent-green-700" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-gray-900 mb-1.5">
+            <h3 className="text-lg font-bold text-primary-900 mb-1.5">
               Set Up a High-Yield Account with Fidelity
             </h3>
-            <div className="text-sm text-gray-700 leading-relaxed">
+            <div className="text-sm text-primary-700 leading-relaxed">
               We'll guide you through opening a{' '}
               <GlossaryTerm term="high-yield account">
                 <div className="space-y-2">
-                  <p className="font-semibold text-gray-900">What is a high-yield account?</p>
+                  <p className="font-semibold text-primary-900">What is a high-yield account?</p>
                   <p>A high-yield account is a very safe place to keep your money while still earning a return, usually between <strong>2-5% annually</strong>.</p>
-                  <p className="text-gray-600 text-xs border-t border-gray-200 pt-2 mt-2">
+                  <p className="text-primary-600 text-xs border-t border-primary-200 pt-2 mt-2">
                     Compare this to typical bank accounts which usually give you less than 1% return—your money actually loses value to inflation over time.
                   </p>
                 </div>
@@ -59,20 +59,20 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-accent-green-100/50">
             <Shield className="w-4 h-4 text-accent-green-600 mb-1.5" />
-            <p className="font-semibold text-xs text-gray-900 mb-0.5">FDIC Insured</p>
-            <p className="text-xs text-gray-600">Up to $250k</p>
+            <p className="font-semibold text-xs text-primary-900 mb-0.5">FDIC Insured</p>
+            <p className="text-xs text-primary-600">Up to $250k</p>
           </div>
 
           <div className="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-accent-green-100/50">
             <TrendingUp className="w-4 h-4 text-accent-green-600 mb-1.5" />
-            <p className="font-semibold text-xs text-gray-900 mb-0.5">Competitive Rate</p>
-            <p className="text-xs text-gray-600">3-4% annually</p>
+            <p className="font-semibold text-xs text-primary-900 mb-0.5">Competitive Rate</p>
+            <p className="text-xs text-primary-600">3-4% annually</p>
           </div>
 
           <div className="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-accent-green-100/50">
             <DollarSign className="w-4 h-4 text-accent-green-600 mb-1.5" />
-            <p className="font-semibold text-xs text-gray-900 mb-0.5">No Minimum</p>
-            <p className="text-xs text-gray-600">Start anytime</p>
+            <p className="font-semibold text-xs text-primary-900 mb-0.5">No Minimum</p>
+            <p className="text-xs text-primary-600">Start anytime</p>
           </div>
         </div>
       </div>
@@ -82,7 +82,7 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
         <p className="font-semibold text-primary-900 text-sm mb-1.5">
           Why Fidelity?
         </p>
-        <p className="text-sm text-gray-700 leading-relaxed">
+        <p className="text-sm text-primary-700 leading-relaxed">
           Keep your emergency fund, retirement accounts, and investments all in one dashboard for simpler financial management.
         </p>
       </div>
@@ -91,7 +91,7 @@ const EmergencyFundOptions = ({ journeyData, updateJourneyData, nextStep, prevSt
       <div className="text-center mb-6">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-accent-green-700 transition-colors group"
+          className="inline-flex items-center gap-2 text-sm text-primary-600 hover:text-accent-green-700 transition-colors group"
         >
           <span className="underline decoration-dotted">Explore other account options</span>
           <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

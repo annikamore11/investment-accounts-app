@@ -177,7 +177,7 @@ const InvestmentStrategyEducation = ({ journeyData, updateJourneyData, nextStep,
     const getRiskBadge = () => {
       if (fund.riskLevel === 'safe') {
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+          <span className="inline-flex items-center gap-1 px-2 py-1 bg-accent-green-100 text-accent-green-800 text-xs font-medium rounded-full">
             <Shield className="w-3 h-3" />
             Safe
           </span>
@@ -185,7 +185,7 @@ const InvestmentStrategyEducation = ({ journeyData, updateJourneyData, nextStep,
       }
       if (fund.riskLevel === 'stocks') {
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">
+          <span className="inline-flex items-center gap-1 px-2 py-1 bg-rust-100 text-rust-800 text-xs font-medium rounded-full">
             <AlertTriangle className="w-3 h-3" />
             100% Stocks
           </span>
@@ -193,7 +193,7 @@ const InvestmentStrategyEducation = ({ journeyData, updateJourneyData, nextStep,
       }
       // Blended
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+        <span className="inline-flex items-center gap-1 px-2 py-1 bg-accent-green-100 text-accent-green-800 text-xs font-medium rounded-full">
           <BarChart3 className="w-3 h-3" />
           {fund.stockPercent}% Stocks
         </span>
@@ -212,30 +212,30 @@ const InvestmentStrategyEducation = ({ journeyData, updateJourneyData, nextStep,
     }
 
     return (
-      <div key={fund.name} className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-primary-300 transition-colors">
+      <div key={fund.name} className="bg-white border-2 border-primary-200 rounded-xl p-5 hover:border-primary-300 transition-colors">
         <div className="flex items-start justify-between mb-3">
           <div>
-            <h4 className="text-lg font-bold text-gray-900">{fund.name}</h4>
-            <p className="text-sm text-gray-600">{fund.fullName}</p>
+            <h4 className="text-lg font-bold text-primary-900">{fund.name}</h4>
+            <p className="text-sm text-primary-600">{fund.fullName}</p>
           </div>
           {getRiskBadge()}
         </div>
 
-        <p className="text-gray-700 mb-3">{fund.description}</p>
+        <p className="text-primary-700 mb-3">{fund.description}</p>
 
-        <div className="bg-gray-50 rounded-lg p-3 mb-4">
-          <p className="text-sm text-gray-700">{getRiskExplanation()}</p>
+        <div className="bg-primary-50 rounded-lg p-3 mb-4">
+          <p className="text-sm text-primary-700">{getRiskExplanation()}</p>
         </div>
 
         {fund.stockPercent > 0 && fund.stockPercent < 100 && (
           <div className="mb-4">
-            <div className="flex justify-between text-xs text-gray-600 mb-1">
+            <div className="flex justify-between text-xs text-primary-600 mb-1">
               <span>Stocks ({fund.stockPercent}%)</span>
               <span>Bonds/Safe ({100 - fund.stockPercent}%)</span>
             </div>
-            <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-3 bg-primary-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-accent-orange-500 to-accent-orange-400"
+                className="h-full bg-gradient-to-r from-accent-amber-500 to-accent-amber-400"
                 style={{ width: `${fund.stockPercent}%` }}
               />
             </div>
@@ -264,8 +264,8 @@ const InvestmentStrategyEducation = ({ journeyData, updateJourneyData, nextStep,
       <div className="space-y-6">
         {/* Goal Summary */}
         <div className="bg-gradient-to-br from-accent-green-50 to-white border-2 border-accent-green-200 rounded-xl p-5">
-          <h3 className="text-xl font-bold text-gray-900 mb-3">{goal.name || 'Your Goal'}</h3>
-          <div className="flex flex-wrap gap-4 text-sm text-gray-700">
+          <h3 className="text-xl font-bold text-primary-900 mb-3">{goal.name || 'Your Goal'}</h3>
+          <div className="flex flex-wrap gap-4 text-sm text-primary-700">
             {goal.amount && (
               <div className="flex items-center gap-2">
                 <PiggyBank className="w-4 h-4 text-accent-green-700" />
@@ -304,44 +304,44 @@ const InvestmentStrategyEducation = ({ journeyData, updateJourneyData, nextStep,
             </div>
             <div>
               <h4 className="font-bold text-primary-900 mb-1">Our Recommendation</h4>
-              <p className="text-gray-700 text-sm">{recommendations.explanation}</p>
+              <p className="text-primary-700 text-sm">{recommendations.explanation}</p>
             </div>
           </div>
         </div>
 
         {/* Primary Fund Recommendations */}
         <div className="space-y-4">
-          <h3 className="text-lg font-bold text-gray-900">
+          <h3 className="text-lg font-bold text-primary-900">
             {recommendations.indexFunds ? 'Blended Funds' : 'Recommended Funds'}
           </h3>
 
           {recommendations.primary.length === 1 && recommendations.primary[0].name === 'SPAXX' ? (
             // Special layout for SPAXX-only recommendation
-            <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6">
+            <div className="bg-accent-green-50 border-2 border-accent-green-200 rounded-xl p-6">
               <div className="flex items-start gap-4">
-                <div className="bg-green-100 p-3 rounded-lg flex-shrink-0">
-                  <Shield className="w-8 h-8 text-green-700" />
+                <div className="bg-accent-green-100 p-3 rounded-lg flex-shrink-0">
+                  <Shield className="w-8 h-8 text-accent-green-700" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-xl font-bold text-gray-900 mb-1">SPAXX</h4>
-                  <p className="text-gray-600 mb-3">Fidelity Government Money Market Fund</p>
-                  <p className="text-gray-700 mb-4">
+                  <h4 className="text-xl font-bold text-primary-900 mb-1">SPAXX</h4>
+                  <p className="text-primary-600 mb-3">Fidelity Government Money Market Fund</p>
+                  <p className="text-primary-700 mb-4">
                     This keeps your money safe while earning competitive interest rates (currently around 4-5% APY).
                     Your principal is protected - you won't lose money due to market fluctuations.
                   </p>
-                  <div className="bg-white rounded-lg p-4 border border-green-200 mb-4">
-                    <h5 className="font-semibold text-gray-900 mb-2">Benefits:</h5>
-                    <ul className="space-y-1 text-sm text-gray-700">
+                  <div className="bg-white rounded-lg p-4 border border-accent-green-200 mb-4">
+                    <h5 className="font-semibold text-primary-900 mb-2">Benefits:</h5>
+                    <ul className="space-y-1 text-sm text-primary-700">
                       <li className="flex gap-2">
-                        <span className="text-green-600 font-bold">✓</span>
+                        <span className="text-accent-green-600 font-bold">✓</span>
                         <span>No risk of losing principal</span>
                       </li>
                       <li className="flex gap-2">
-                        <span className="text-green-600 font-bold">✓</span>
+                        <span className="text-accent-green-600 font-bold">✓</span>
                         <span>Easy access to your money when you need it</span>
                       </li>
                       <li className="flex gap-2">
-                        <span className="text-green-600 font-bold">✓</span>
+                        <span className="text-accent-green-600 font-bold">✓</span>
                         <span>Earns better interest than most savings accounts</span>
                       </li>
                     </ul>
@@ -367,8 +367,8 @@ const InvestmentStrategyEducation = ({ journeyData, updateJourneyData, nextStep,
         {/* Index Funds for high risk tolerance */}
         {recommendations.indexFunds && (
           <div className="space-y-4">
-            <div className="border-t-2 border-gray-200 pt-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-2">100% Stock Index Funds</h3>
+            <div className="border-t-2 border-primary-200 pt-6">
+              <h3 className="text-lg font-bold text-primary-900 mb-2">100% Stock Index Funds</h3>
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
                 <div className="flex gap-2">
                   <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
@@ -387,9 +387,9 @@ const InvestmentStrategyEducation = ({ journeyData, updateJourneyData, nextStep,
         )}
 
         {/* Educational Note */}
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-5">
-          <h4 className="font-bold text-gray-900 mb-2">Before You Invest</h4>
-          <ul className="space-y-2 text-sm text-gray-700">
+        <div className="bg-primary-50 border border-primary-200 rounded-xl p-5">
+          <h4 className="font-bold text-primary-900 mb-2">Before You Invest</h4>
+          <ul className="space-y-2 text-sm text-primary-700">
             <li className="flex gap-2">
               <span className="text-primary-600 font-bold">•</span>
               <span>Click "View on Fidelity" to research each fund's performance, fees, and details</span>

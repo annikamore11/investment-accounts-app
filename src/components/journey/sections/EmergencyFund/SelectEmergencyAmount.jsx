@@ -50,7 +50,7 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
         <div className="mb-6">
           {monthlyExpenses !== 0 ? (
             <>
-              <label className="block text-base md:text-lg font-semibold text-gray-900 mb-4">
+              <label className="block text-base md:text-lg font-semibold text-primary-900 mb-4">
                 Select a target amount:
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -58,14 +58,14 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
                   <button
                     key={option.value}
                     onClick={() => setSelectedAmount(option.value)}
-                    className={`p-3 md:p-4 rounded-xl border-2 transition-all ${
+                    className={`p-3 md:p-4 rounded-lg border-2 transition-all ${
                       selectedAmount === option.value
                         ? 'border-accent-green-600 bg-accent-green-50 shadow-md'
-                        : 'border-gray-300 hover:border-gray-400 bg-white'
+                        : 'border-primary-300 hover:border-primary-400 bg-white'
                     }`}
                   >
-                    <p className="text-lg md:text-xl font-bold text-gray-900">{option.label}</p>
-                    <p className="text-xs text-gray-600 mt-1">{option.months}</p>
+                    <p className="text-lg md:text-xl font-bold text-primary-900">{option.label}</p>
+                    <p className="text-xs text-primary-600 mt-1">{option.months}</p>
                     
                   </button>
                 ))}
@@ -75,19 +75,19 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
         </div>
 
         {/* Custom Amount */}
-        <div className="bg-gray-50 border-2 border-gray-300 rounded-xl p-4 md:p-6 mb-6">
+        <div className="bg-primary-50 border-2 border-primary-300 rounded-xl p-4 md:p-6 mb-6">
           {monthlyExpenses === 0 ? (
-            <label className="block text-base md:text-lg font-semibold text-gray-900 mb-3">
+            <label className="block text-base md:text-lg font-semibold text-primary-900 mb-3">
               Enter your goal:
             </label>
           ) : (
-            <label className="block text-base md:text-lg font-semibold text-gray-900 mb-3">
+            <label className="block text-base md:text-lg font-semibold text-primary-900 mb-3">
               Or enter your own goal:
             </label>
           )}
           
           <div className="flex items-center gap-2">
-            <span className="text-xl md:text-2xl font-bold text-gray-700">$</span>
+            <span className="text-xl md:text-2xl font-bold text-primary-700">$</span>
             <input
               type="text"
               inputMode="numeric"
@@ -101,7 +101,7 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
                   setSelectedAmount('')
                 }
               }}
-              className="flex-1 min-w-0 text-xl md:text-2xl font-bold p-2 md:p-3 border-2 border-gray-300 rounded-lg focus:border-accent-green-600 focus:outline-none bg-white"
+              className="flex-1 min-w-0 text-xl md:text-2xl font-bold p-2 md:p-3 border-2 border-primary-300 rounded-lg focus:border-accent-green-600 focus:outline-none bg-white"
             />
           </div>
         </div>
@@ -109,15 +109,15 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
         {/* Current Savings */}
         {selectedAmount > 0 && (
           <div className="mb-6 animate-fadeIn">
-            <label className="block text-base md:text-lg font-semibold text-gray-900 mb-3">
+            <label className="block text-base md:text-lg font-semibold text-primary-900 mb-3">
               How much do you have saved to add to an emergency fund?
             </label>
-            <p className="text-sm text-gray-600 mb-3">
+            <p className="text-sm text-primary-600 mb-3">
               It's okay if you don't have anything to add right now!
             </p>
-            <div className="bg-gray-50 border-2 border-gray-300 rounded-xl p-4">
+            <div className="bg-primary-50 border-2 border-primary-300 rounded-xl p-4">
               <div className="flex items-center gap-2">
-                <span className="text-xl md:text-2xl font-bold text-gray-700">$</span>
+                <span className="text-xl md:text-2xl font-bold text-primary-700">$</span>
                 <input
                   type="text"
                   inputMode="numeric"
@@ -127,7 +127,7 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
                     const value = e.target.value.replace(/[^\d]/g, '')
                     setCurrentSavings(value)
                   }}
-                  className="flex-1 min-w-0 text-xl md:text-2xl font-bold p-2 md:p-3 border-2 border-gray-300 rounded-lg focus:border-accent-green-600 focus:outline-none bg-white"
+                  className="flex-1 min-w-0 text-xl md:text-2xl font-bold p-2 md:p-3 border-2 border-primary-300 rounded-lg focus:border-accent-green-600 focus:outline-none bg-white"
                 />
               </div>
             </div>
@@ -138,14 +138,14 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
         {goalAmount > 0 && currentSavings !== '' && (
           <div className="mb-6 animate-fadeIn">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-gray-700">Progress to Goal</span>
+              <span className="text-sm font-semibold text-primary-700">Progress to Goal</span>
               <span className="text-sm font-bold text-accent-green-700">
                 {progressPercentage.toFixed(0)}%
               </span>
             </div>
             
             {/* Progress Bar */}
-            <div className="w-full bg-gray-300 rounded-full h-3 mb-2 overflow-hidden">
+            <div className="w-full bg-primary-300 rounded-full h-3 mb-2 overflow-hidden">
               <div
                 className="bg-accent-green-600 h-3 rounded-full transition-all duration-500"
                 style={{ width: `${progressPercentage}%` }}
@@ -153,14 +153,14 @@ const SelectEmergencyAmount = ({ journeyData, updateJourneyData, nextStep, prevS
             </div>
 
             {/* Amounts */}
-            <div className="flex justify-between text-sm text-gray-700">
+            <div className="flex justify-between text-sm text-primary-700">
               <span>${savedAmount.toLocaleString()} saved</span>
               <span>${goalAmount.toLocaleString()} goal</span>
             </div>
 
             {/* Remaining or Celebration */}
             {savedAmount < goalAmount ? (
-              <p className="text-xs text-gray-600 mt-2 text-center">
+              <p className="text-xs text-primary-600 mt-2 text-center">
                 ${(goalAmount - savedAmount).toLocaleString()} left to reach your goal
               </p>
             ) : (

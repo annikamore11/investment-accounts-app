@@ -53,6 +53,33 @@
   --font-family-clash: 'ClashGrotesk', sans-serif;
   --font-family-newsreader: 'Newsreader', serif;
   --font-family-sans: 'ClashGrotesk', sans-serif;
+  --font-family-gloock: 'Gloock', serif;
+
+  /* Trail Waypoint accent scales — amber (current-position/CTA) and rust
+     (errors/destructive only). Additive: the primary and accent-green
+     scales keep their original values here and are only reassigned inside
+     .journey-theme, so Home/NavBar/Login are unaffected. */
+  --color-amber-50: #FDF3E7;
+  --color-amber-100: #FAE4C4;
+  --color-amber-200: #F3C889;
+  --color-amber-300: #ECAC55;
+  --color-amber-400: #E8871E;
+  --color-amber-500: #D97A17;
+  --color-amber-600: #C96A18;
+  --color-amber-700: #A6551A;
+  --color-amber-800: #7C4118;
+  --color-amber-900: #522A0F;
+
+  --color-rust-50: #FBEAE5;
+  --color-rust-100: #F4CCC0;
+  --color-rust-200: #E6A190;
+  --color-rust-300: #D57A64;
+  --color-rust-400: #C25B41;
+  --color-rust-500: #B4432A;
+  --color-rust-600: #A03B24;
+  --color-rust-700: #7E2F1D;
+  --color-rust-800: #5C2316;
+  --color-rust-900: #3D170F;
 }
 
 /* Light - 300 */
@@ -71,6 +98,108 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gloock';
+  src: url('/assets/fonts/Gloock-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================
+   JOURNEY THEME — Trail Waypoint System
+   Scoped to .journey-theme so it only affects the /journey route; every
+   existing primary and accent-green utility class already used across the
+   journey components repaints from these values without per-file edits.
+   Home, NavBar, and Login are outside this scope and keep the original
+   gray/green tokens untouched.
+   ============================================ */
+.journey-theme {
+  /* primary-* becomes the paper/ink neutral scale (same light→dark
+     ordering as the original gray scale, so every existing text-primary-100
+     on a dark ground and text-primary-900 on a light card still resolves
+     correctly — only the hue changes). */
+  --color-primary-50: #F8FAF7;
+  --color-primary-100: #F0F4EF;
+  --color-primary-200: #E2E8E0;
+  --color-primary-300: #C7D1C4;
+  --color-primary-400: #97A395;
+  --color-primary-500: #6B7A6C;
+  --color-primary-600: #4A574B;
+  --color-primary-700: #333E34;
+  --color-primary-800: #212922;
+  --color-primary-900: #161C17;
+
+  /* accent-green-* becomes the forest scale — structural chrome and
+     interactive/success states. */
+  --color-accent-green-50: #EAF3EC;
+  --color-accent-green-100: #D6E9DB;
+  --color-accent-green-200: #B0D5BB;
+  --color-accent-green-300: #85BC97;
+  --color-accent-green-400: #56A279;
+  --color-accent-green-500: #2F6B4F;
+  --color-accent-green-600: #245A41;
+  --color-accent-green-700: #1B4732;
+  --color-accent-green-800: #143726;
+  --color-accent-green-900: #0E2A1C;
+
+  /* Blunter, two-tier radius: 6px controls, 12px cards (rounded-xl already
+     sits at 12px by default, so only -lg and -2xl need pulling in). No pill
+     radius is touched here — rounded-full stays for genuine circular icon
+     wells; pill-shaped buttons are fixed at the component level. */
+  --radius-lg: 0.375rem;
+  --radius-2xl: 0.75rem;
+
+  /* Warm, ink-tinted shadows instead of Tailwind's default cool-black ones. */
+  --shadow-sm: 0 1px 3px 0 rgb(20 25 21 / 0.08), 0 1px 2px -1px rgb(20 25 21 / 0.08);
+  --shadow-md: 0 4px 12px -2px rgb(20 25 21 / 0.10), 0 2px 4px -2px rgb(20 25 21 / 0.06);
+  --shadow-lg: 0 10px 20px -6px rgb(20 25 21 / 0.14), 0 4px 6px -4px rgb(20 25 21 / 0.08);
+  --shadow-xl: 0 20px 30px -8px rgb(20 25 21 / 0.16), 0 8px 10px -6px rgb(20 25 21 / 0.08);
+  --shadow-2xl: 0 25px 45px -12px rgb(20 25 21 / 0.28);
+
+  font-variant-numeric: tabular-nums;
+}
+
+.journey-theme .font-display {
+  font-family: var(--font-family-gloock);
+}
+
+/* A visible, consistent keyboard focus ring everywhere in the journey,
+   including elements that locally set focus:outline-none for a border-only
+   treatment — unlayered so it wins over Tailwind's utility layer regardless
+   of source order (see Tailwind v4 cascade-layer priority). */
+.journey-theme :focus-visible {
+  outline: 2px solid var(--color-accent-green-500);
+  outline-offset: 2px;
+}
+
+/* Themed scrollbars: the browser default track is off-white and clashes
+   hard with the dark forest chrome, most visibly on the sidebar and the
+   main scroll pane's own edge. */
+.journey-theme {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-500) var(--color-primary-900);
+}
+
+.journey-theme ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.journey-theme ::-webkit-scrollbar-track {
+  background: var(--color-primary-900);
+}
+
+.journey-theme ::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary-500);
+  border-radius: 9999px;
+  border: 2px solid var(--color-primary-900);
+}
+
+.journey-theme ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-primary-400);
 }
 
 
@@ -193,6 +322,28 @@
   z-index: 2;
 }
 
+
+/* Journey-only ambient background: a dark forest gradient (deliberately not
+   the marketing static-background's near-black-to-gray gradient, which stays
+   reserved for Home/Login) so the always-visible waypoint rail and light
+   content cards read as "trail at dusk," matching the Trail Waypoint
+   direction contract's OWN-WORLD. */
+.journey-background {
+  /* No position here: this class is applied alongside Tailwind position
+     utilities (fixed / absolute / static) on different elements. Because
+     this rule lives outside any @layer, it would otherwise always beat
+     those utilities regardless of source order — which is exactly the bug
+     that silently turned the sidebar's `absolute` into `relative` and the
+     fixed backdrop into a zero-height flow element, pushing all real
+     content off-screen. */
+  background-color: #101a14;
+  background-image: linear-gradient(
+    180deg,
+    #0d1610 0%,
+    #142a1f 45%,
+    #1b3a29 100%
+  );
+}
 
 .money-image-background {
   position: relative;
@@ -376,6 +527,26 @@
   }
 }
 
+/* Draws the hero underline in from the left, after the headline itself has
+   had a moment to be read. transform-origin is set on the element, not
+   here, so the same keyframe works for any width. */
+@keyframes underlineDraw {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.animate-underline {
+  transform-origin: left center;
+  animation: underlineDraw 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 1s;
+}
+
 /* Pulse - Subtle breathing effect */
 @keyframes pulse {
   0%, 100% {
@@ -442,12 +613,12 @@
     background: var(--color-primary-50);
     color: var(--color-accent-green-600);
     border: 2px solid var(--color-accent-green-600);
-    border-radius: 8px;
-    font-family: 'Inter', sans-serif;
+    border-radius: var(--radius-lg, 8px);
+    font-family: 'ClashGrotesk', sans-serif;
     font-weight: bold;
     transition: all 200ms ease;
   }
-  
+
   .btn-journey-back:hover {
     background-color: var(--color-primary-200);
     border: 2px solid var(--color-accent-green-700);
@@ -455,17 +626,16 @@
 
   .btn-journey-next {
     padding: 0.7rem 1.5rem;
-    background: transparent;
-    background: linear-gradient(135deg, var(--color-accent-green-500), var(--color-accent-green-600));
+    background: var(--color-accent-green-600);
     color: white;
-    border-radius: 8px;
-    font-family: 'Inter', sans-serif;
+    border-radius: var(--radius-lg, 8px);
+    font-family: 'ClashGrotesk', sans-serif;
     font-weight: bold;
     transition: all 200ms ease;
   }
-  
+
   .btn-journey-next:hover {
-    background: linear-gradient(135deg, var(--color-accent-green-600), var(--color-accent-green-700));
+    background: var(--color-accent-green-700);
   }
   
   .btn-secondary {
@@ -511,19 +681,18 @@
     transform: scale(1.025);
   }
   .card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
-    backdrop-filter: blur(10px);
+    background: #ffffff;
     border-radius: 0.75rem;
-    box-shadow: 0 4px 6px -1px rgb(147 51 234 / 0.1), 0 2px 4px -1px rgb(34 197 94 / 0.06);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -1px rgb(0 0 0 / 0.04);
     padding: 1.5rem;
-    border: 1px solid rgba(147, 51, 234, 0.1);
+    border: 1px solid rgb(0 0 0 / 0.06);
     transition: all 200ms;
   }
 
   .card:hover {
-    box-shadow: 0 10px 15px -3px rgb(147 51 234 / 0.2), 0 4px 6px -2px rgb(34 197 94 / 0.1);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.06);
     transform: translateY(-2px);
-    border-color: rgba(147, 51, 234, 0.2);
+    border-color: rgb(0 0 0 / 0.1);
   }
 }
 
@@ -621,4 +790,39 @@
 
 .animate-shimmer {
   animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Respect the OS-level motion preference: entrance animations resolve to
+   their end state instantly (nothing stays invisible), and looped/decorative
+   motion (gradient-x, shimmer, the footer's growLine/moveIcon) stops moving
+   rather than being removed, so state and hierarchy are still visible. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fadeIn-transition,
+  .animate-fadeIn,
+  .animate-slideUp,
+  .animate-slideDown,
+  .animate-slideInLeft,
+  .animate-slideInRight,
+  .animate-scaleIn,
+  .fadeInCard,
+  .fadeInCard,
+  .animate-underline {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .animate-gradient-x,
+  .animate-shimmer,
+  .animated-line,
+  .line-icon {
+    animation: none !important;
+  }
+
+  .animated-line {
+    width: calc(100% - 50px);
+  }
+
+  .line-icon {
+    left: calc(100% - 32px);
+  }
 }
