@@ -36,7 +36,7 @@ const IncomeExpensesBar = ({ journeyData }) => {
     {
       name: 'Expenses',
       value: totalExpenses,
-      fill: hasDeficit ? '#B4432A' : '#C96A18', // rust-500 over budget, amber-600 otherwise
+      fill: hasDeficit ? '#B4432A' : '#CE9012', // rust-500 over budget, amber-600 otherwise
     }
   ]
 

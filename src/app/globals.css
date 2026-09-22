@@ -58,17 +58,22 @@
   /* Trail Waypoint accent scales — amber (current-position/CTA) and rust
      (errors/destructive only). Additive: the primary and accent-green
      scales keep their original values here and are only reassigned inside
-     .journey-theme, so Home/NavBar/Login are unaffected. */
-  --color-amber-50: #FDF3E7;
-  --color-amber-100: #FAE4C4;
-  --color-amber-200: #F3C889;
-  --color-amber-300: #ECAC55;
-  --color-amber-400: #E8871E;
-  --color-amber-500: #D97A17;
-  --color-amber-600: #C96A18;
-  --color-amber-700: #A6551A;
-  --color-amber-800: #7C4118;
-  --color-amber-900: #522A0F;
+     .journey-theme, so Home/NavBar/Login are unaffected. Hue shifted from
+     ~25-36° (burnt orange) to ~35-46° (gold) so it reads as sunlight —
+     the flight motif's "golden hour" accent — rather than a trail blaze;
+     contrast against both the dark journey background and primary-900
+     text improves as a result (9.6:1 vs the old 6.5:1 for the
+     current-position marker), not just the hue. */
+  --color-amber-50: #FDF8E7;
+  --color-amber-100: #FBEEC6;
+  --color-amber-200: #F5DC8A;
+  --color-amber-300: #F1C950;
+  --color-amber-400: #F3B720;
+  --color-amber-500: #EBA90F;
+  --color-amber-600: #CE9012;
+  --color-amber-700: #AC7515;
+  --color-amber-800: #7E5416;
+  --color-amber-900: #52360F;
 
   --color-rust-50: #FBEAE5;
   --color-rust-100: #F4CCC0;
@@ -547,6 +552,55 @@
   animation-delay: 1s;
 }
 
+/* Journey sidebar: clicking a section to expand it grows that section's
+   own connector line into place, paper airplane riding its leading edge —
+   the vertical counterpart of the footer's line-and-icon further down this
+   file, built the same way on purpose: a real `height`/`top` animation
+   (not a transform:scale trick) with one plain ease-out curve and only a
+   start/end keyframe each, so the motion is one continuous fall instead of
+   several re-accelerating segments. The line's height and the plane's fall
+   distance are both percentages of the connector's own box, which flex
+   already sizes correctly — including the now-open step list — before
+   either animation starts, so nothing needs measuring in JS. Once grown,
+   the line just stays, same as the footer's — there's no separate static
+   duplicate for it to reveal. */
+@keyframes railLineGrow {
+  from {
+    height: 0;
+  }
+  to {
+    height: 100%;
+  }
+}
+
+.rail-line-grow {
+  animation: railLineGrow 1.2s ease-out forwards;
+}
+
+@keyframes railPlaneFall {
+  from {
+    top: 0;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  to {
+    top: calc(100% - 16px);
+    opacity: 1;
+  }
+}
+
+.rail-plane-fall {
+  /* Nose points straight down: Send's own artwork points up-right by
+     default, so this is a fixed rotation, not part of the keyframes —
+     no wobble to fight the smoothness of the fall. Stays put once it
+     arrives, same as the footer's icon — it's not a one-off flourish that
+     needs to clear itself away. */
+  transform: translateX(-50%) rotate(135deg);
+  animation: railPlaneFall 1.2s ease-out forwards;
+}
+
 /* Pulse - Subtle breathing effect */
 @keyframes pulse {
   0%, 100% {
@@ -846,7 +900,9 @@
   .animate-gradient-x,
   .animate-shimmer,
   .animated-line,
-  .line-icon {
+  .line-icon,
+  .rail-line-grow,
+  .rail-plane-fall {
     animation: none !important;
   }
 
@@ -856,5 +912,14 @@
 
   .line-icon {
     left: calc(100% - 32px);
+  }
+
+  .rail-line-grow {
+    height: 100%;
+  }
+
+  .rail-plane-fall {
+    top: calc(100% - 16px);
+    opacity: 1;
   }
 }

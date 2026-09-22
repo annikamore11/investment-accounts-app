@@ -20,7 +20,7 @@ const CATEGORY_LABELS = {
 const CATEGORY_COLORS = {
   rent: '#1F4D3A',
   transportation: '#3E6B8A',
-  food: '#C96A18',
+  food: '#CE9012',
   utilities: '#2F7A6E',
   insurance: '#8C6B7A',
   other: '#97A395',

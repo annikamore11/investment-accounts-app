@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, Check, RotateCcw, ChevronDown, Compass, User, Wallet, Shield, PiggyBank, TrendingUp } from 'lucide-react'
+import { X, Check, RotateCcw, ChevronDown, Compass, User, Wallet, Shield, PiggyBank, TrendingUp, Send } from 'lucide-react'
 import { getSectionCompletion } from './sections'
 
 // Same icon language as the Home dashboard's section cards, so a section
@@ -32,6 +32,13 @@ const JourneySidebar = ({
   onStartOver,
 }) => {
   const [expandedSection, setExpandedSection] = useState(currentSection)
+  // Which section's connector line should play the flight animation.
+  // Separate from `expandedSection` on purpose: that also gets set by the
+  // effect below (external nav following along), and the flight should only
+  // play for an actual click here, not every time a section happens to be
+  // expanded (including on first mount, where the current section starts
+  // pre-expanded with nothing "clicked" yet).
+  const [clickExpandedSection, setClickExpandedSection] = useState(null)
 
   // Follow along automatically when navigation happens outside the sidebar
   // (the in-page Back/Next buttons) — only a deliberate click here should
@@ -88,22 +95,56 @@ const JourneySidebar = ({
             const handleHeaderClick = () => {
               onGoToSection(section.id)
               if (stepCount > 1) {
-                setExpandedSection(prev => (prev === section.id ? null : section.id))
+                const willExpand = expandedSection !== section.id
+                setExpandedSection(willExpand ? section.id : null)
+                if (willExpand) setClickExpandedSection(section.id)
               }
             }
+
+            // Only a direct click plays the flight — a section that's
+            // expanded because it's just the current one on mount, or
+            // because external nav followed along, gets no animation.
+            const playFlight = isExpanded && clickExpandedSection === section.id
 
             return (
               <li key={section.id} className="flex gap-3">
                 {/* Rail column: marker + a line that stretches to fill
-                    whatever height this row ends up being. */}
+                    whatever height this row ends up being — including the
+                    step list once expanded, with no height measurement
+                    needed since flex just stretches this column to match. */}
                 <div className="flex flex-col items-center">
                   <WaypointMarker state={markerState} Icon={SECTION_ICONS[section.id]} />
-                  {!isLast && (
+                  {/* Every leg gets this column, the last one included — but
+                      the last one has nothing below it to connect to, so
+                      unlike the others its line should stay fully absent
+                      while collapsed, only appearing once its own steps are
+                      actually open (clicked or otherwise). */}
+                  <div className="relative w-0.5 flex-1 my-1">
+                    {/* Click-only: the line itself grows into place (same
+                        technique as the footer's line — a real `height`
+                        animation with one plain ease-out curve, not a
+                        transform trick or a static duplicate sitting
+                        underneath a separate overlay) with a paper
+                        airplane riding its leading edge, timed to this
+                        section's own step list unfurling. Once grown it
+                        just stays, exactly like the footer's line, so
+                        there's nothing for it to "reveal" underneath.
+                        Green, not amber — amber stays reserved for the
+                        current-position marker. */}
                     <span
                       aria-hidden="true"
-                      className={`w-0.5 flex-1 my-1 ${isFullyCompleted ? 'bg-accent-green-500' : 'bg-primary-600'}`}
+                      className={`absolute top-0 w-0.5 ${isFullyCompleted ? 'bg-accent-green-500' : 'bg-primary-600'} ${
+                        playFlight ? 'rail-line-grow h-0' : isLast && !isExpanded ? 'h-0' : 'h-full'
+                      }`}
                     />
-                  )}
+                    {playFlight && (
+                      <Send
+                        aria-hidden="true"
+                        className="rail-plane-fall absolute left-1/2 top-0 z-20 w-4 h-4 text-accent-green-300 pointer-events-none"
+                        strokeWidth={2.25}
+                      />
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex-1 min-w-0 pb-4">
