@@ -14,7 +14,7 @@ const CATEGORY_LABELS = {
   debt: 'Debt Payments',
 }
 
-// Trail Waypoint data-viz set: each category gets a genuinely distinct hue
+// Flight Path Waypoint data-viz set: each category gets a genuinely distinct hue
 // from the same earthy family (forest, slate, amber, teal, mauve, rust)
 // instead of a default rainbow of unrelated Tailwind colors.
 const CATEGORY_COLORS = {

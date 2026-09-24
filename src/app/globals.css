@@ -55,15 +55,14 @@
   --font-family-sans: 'ClashGrotesk', sans-serif;
   --font-family-gloock: 'Gloock', serif;
 
-  /* Trail Waypoint accent scales — amber (current-position/CTA) and rust
-     (errors/destructive only). Additive: the primary and accent-green
+  /* Flight Path Waypoint accent scales — amber (current-position/CTA) and
+     rust (errors/destructive only). Additive: the primary and accent-green
      scales keep their original values here and are only reassigned inside
      .journey-theme, so Home/NavBar/Login are unaffected. Hue shifted from
-     ~25-36° (burnt orange) to ~35-46° (gold) so it reads as sunlight —
-     the flight motif's "golden hour" accent — rather than a trail blaze;
-     contrast against both the dark journey background and primary-900
-     text improves as a result (9.6:1 vs the old 6.5:1 for the
-     current-position marker), not just the hue. */
+     ~25-36° (burnt orange) to ~35-46° (gold) so it reads as sunlight — the
+     flight motif's "golden hour" accent; contrast against both the dark
+     journey background and primary-900 text improves as a result (9.6:1 vs
+     the old 6.5:1 for the current-position marker), not just the hue. */
   --color-amber-50: #FDF8E7;
   --color-amber-100: #FBEEC6;
   --color-amber-200: #F5DC8A;
@@ -114,7 +113,7 @@
 }
 
 /* ============================================
-   JOURNEY THEME — Trail Waypoint System
+   JOURNEY THEME — Flight Path Waypoint System
    Scoped to .journey-theme so it only affects the /journey route; every
    existing primary and accent-green utility class already used across the
    journey components repaints from these values without per-file edits.
@@ -331,7 +330,7 @@
 /* Journey-only ambient background: a dark forest gradient (deliberately not
    the marketing static-background's near-black-to-gray gradient, which stays
    reserved for Home/Login) so the always-visible waypoint rail and light
-   content cards read as "trail at dusk," matching the Trail Waypoint
+   content cards read as "flight at dusk," matching the Flight Path Waypoint
    direction contract's OWN-WORLD. */
 .journey-background {
   /* No position here: this class is applied alongside Tailwind position
@@ -347,6 +346,32 @@
     #0d1610 0%,
     #142a1f 45%,
     #1b3a29 100%
+  );
+}
+
+/* Landing-only hero/CTA background: the marketing page is a Persuade
+   surface for a cold, possibly anxious first-time visitor, not the focused
+   in-product wizard .journey-background serves — so its two dark sections
+   go warmer: a dawn/golden-hour gradient reading as "the plane taking off
+   into sunrise" instead of the wizard's cooler "flight at dusk." Same
+   forest floor as .journey-background at the top so scroll transitions from
+   the light `primary-50` sections stay tonally connected, warming into a
+   bronze/amber horizon rather than staying green-to-black. Every stop is
+   capped dark enough (all under ~0.08 relative luminance) that primary-50
+   text keeps AA contrast (8.5:1+) at any scroll position in either the
+   full-height hero or the shorter final-CTA section — this reads as dusk's
+   warm counterpart, not a pale, low-contrast sunrise. Deliberately its own
+   class, not merged into .journey-background, so the in-product journey
+   keeps its calmer, darker ambient and this warmth stays specific to the
+   "we're glad you're here" moment. */
+.dawn-background {
+  background-color: #14200f;
+  background-image: linear-gradient(
+    180deg,
+    #0d1610 0%,
+    #1b3a29 35%,
+    #3a3012 68%,
+    #5c4416 100%
   );
 }
 
@@ -532,41 +557,26 @@
   }
 }
 
-/* Draws the hero underline in from the left, after the headline itself has
-   had a moment to be read. transform-origin is set on the element, not
-   here, so the same keyframe works for any width. */
-@keyframes underlineDraw {
-  from {
-    transform: scaleX(0);
-    opacity: 0;
-  }
-  to {
-    transform: scaleX(1);
-    opacity: 1;
-  }
-}
-
-.animate-underline {
-  transform-origin: left center;
-  animation: underlineDraw 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: 1s;
-}
 
 /* Hero paper airplane (HeroPlaneFlight.jsx): rides a CSS motion path
    that enters off-screen on the left, climbs up and across the full
    width of the hero — banking through one loose loop partway through —
-   and exits off-screen on the right, trail drawing in behind it via the
-   same synced-duration technique as the footer/sidebar
+   and exits off-screen on the right, its flight line drawing in behind it
+   via the same synced-duration technique as the footer/sidebar
    (a masked dashed line revealed by animating stroke-dashoffset on the
    mask's own stroke, not the visible dashes — the visible dashes never
-   move). Starts early (0.8s) so it's already moving well before the
-   underline finishes (2.5s), and the ease is gentle at both ends
-   (cubic-bezier's first/last control points close to the midline) rather
-   than a sharp dart-then-stop, so the whole 6.5s reads as one unhurried
-   glide. Path here must match FLIGHT_PATH in HeroPlaneFlight.jsx exactly
-   — coordinates are in the 0-1000/0-400 viewBox space that maps directly
-   to 0-100% of the hero's width/height (preserveAspectRatio="none"), so
-   x < 0 and x > 1000 are what put the plane fully off-screen. */
+   move). Starts at 0.3s — enough for the hero's own layout/fonts to
+   settle first, short enough that it doesn't read as sluggish — and the
+   ease is gentle at both ends (cubic-bezier's first/last control points
+   close to the midline) rather than a sharp dart-then-stop, so the whole
+   6.5s reads as one unhurried glide. MarketingLanding.jsx replays this by
+   remounting <HeroPlaneFlight> (a fresh `key`) whenever the hero scrolls
+   back into view, which restarts both keyframes from this same 0.3s delay
+   every time, not just once on first load. Path here must match
+   FLIGHT_PATH in HeroPlaneFlight.jsx exactly — coordinates are in the
+   0-1000/0-400 viewBox space that maps directly to 0-100% of the hero's
+   width/height (preserveAspectRatio="none"), so x < 0 and x > 1000 are
+   what put the plane fully off-screen. */
 @keyframes heroPlaneFly {
   to {
     offset-distance: 100%;
@@ -579,17 +589,17 @@
   );
   offset-distance: 0%;
   offset-rotate: auto;
-  animation: heroPlaneFly 6.5s cubic-bezier(0.45, 0, 0.35, 1) 0.8s both;
+  animation: heroPlaneFly 6.5s cubic-bezier(0.45, 0, 0.35, 1) 0.1s both;
 }
 
-@keyframes heroTrailDraw {
+@keyframes heroFlightDraw {
   to {
     stroke-dashoffset: 0;
   }
 }
 
-.hero-trail-draw {
-  animation: heroTrailDraw 6.5s cubic-bezier(0.45, 0, 0.35, 1) 0.8s both;
+.hero-flight-draw {
+  animation: heroFlightDraw 6.5s cubic-bezier(0.45, 0, 0.35, 1) 0.1s both;
 }
 
 /* Journey sidebar: clicking a section to expand it grows that section's
@@ -931,8 +941,7 @@
   .animate-slideInRight,
   .animate-scaleIn,
   .fadeInCard,
-  .fadeInCard,
-  .animate-underline {
+  .fadeInCard {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
@@ -944,7 +953,7 @@
   .rail-line-grow,
   .rail-plane-fall,
   .hero-plane-fly,
-  .hero-trail-draw {
+  .hero-flight-draw {
     animation: none !important;
   }
 
@@ -969,7 +978,7 @@
     offset-distance: 100%;
   }
 
-  .hero-trail-draw {
+  .hero-flight-draw {
     stroke-dashoffset: 0;
   }
 }

@@ -17,6 +17,31 @@ const HAS_DEBT_OPTIONS = [
 
 const emptyDebt = () => ({ name: DEBT_TYPES[0], balance: '', apr: '', minPayment: '' })
 
+// Roughly the long-run average stock market return — the same comparison
+// the InfoBox above already makes ("usually costs more than investing earns
+// you back"). Below it, paying only the minimum and putting extra money
+// toward savings/investing is the mathematically sound move, not a
+// consolation prize; above it, the debt itself is the highest-return thing
+// in the whole plan to pay down, which is worth saying plainly rather than
+// just flagging it as a problem.
+const HIGH_INTEREST_APR_THRESHOLD = 7
+
+const getDebtGuidance = (debt) => {
+  const apr = parseFloat(debt.apr)
+  if (!apr || apr <= 0) return null
+  const label = (debt.name || 'debt').toLowerCase()
+  if (apr <= HIGH_INTEREST_APR_THRESHOLD) {
+    return {
+      type: 'why',
+      message: `At ${apr}% APR, this ${label} is relatively cheap debt — likely lower than what you'd expect to earn investing over time. We'll have you pay just the minimum here and put anything extra toward your emergency fund, retirement, or other higher-interest debt instead.`,
+    }
+  }
+  return {
+    type: 'tip',
+    message: `At ${apr}% APR, this ${label} is costing you more than investing would likely earn back, so it's the highest-return thing you can pay down. We'll prioritize this one first — once it's gone, that payment goes straight toward your other goals.`,
+  }
+}
+
 const Debt = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const [hasDebt, setHasDebt] = useState(journeyData.hasDebt ?? null)
   const [debts, setDebts] = useState(journeyData.debts?.length ? journeyData.debts : [emptyDebt()])
@@ -62,7 +87,9 @@ const Debt = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
 
       {hasDebt === true && (
         <div className="space-y-4 mb-6 animate-fadeIn">
-          {debts.map((debt, index) => (
+          {debts.map((debt, index) => {
+            const guidance = getDebtGuidance(debt)
+            return (
             <div key={index} className="bg-white rounded-xl p-4 border-2 border-primary-300 space-y-3">
               <div className="flex items-center justify-between gap-3">
                 <select
@@ -109,8 +136,13 @@ const Debt = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
                   <DollarInput value={debt.minPayment} onChange={(v) => updateDebt(index, 'minPayment', v)} placeholder="120" />
                 </div>
               </div>
+
+              {guidance && (
+                <InfoBox type={guidance.type} message={guidance.message} className="mb-0" />
+              )}
             </div>
-          ))}
+            )
+          })}
 
           <button
             onClick={addDebt}

@@ -39,7 +39,10 @@ export const INITIAL_JOURNEY_DATA = {
   hasDebt: null,
   debts: [], // [{ name, balance, apr, minPayment }]
 
-  // Emergency Fund
+  // Emergency Fund — goal and current-savings are collected once, up front,
+  // for everyone (before we even know hasEmergencyFund), so both the
+  // "already have one" and "building one" branches can show progress
+  // against the same real goal instead of asking for an amount twice.
   hasEmergencyFund: null,
   emergencyFundGoal: '',
   emergencyFundCurrentAmount: '',
@@ -47,7 +50,6 @@ export const INITIAL_JOURNEY_DATA = {
   emergencyFundInstitution: '',
   existingEmergencyFundInstitution: '',
   existingEmergencyFundType: '',
-  existingEmergencyFundAmount: '',
 
   // Retirement
   hasEmployerMatch: null,
@@ -64,6 +66,11 @@ export const INITIAL_JOURNEY_DATA = {
   // step itself still defaults the slider's position to 5.
   riskTolerance: '',
   investmentMethod: null,
+  // Set only when BrokerageAccountCheck actually shows the consolidation
+  // ask (i.e. the user has money at a non-Fidelity institution already) —
+  // null everywhere else, not false, so "never asked" stays distinguishable
+  // from "asked and said no."
+  wantsFidelityConsolidation: null,
 
   // Progress tracking
   lastStepInSection: emptyPerSection(() => 0),

@@ -12,11 +12,14 @@ export const emergencyFundConfig = {
 
   getSteps: (journeyData) => [
     { name: 'Introduction', Component: EmergencyFundIntro },
-    { name: 'Common Guideline', Component: EmergencyFundAmount },
-    // Goal + account setup only for people who don't have a fund yet
+    // Goal comes before "do you have one" so we capture what they're aiming
+    // for either way — the Summary step needs it to show progress whether
+    // they're building a fund from scratch or already have one started.
+    { name: 'Your Goal', Component: SelectEmergencyAmount },
+    { name: 'Current Status', Component: EmergencyFundAmount },
+    // Account setup only for people who don't have a fund yet
     ...(journeyData.hasEmergencyFund === false
       ? [
-          { name: 'Goal', Component: SelectEmergencyAmount },
           { name: 'Account Options', Component: EmergencyFundOptions },
           { name: 'Setup Guide', Component: FidelitySetupGuide },
         ]

@@ -2,6 +2,7 @@
 
 import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
+import OptionGrid from '@/components/ui/OptionGrid'
 import useStepTransition from '@/hooks/useStepTransition'
 import { CheckCircle, AlertCircle, ArrowRight } from 'lucide-react'
 import { accountTypeLabel } from '../EmergencyFund/accountTypes'
@@ -64,36 +65,61 @@ const BrokerageAccountCheck = ({ journeyData, updateJourneyData, nextStep, prevS
           </div>
         )}
 
-        {/* Different Institution */}
+        {/* Different Institution — an actual question, not just two static
+            options to read: capturing the answer is what lets us actually
+            act on it (routing to the Fidelity setup guide vs. leaving them
+            be), instead of just informing without asking. */}
         {hasDifferentInstitution && (
           <div className="bg-primary-50 border-2 border-primary-200 rounded-xl p-6">
             <div className="flex items-start gap-3 mb-4">
               <div className="bg-primary-100 p-2 rounded-lg">
                 <AlertCircle className="w-6 h-6 text-primary-700" />
               </div>
-              <div>
+              <div className="flex-1">
                 <h4 className="font-bold text-primary-900 text-lg mb-2">
                   You're Using {institution}
                 </h4>
-                <p className="text-primary-700 leading-relaxed mb-3">
-                  We noticed you've set up your emergency fund with <strong>{institution}</strong>. You have two options for investing:
+                <p className="text-primary-700 leading-relaxed mb-4">
+                  Your emergency fund is with <strong>{institution}</strong>, not Fidelity. Keeping your emergency
+                  fund, retirement, and investing on one platform makes your whole financial picture easier to see
+                  and manage — but it's completely your call.
                 </p>
-                
-                <div className="space-y-3">
-                  <div className="bg-white rounded-lg p-4 border border-primary-200">
-                    <h5 className="font-semibold text-primary-900 mb-1">Option 1: Stay with {institution}</h5>
-                    <p className="text-sm text-primary-700">
-                      Visit your institution's website to learn how to invest in a brokerage account with them. Most major institutions offer similar investment options.
-                    </p>
-                  </div>
 
-                  <div className="bg-white rounded-lg p-4 border border-primary-200">
-                    <h5 className="font-semibold text-primary-900 mb-1">Option 2: Open a Fidelity Account</h5>
+                <label className="block text-sm font-semibold text-primary-900 mb-3">
+                  Want help moving it to Fidelity so everything's in one place?
+                </label>
+                <OptionGrid
+                  options={[
+                    {
+                      value: true,
+                      label: 'Yes, help me consolidate',
+                      description: "We'll walk you through opening a Fidelity account and moving your funds over.",
+                    },
+                    {
+                      value: false,
+                      label: `No, keep it at ${institution}`,
+                      description: 'Totally fine — you can always revisit this later.',
+                    },
+                  ]}
+                  selectedValue={journeyData.wantsFidelityConsolidation}
+                  onChange={(value) => updateJourneyData('wantsFidelityConsolidation', value)}
+                  className="mb-0"
+                />
+
+                {journeyData.wantsFidelityConsolidation === true && (
+                  <div className="bg-white rounded-lg p-4 border border-primary-200 mt-4 animate-fadeIn">
                     <p className="text-sm text-primary-700">
-                      You can also open a separate brokerage account with Fidelity specifically for investing. Click "Continue" to learn how to set this up.
+                      Great — click &quot;Continue&quot; below and we&apos;ll walk through opening a Fidelity brokerage account next.
                     </p>
                   </div>
-                </div>
+                )}
+                {journeyData.wantsFidelityConsolidation === false && (
+                  <div className="bg-white rounded-lg p-4 border border-primary-200 mt-4 animate-fadeIn">
+                    <p className="text-sm text-primary-700">
+                      No problem — visit {institution}&apos;s website to open a brokerage account there instead. Most major institutions offer similar investing options.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

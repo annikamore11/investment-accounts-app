@@ -8,6 +8,66 @@ import StepNavigation from '@/components/ui/StepNavigation'
 import DollarInput from '@/components/ui/DollarInput'
 import useStepTransition from '@/hooks/useStepTransition'
 
+// Drives both places the category grid appears (the "help me calculate"
+// path, and the optional itemize toggle under "I know my total") from one
+// list instead of two hand-duplicated sets of JSX.
+const EXPENSE_CATEGORIES = [
+  { key: 'rent', icon: House, label: 'Rent/Mortgage', placeholder: 'e.g. 1500' },
+  {
+    key: 'transportation',
+    icon: Car,
+    label: 'Transportation',
+    placeholder: 'e.g. 300',
+    caption: 'Gas, transit, parking — not a car loan payment',
+  },
+  { key: 'food', icon: Utensils, label: 'Food & Groceries', placeholder: 'e.g. 400' },
+  {
+    key: 'insurance',
+    icon: ShieldPlus,
+    label: 'Insurance',
+    placeholder: 'e.g. 150',
+    caption: '*Not taken out of paycheck',
+  },
+  {
+    key: 'utilities',
+    icon: Receipt,
+    label: 'Utilities & Bills',
+    placeholder: 'e.g. 200',
+    caption: 'Electric, Phone, Internet',
+  },
+  {
+    key: 'other',
+    icon: Film,
+    label: 'Everything Else',
+    placeholder: 'e.g. 300',
+    caption: 'Shopping, entertainment, hobbies',
+  },
+]
+
+const ExpenseBreakdownGrid = ({ expenses, onChange }) => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+    {EXPENSE_CATEGORIES.map(({ key, icon: Icon, label, placeholder, caption }) => (
+      <div
+        key={key}
+        className="min-w-0 bg-white rounded-lg p-4 border-2 border-primary-300 hover:border-accent-green-500 transition-colors"
+      >
+        <div className="flex space-x-2 mb-2">
+          <Icon className="w-5 h-5 text-primary-700" />
+          <label className="block font-semibold text-primary-900">{label}</label>
+        </div>
+        <DollarInput
+          value={expenses[key]}
+          onChange={(val) => onChange(key, val)}
+          placeholder={placeholder}
+          showCommas={false}
+          compact
+        />
+        {caption && <p className="text-xs text-primary-500 mt-1">{caption}</p>}
+      </div>
+    ))}
+  </div>
+)
+
 const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const [needsHelp, setNeedsHelp] = useState(journeyData.needsExpenseHelp ?? null)
   const [monthlyExpenses, setMonthlyExpenses] = useState(journeyData.monthlyExpenses || '')
@@ -19,6 +79,14 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
     utilities: journeyData.expenseBreakdown?.utilities || '',
     other: journeyData.expenseBreakdown?.other || '',
   })
+  // Someone who already knows their total can still optionally itemize it —
+  // purely additive (their stated total stays authoritative either way),
+  // captured for a more personalized plan later. Starts open if they
+  // already have breakdown data from a prior visit (e.g. they filled it in,
+  // then went back and switched to "I know my total").
+  const [showOptionalBreakdown, setShowOptionalBreakdown] = useState(
+    () => Object.values(journeyData.expenseBreakdown || {}).some(Boolean)
+  )
   const { isExiting, transitionTo } = useStepTransition()
 
   const breakdownTotal = Object.values(expenses).reduce((sum, val) => sum + (parseFloat(val) || 0), 0)
@@ -28,28 +96,16 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
   }
 
   const handleNext = () => {
-    if (needsHelp === true) {
-      const breakdownData = {}
-      Object.keys(expenses).forEach(key => {
-        const value = parseFloat(expenses[key]) || 0
-        if (value > 0) {
-          breakdownData[key] = value
-        }
-      })
-      updateJourneyData('expenseBreakdown', breakdownData)
-      updateJourneyData('monthlyExpenses', breakdownTotal)
-    } else {
-      setExpenses({
-        rent: '',
-        transportation: '',
-        food: '',
-        insurance: '',
-        utilities: '',
-        other: '',
-      })
-      updateJourneyData('monthlyExpenses', monthlyExpenses)
-    }
-
+    const breakdownData = {}
+    Object.keys(expenses).forEach(key => {
+      const value = parseFloat(expenses[key]) || 0
+      if (value > 0) breakdownData[key] = value
+    })
+    updateJourneyData('expenseBreakdown', breakdownData)
+    // needsHelp === true: the breakdown IS the total. needsHelp === false:
+    // the typed total is authoritative even if they also itemized — a
+    // rough optional breakdown isn't held to matching it exactly.
+    updateJourneyData('monthlyExpenses', needsHelp === true ? breakdownTotal : monthlyExpenses)
     updateJourneyData('needsExpenseHelp', needsHelp)
     transitionTo(nextStep)
   }
@@ -99,6 +155,22 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
             onChange={setMonthlyExpenses}
             placeholder="3500"
           />
+
+          <button
+            type="button"
+            onClick={() => setShowOptionalBreakdown(!showOptionalBreakdown)}
+            className="mt-4 text-sm font-semibold text-accent-green-700 hover:text-accent-green-800 underline underline-offset-2"
+          >
+            {showOptionalBreakdown
+              ? 'Hide the category breakdown'
+              : 'Want to itemize where it goes? (optional, for a more personalized plan)'}
+          </button>
+
+          {showOptionalBreakdown && (
+            <div className="mt-4 animate-fadeIn">
+              <ExpenseBreakdownGrid expenses={expenses} onChange={handleExpenseChange} />
+            </div>
+          )}
         </div>
       )}
 
@@ -112,95 +184,8 @@ const MonthlyExpensesEstimate = ({ journeyData, updateJourneyData, nextStep, pre
             Don't include <strong>deductions</strong> like taxes or 401(k) contributions, or{' '}
             <strong>debt payments</strong> like credit cards, car loans, or student loans — we'll ask about those on the next page.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            {/* Rent */}
-            <div className="bg-white rounded-lg p-4 border-2 border-primary-300 hover:border-accent-green-500 transition-colors">
-              <div className='flex space-x-2 mb-2'>
-                <House className="w-5 h-5 text-primary-700" />
-                <label className="block font-semibold text-primary-900">Rent/Mortgage</label>
-              </div>
-              <DollarInput
-                value={expenses.rent}
-                onChange={(val) => handleExpenseChange('rent', val)}
-                placeholder="e.g. 1500"
-                showCommas={false}
-              />
-            </div>
 
-            {/* Transportation */}
-            <div className="bg-white rounded-lg p-4 border-2 border-primary-300 hover:border-accent-green-500 transition-colors">
-              <div className='flex space-x-2 mb-2'>
-                <Car className="w-5 h-5 text-primary-700" />
-                <label className="block font-semibold text-primary-900">Transportation</label>
-              </div>
-              <DollarInput
-                value={expenses.transportation}
-                onChange={(val) => handleExpenseChange('transportation', val)}
-                placeholder="e.g. 300"
-                showCommas={false}
-              />
-              <p className="text-xs text-primary-500 mt-1">Gas, transit, parking — not a car loan payment</p>
-            </div>
-
-            {/* Food */}
-            <div className="bg-white rounded-lg p-4 border-2 border-primary-300 hover:border-accent-green-500 transition-colors">
-              <div className='flex space-x-2 mb-2'>
-                <Utensils className="w-5 h-5 text-primary-700" />
-                <label className="block font-semibold text-primary-900">Food & Groceries</label>
-              </div>
-              <DollarInput
-                value={expenses.food}
-                onChange={(val) => handleExpenseChange('food', val)}
-                placeholder="e.g. 400"
-                showCommas={false}
-              />
-            </div>
-
-            {/* Insurance */}
-            <div className="bg-white rounded-lg p-4 border-2 border-primary-300 hover:border-accent-green-500 transition-colors">
-              <div className='flex space-x-2 mb-2'>
-                <ShieldPlus className="w-5 h-5 text-primary-700" />
-                <label className="block font-semibold text-primary-900">Insurance</label>
-              </div>
-              <DollarInput
-                value={expenses.insurance}
-                onChange={(val) => handleExpenseChange('insurance', val)}
-                placeholder="e.g. 150"
-                showCommas={false}
-              />
-              <p className="text-xs text-primary-500 mt-1">*Not taken out of paycheck</p>
-            </div>
-
-            {/* Utilities */}
-            <div className="bg-white rounded-lg p-4 border-2 border-primary-300 hover:border-accent-green-500 transition-colors">
-              <div className='flex space-x-2 mb-2'>
-                <Receipt className="w-5 h-5 text-primary-700" />
-                <label className="block font-semibold text-primary-900">Utilities & Bills</label>
-              </div>
-              <DollarInput
-                value={expenses.utilities}
-                onChange={(val) => handleExpenseChange('utilities', val)}
-                placeholder="e.g. 200"
-                showCommas={false}
-              />
-              <p className="text-xs text-primary-500 mt-1">Electric, Phone, Internet</p>
-            </div>
-
-            {/* Other */}
-            <div className="bg-white rounded-lg p-4 border-2 border-primary-300 hover:border-accent-green-500 transition-colors">
-              <div className='flex space-x-2 mb-2'>
-                <Film className="w-5 h-5 text-primary-700" />
-                <label className="block font-semibold text-primary-900">Everything Else</label>
-              </div>
-              <DollarInput
-                value={expenses.other}
-                onChange={(val) => handleExpenseChange('other', val)}
-                placeholder="e.g. 300"
-                showCommas={false}
-              />
-              <p className="text-xs text-primary-500 mt-1">Shopping, entertainment, hobbies</p>
-            </div>
-          </div>
+          <ExpenseBreakdownGrid expenses={expenses} onChange={handleExpenseChange} />
 
           {/* Total */}
           {breakdownTotal > 0 && (

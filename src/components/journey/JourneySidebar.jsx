@@ -15,8 +15,8 @@ const SECTION_ICONS = {
   investing: TrendingUp,
 }
 
-// Trail Waypoint System: every section is a leg of one marked trail, always
-// visible at once, so a user never loses their place. Marker shape carries
+// Flight Path Waypoint System: every section is a leg of one flight plan,
+// always visible at once, so a user never loses their place. Marker shape carries
 // the state (complete/current/ahead) independently of its color, so the
 // distinction survives grayscale or color-blind viewing too. A section's
 // steps are named, never a blind guess — click a header to drop its step
@@ -69,7 +69,7 @@ const JourneySidebar = ({
       style={{ height: 'calc(100vh - 4rem)' }}
     >
       <div className="flex items-center justify-between p-4">
-        <span className="text-xs font-semibold uppercase tracking-wide text-primary-300">Your trail</span>
+        <span className="text-xs font-semibold uppercase tracking-wide text-primary-300">Your flight plan</span>
         <button onClick={onClose} aria-label="Close journey menu" className="p-2 -m-1 hover:bg-primary-800/60 rounded-md">
           <X className="w-5 h-5 text-primary-100" />
         </button>
@@ -152,7 +152,7 @@ const JourneySidebar = ({
                     onClick={handleHeaderClick}
                     aria-current={isCurrent ? 'step' : undefined}
                     aria-expanded={stepCount > 1 ? isExpanded : undefined}
-                    className="flex w-full items-center gap-2 text-left rounded-md -m-1 p-1 pt-0.5 transition-colors hover:bg-primary-100/60"
+                    className="flex w-full items-center gap-2 text-left rounded-md -m-1 p-1 pt-0.5 transition-colors hover:bg-primary-50/10"
                   >
                     <span className="flex-1 min-w-0">
                       <span className={`block text-base md:text-sm ${isCurrent ? 'font-bold text-primary-50' : 'font-medium text-primary-200'}`}>

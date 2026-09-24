@@ -1,6 +1,6 @@
 'use client'
 
-import { Shield, TrendingUp, AlertTriangle } from 'lucide-react'
+import { Shield, Heart, Check } from 'lucide-react'
 import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
 import InfoBox from '@/components/ui/InfoBox'
@@ -18,7 +18,7 @@ const EmergencyFundIntro = ({ journeyData, nextStep, prevStep }) => {
     >
       <InfoBox
         type="why"
-        message="The first step to financial security is to learn about and set up an emergency fund. This is crucial before planning for retirement or extra investments."
+        message="A surprise expense shouldn't undo your progress. We'll figure out the right cushion for your situation and where to keep it, before we touch retirement or investing — so a bad month stays a bad month, not a setback."
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 mb-8">
@@ -51,21 +51,25 @@ const EmergencyFundIntro = ({ journeyData, nextStep, prevStep }) => {
 
         <div>
           <h3 className="text-lg sm:text-xl font-bold text-primary-700 mb-4 flex items-center">
-            <AlertTriangle className="w-6 h-6 text-amber-600 mr-2" />
+            <Heart className="w-6 h-6 text-accent-green-600 mr-2" />
             Why It's Important
           </h3>
           <ul className="space-y-3 text-primary-700 text-sm sm:text-base">
             <li className="flex items-start">
-              <span className="text-accent-green-600 mr-2 font-bold">✓</span>
-              <span>Prevents debt when emergencies happen</span>
+              <Check className="w-4 h-4 text-accent-green-600 mr-2 mt-1 shrink-0" />
+              <span>A surprise car repair or ER visit doesn't turn into a credit card balance</span>
             </li>
             <li className="flex items-start">
-              <span className="text-accent-green-600 mr-2 font-bold">✓</span>
-              <span>Keeps retirement accounts untouched</span>
+              <Check className="w-4 h-4 text-accent-green-600 mr-2 mt-1 shrink-0" />
+              <span>You're never forced to sell investments at a bad time just to cover a bill</span>
             </li>
             <li className="flex items-start">
-              <span className="text-accent-green-600 mr-2 font-bold">✓</span>
-              <span>Gives peace of mind and financial stability</span>
+              <Check className="w-4 h-4 text-accent-green-600 mr-2 mt-1 shrink-0" />
+              <span>A layoff gives you months to find the right next job, not just any job</span>
+            </li>
+            <li className="flex items-start">
+              <Check className="w-4 h-4 text-accent-green-600 mr-2 mt-1 shrink-0" />
+              <span>One bad month stays one bad month, instead of the start of a spiral</span>
             </li>
           </ul>
         </div>

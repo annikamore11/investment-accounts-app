@@ -1,29 +1,43 @@
+'use client'
+
+import { useId } from 'react'
+
 // A paper airplane enters from off-screen on the left, climbs up and
-// across the full width of the hero — banking through one loose loop
+// across the full width of its container — banking through one loose loop
 // partway through, same flourish the original hero flight had — and
 // exits off-screen on the right. Same "flight" language as the footer
-// and journey sidebar (a plane riding a line that draws in behind it),
-// scaled up into the hero's own signature moment. Artwork is lifted
-// straight from public/assets/animations/paper-plane-hero-svgator.svg
-// (recolored to the theme's green — the original's near-black wouldn't
-// read against the dark hero — and driven with CSS motion-path since
-// that export has no animation of its own, just the static artwork +
-// path).
+// and journey sidebar (a plane riding a line that draws in behind it).
+// Artwork is lifted straight from
+// public/assets/animations/paper-plane-hero-svgator.svg (recolored to the
+// theme's green — the original's near-black wouldn't read against the dark
+// hero — and driven with CSS motion-path since that export has no
+// animation of its own, just the static artwork + path).
 //
-// The wrapper spans the full hero (not a small side box) and the SVG uses
-// preserveAspectRatio="none" so the viewBox's 0-1000/0-400 coordinate
-// space maps directly to 0-100% of the hero's actual width/height
-// regardless of viewport aspect — that's what makes "start past x=0" and
-// "end past x=1000" reliably read as fully off-screen on both edges.
-// Hidden below xl: at narrower desktop widths there isn't a clear strip
-// for it to occupy at all.
+// `className` sizes/positions the wrapper (defaults to the desktop hero's
+// full-bleed absolute overlay) — the SVG itself always uses
+// preserveAspectRatio="none" so the viewBox's 0-1000/0-400 coordinate space
+// maps directly to 0-100% of whatever box it's given, letting the exact
+// same component render as a compact inline strip below xl instead of
+// being hidden there entirely (see MarketingLanding.jsx, which renders one
+// full-size instance for desktop and one compact instance for mobile/
+// tablet). `useId` keeps the two instances' internal mask ids from
+// colliding when both are mounted at once.
 const FLIGHT_PATH =
   'M -150 420 C -36 325.1 169.3 301.3 351.8 271.6 C 534.2 242 659.6 180.3 602.6 120.9 C 552.5 68.7 415.6 71.1 388.2 130.4 C 356.3 201.6 511.4 268.1 671.1 244.3 C 842.1 218.2 803.3 111.4 844.4 54.4 C 890 -7.3 1013.2 -31 1150 -50'
 const FLIGHT_PATH_LENGTH = 2062 // unchanged
 
-export default function HeroPlaneFlight() {
+export default function HeroPlaneFlight({
+  className = 'hidden xl:block absolute inset-0 pointer-events-none overflow-hidden',
+  // The artwork's own scale within the 1000x400 viewBox — independent of
+  // the wrapper's box size. The mobile rendition's container is much
+  // shorter/squatter than the desktop full-hero one, so the same 0.065
+  // reads noticeably smaller there; MarketingLanding.jsx passes a larger
+  // value for its compact mobile instance.
+  planeScale = 0.065,
+}) {
+  const maskId = `hero-flight-reveal-${useId()}`
   return (
-    <div className="hidden xl:block absolute inset-0 pointer-events-none overflow-hidden">
+    <div className={className}>
       <svg
         viewBox="0 0 1000 400"
         preserveAspectRatio="none"
@@ -31,9 +45,9 @@ export default function HeroPlaneFlight() {
         className="w-full h-full"
       >
       <defs>
-        <mask id="hero-trail-reveal" maskUnits="userSpaceOnUse" x="-300" y="-300" width="1700" height="1000">
+        <mask id={maskId} maskUnits="userSpaceOnUse" x="-300" y="-300" width="1700" height="1000">
           <path
-            className="hero-trail-draw"
+            className="hero-flight-draw"
             d={FLIGHT_PATH}
             fill="none"
             stroke="#fff"
@@ -45,7 +59,7 @@ export default function HeroPlaneFlight() {
         </mask>
       </defs>
 
-      <g mask="url(#hero-trail-reveal)">
+      <g mask={`url(#${maskId})`}>
         <path
           d={FLIGHT_PATH}
           fill="none"
@@ -59,7 +73,7 @@ export default function HeroPlaneFlight() {
 
       <g className="hero-plane-fly">
         <g
-          transform="scale(0.065) rotate(15.46) translate(-85 -600)"
+          transform={`scale(${planeScale}) rotate(15.46) translate(-85 -600)`}
           fill="#85BC97"
           stroke="#85BC97"
           strokeWidth={11}

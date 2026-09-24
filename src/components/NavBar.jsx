@@ -59,13 +59,13 @@ const Navbar = () => {
               <div className="flex items-center space-x-4">
                 <Link
                   href="/login"
-                  className="px-5 py-2 rounded-lg text-sm border border-accent-green-500 text-accent-green-400 hover:bg-accent-green-950/40 transition-colors"
+                  className="px-5 py-2 rounded-lg text-sm border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-primary-900 transition-colors"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/login?mode=signup"
-                  className="px-5 py-2 rounded-lg text-sm bg-accent-green-600 text-primary-50 hover:bg-accent-green-700 transition-colors"
+                  className="px-5 py-2 rounded-lg text-sm font-semibold bg-amber-500 text-primary-900 hover:bg-amber-600 transition-colors"
                 >
                   Sign Up
                 </Link>

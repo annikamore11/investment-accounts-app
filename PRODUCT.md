@@ -46,12 +46,16 @@ than requiring a linked bank account.
 
 ## Capabilities and Constraints
 
-- Self-reported financial data only, by deliberate, permanent design —
-  users manually enter income, expenses, balances, and debts. There is no
-  bank-account linking. (The project previously integrated Mastercard
-  Open Banking for account linking and institution search; that code was
-  removed and is not being rebuilt — self-reported data is the intended
-  architecture going forward, not a temporary gap.)
+- Self-reported financial data for now — users manually enter income,
+  expenses, balances, and debts; there is no bank-account linking
+  currently built. (The project previously integrated Mastercard Open
+  Banking for account linking and institution search; that code was
+  removed.) This is no longer treated as a permanent constraint: account
+  linking (e.g. for institution search/autocomplete, or full linking) is
+  an open possible future feature, just not one currently planned or in
+  progress. Don't market self-reported/no-linking as a permanent
+  differentiator in user-facing copy — say what the product does today,
+  not a forward-looking promise.
 - Journey sections: About You, Budget/Income, Emergency Fund, Retirement,
   Investing (config and full saved-data contract in
   `src/components/journey/sections/index.js`).
@@ -85,5 +89,6 @@ work must not fabricate any of that.
 4. Adapt to the user's own answers rather than presenting a fixed script
    — irrelevant steps (e.g. 401(k) questions for the self-employed)
    should disappear, not be skippable filler.
-5. Ask for numbers, not bank credentials — self-reported input is a
-   trust and simplicity choice, not a stopgap.
+5. Ask for numbers, not bank credentials, for now — self-reported input
+   keeps things simple today; this may change if account linking is
+   built later, so don't bake "no linking, ever" into user-facing copy.

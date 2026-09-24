@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { SendHorizonal } from 'lucide-react'
+import PlaneGlyph from './PlaneGlyph'
 
 const Footer = () => {
   // Content fades/slides up the first time the footer starts entering the
@@ -90,7 +90,7 @@ const Footer = () => {
           <div className="animated-line-container mt-16 pt-8 max-w-6xl mx-auto">
             <div className="animated-line"></div>
             <div className="line-icon">
-              <SendHorizonal className="w-6 h-6 text-primary-500" />
+              <PlaneGlyph className="w-9 h-5 text-primary-500" />
             </div>
           </div>
         )}

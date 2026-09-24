@@ -4,10 +4,45 @@ import { useState } from 'react'
 import { TrendingUp, Shield, CheckCircle, Edit2, DollarSign, Target, Building2 } from 'lucide-react'
 import StepNavigation from '@/components/ui/StepNavigation'
 import InfoBox from '@/components/ui/InfoBox'
+import OptionGrid from '@/components/ui/OptionGrid'
 import useStepTransition from '@/hooks/useStepTransition'
-import { ACCOUNT_TYPES, EXISTING_ACCOUNT_TYPES, FIDELITY, accountTypeLabel } from './accountTypes'
+import { ACCOUNT_TYPES, EXISTING_ACCOUNT_TYPES, FIDELITY, BROKERAGES, accountTypeLabel } from './accountTypes'
+import { getTotalExpenses } from '@/utils/budgetMath'
 
 const digitsOnly = (value) => value.replace(/[^\d]/g, '')
+
+const isFidelity = (institution) => institution.toLowerCase().includes('fidelity')
+const isVanguard = (institution) => institution.toLowerCase().includes('vanguard')
+
+// Fidelity and Vanguard both auto-sweep uninvested cash into a money market
+// fund under the same login as everything else — we already know the
+// account "type" without asking, and each gets its own take rather than a
+// generic one: Fidelity is where the rest of this journey's steps actually
+// walk someone through investing, Vanguard is just as good a place for the
+// money itself but a second login later. Research turned up that this
+// convenience is NOT universal across brokerages — some only offer a plain
+// bank sweep (much lower yield) — so anything else still needs an actual
+// answer instead of assuming "brokerage" means "money market."
+const getExistingFundGuidance = (type, institution) => {
+  if (!type) return null
+  const label = (accountTypeLabel(type) || 'account').toLowerCase()
+
+  if (type === 'checking' || type === 'traditional') {
+    return {
+      type: 'tip',
+      message: `A regular ${label} usually earns close to 0% interest — that's different from "high-yield," even though the money feels just as safe either way. Consider moving it to a money market fund like Fidelity's SPAXX (~5% APY historically) so it's actually earning you something, and so it sits alongside your other accounts instead of a separate bank login.`,
+    }
+  }
+
+  if (type === 'high-yield-money-market') {
+    return {
+      type: 'why',
+      message: `A ${label} is a good place for this. Consider moving it to Fidelity when it's convenient — keeping your emergency fund, retirement, and investing on one platform makes your whole financial picture easier to see and manage, instead of spread across separate logins.`,
+    }
+  }
+
+  return null
+}
 
 const EmergencyFundSummary = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const { isExiting, transitionTo } = useStepTransition()
@@ -40,127 +75,146 @@ const EmergencyFundSummary = ({ journeyData, updateJourneyData, nextStep, prevSt
 /* ---------- "I already have one" branch ---------- */
 
 const ExistingFundSummary = ({ journeyData, updateJourneyData }) => {
-  const [isEditing, setIsEditing] = useState(false)
   const [institution, setInstitution] = useState(journeyData.existingEmergencyFundInstitution || '')
   const [type, setType] = useState(journeyData.existingEmergencyFundType || '')
-  const [amount, setAmount] = useState(journeyData.existingEmergencyFundAmount || '')
 
-  const save = () => {
-    updateJourneyData('existingEmergencyFundInstitution', institution)
-    updateJourneyData('existingEmergencyFundType', type)
-    updateJourneyData('existingEmergencyFundAmount', parseFloat(amount) || 0)
-    setIsEditing(false)
+  // Saves as they type/select instead of behind a separate "Save Details"
+  // button — these fields aren't an optional add-on (they're what the
+  // Investing section's brokerage check compares against Fidelity), so
+  // treating them like the rest of the journey's inline-saved fields
+  // removes a step and a redundant edit/view toggle. Amount saved is NOT
+  // asked here — it was already collected on the Goal step (before we even
+  // knew hasEmergencyFund), so asking again would just be the same question
+  // twice.
+  const handleInstitutionChange = (value) => {
+    setInstitution(value)
+    updateJourneyData('existingEmergencyFundInstitution', value)
+
+    if (isFidelity(value) || isVanguard(value)) {
+      // We already know what this is (see the comment above
+      // getExistingFundGuidance) — no need to ask.
+      setType('high-yield-money-market')
+      updateJourneyData('existingEmergencyFundType', 'high-yield-money-market')
+    } else if (type === 'high-yield-money-market') {
+      // They'd typed Fidelity/Vanguard, we auto-filled the type, and now
+      // they've changed the institution to something else — that guess no
+      // longer applies, so clear it and let them actually pick.
+      setType('')
+      updateJourneyData('existingEmergencyFundType', '')
+    }
   }
+  const handleTypeChange = (value) => {
+    setType(value)
+    updateJourneyData('existingEmergencyFundType', value)
+  }
+
+  const institutionEntered = institution.trim() !== ''
+  const institutionIsFidelity = isFidelity(institution)
+  const institutionIsVanguard = isVanguard(institution)
+  const needsManualType = institutionEntered && !institutionIsFidelity && !institutionIsVanguard
+
+  const guidance = needsManualType ? getExistingFundGuidance(type, institution) : null
+
+  const goal = journeyData.emergencyFundGoal || 0
+  const savedAmount = journeyData.emergencyFundCurrentAmount || 0
+  const progress = goal > 0 ? Math.min((savedAmount / goal) * 100, 100) : 0
 
   return (
     <>
       <div className="border-b-2 border-primary-300 pb-4 mb-6">
-        <h2 className="text-xl md:text-2xl font-bold text-primary-900">Emergency Fund Status</h2>
-        <p className="text-sm text-primary-600 mt-1">You&apos;re already prepared!</p>
+        <h2 className="text-xl md:text-2xl font-bold text-primary-900 flex items-center gap-2">
+          <CheckCircle className="w-6 h-6 text-accent-green-600" />
+          Emergency Fund Status
+        </h2>
+        <p className="text-sm text-primary-600 mt-1">
+          Already have one saved — that puts you ahead of most people.
+        </p>
       </div>
 
-      <div className="bg-accent-green-50 border-2 border-accent-green-600 rounded-xl p-4 md:p-6 mb-6">
-        <div className="flex items-center space-x-3 mb-2">
-          <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-accent-green-600" />
-          <h3 className="text-lg md:text-xl font-bold text-accent-green-900">Excellent Work!</h3>
+      <div className="bg-white border-2 border-primary-300 rounded-xl p-4 md:p-6 mb-6">
+        <label className="block text-sm font-semibold text-primary-700 mb-2">Where do you keep it?</label>
+        <input
+          type="text"
+          list="existing-fund-brokerages"
+          placeholder="e.g., Chase Bank, Ally, Fidelity"
+          value={institution}
+          onChange={(e) => handleInstitutionChange(e.target.value)}
+          className="w-full p-2 border-2 border-primary-300 rounded-lg focus:border-accent-green-500 focus:outline-none"
+        />
+        {/* A datalist, not a closed dropdown: brokerages are a known,
+            short list worth suggesting, but banks/credit unions aren't (no
+            database backs this yet — see project discussion), so free text
+            still has to work for those. */}
+        <datalist id="existing-fund-brokerages">
+          {BROKERAGES.map((name) => (
+            <option key={name} value={name} />
+          ))}
+        </datalist>
+      </div>
+
+      {/* Fidelity and Vanguard each get their own take instead of a generic
+          "account type" question — everyone else still needs to actually
+          tell us, since not every brokerage auto-sweeps into money market
+          the way these two do. */}
+      {institutionIsFidelity && (
+        <InfoBox
+          type="why"
+          message="This is the best setup for your journey — later steps walk you through everything using Fidelity, so your emergency fund is already exactly where it needs to be."
+        />
+      )}
+
+      {institutionIsVanguard && (
+        <InfoBox
+          type="why"
+          message="Great choice — your money is earning a real rate and sits automatically in a money market fund, no extra setup needed. It may be slightly less convenient later on since we walk through investing specifically with Fidelity, but if you've already got this set up, your plan works just as well here — no need to switch."
+        />
+      )}
+
+      {needsManualType && (
+        <div className="mb-6">
+          <label className="block text-sm font-semibold text-primary-700 mb-3">What kind of account is it?</label>
+          <OptionGrid
+            options={EXISTING_ACCOUNT_TYPES}
+            selectedValue={type}
+            onChange={handleTypeChange}
+            columns={2}
+            className="mb-0"
+          />
+          {guidance && <InfoBox type={guidance.type} message={guidance.message} className="mt-4" />}
         </div>
-        <p className="text-sm md:text-base text-accent-green-800">
-          You already have an emergency fund set up. That&apos;s a huge accomplishment and puts you ahead of most people.
+      )}
+
+      {!institutionEntered && (
+        <p className="text-sm text-primary-500 mb-6">
+          Tell us where it's held above to get guidance specific to your setup.
         </p>
-      </div>
+      )}
 
-      <InfoBox
-        type="tip"
-        message="Make sure your emergency fund is earning interest! If it's sitting in a regular checking/savings account earning 0%, consider moving it to a money market fund like SPAXX to earn ~5% annually."
-      />
-
-      <InfoBox type="info">
-        <p className="text-sm mb-3">
-          <strong>Optional:</strong> Save your emergency fund details for organization and to keep all your
-          financial info in one place on your dashboard.
-        </p>
-
-        {!isEditing ? (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="text-sm font-semibold text-accent-green-700 hover:text-accent-green-900 underline"
-          >
-            {journeyData.existingEmergencyFundInstitution ? 'Edit Details' : '+ Add Your Emergency Fund Details'}
-          </button>
-        ) : (
-          <div className="space-y-4 mt-4">
-            <div>
-              <label className="block text-sm font-semibold text-primary-700 mb-2">Where do you keep it?</label>
-              <input
-                type="text"
-                placeholder="e.g., Chase Bank, Ally, Fidelity"
-                value={institution}
-                onChange={(e) => setInstitution(e.target.value)}
-                className="w-full p-2 border-2 border-primary-300 rounded-lg focus:border-accent-green-500 focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-primary-700 mb-2">Account Type</label>
-              <select
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-                className="w-full p-2 border-2 border-primary-300 rounded-lg focus:border-accent-green-500 focus:outline-none"
-              >
-                <option value="">Select account type</option>
-                {EXISTING_ACCOUNT_TYPES.map((t) => (
-                  <option key={t.value} value={t.value}>{t.label}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-primary-700 mb-2">Amount Saved</label>
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold">$</span>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="10000"
-                  value={amount}
-                  onChange={(e) => setAmount(digitsOnly(e.target.value))}
-                  className="flex-1 p-2 border-2 border-primary-300 rounded-lg focus:border-accent-green-500 focus:outline-none"
-                />
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={save} className="px-4 py-2 bg-accent-green-600 text-white rounded-lg hover:bg-accent-green-700">
-                Save Details
-              </button>
-              <button onClick={() => setIsEditing(false)} className="px-4 py-2 bg-primary-300 text-primary-700 rounded-lg hover:bg-primary-400">
-                Cancel
-              </button>
-            </div>
+      {goal > 0 && (
+        <div className="mb-2">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-semibold text-primary-700">Progress to Goal</span>
+            <span className="text-sm font-bold text-accent-green-700">{progress.toFixed(0)}%</span>
           </div>
-        )}
-      </InfoBox>
-
-      {journeyData.existingEmergencyFundInstitution && !isEditing && (
-        <div className="bg-primary-50 border border-primary-300 rounded-xl p-4 mb-6">
-          <h3 className="font-semibold text-primary-900 mb-3">Your Saved Emergency Fund Details</h3>
-          <dl className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <dt className="text-primary-600">Institution:</dt>
-              <dd className="font-semibold text-primary-900">{journeyData.existingEmergencyFundInstitution}</dd>
-            </div>
-            {journeyData.existingEmergencyFundType && (
-              <div className="flex justify-between">
-                <dt className="text-primary-600">Account Type:</dt>
-                <dd className="font-semibold text-primary-900">{accountTypeLabel(journeyData.existingEmergencyFundType)}</dd>
-              </div>
-            )}
-            {journeyData.existingEmergencyFundAmount > 0 && (
-              <div className="flex justify-between">
-                <dt className="text-primary-600">Amount:</dt>
-                <dd className="font-semibold text-primary-900">
-                  ${Number(journeyData.existingEmergencyFundAmount).toLocaleString()}
-                </dd>
-              </div>
-            )}
-          </dl>
+          <div className="w-full bg-primary-300 rounded-full h-3 overflow-hidden mb-2">
+            <div
+              className="bg-accent-green-600 h-3 rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div className="flex justify-between text-sm text-primary-700">
+            <span>${savedAmount.toLocaleString()} saved</span>
+            <span>${goal.toLocaleString()} goal</span>
+          </div>
+          {savedAmount < goal ? (
+            <p className="text-xs text-primary-600 mt-2 text-center">
+              ${(goal - savedAmount).toLocaleString()} left to reach your goal
+            </p>
+          ) : (
+            <p className="text-sm text-accent-green-700 font-semibold mt-2 text-center">
+              🎉 You've reached your goal!
+            </p>
+          )}
         </div>
       )}
     </>
@@ -284,7 +338,7 @@ const PlannedFundSummary = ({ journeyData, updateJourneyData }) => {
         <SummaryRow icon={Target} label="Goal Amount">
           <div className="text-primary-900 text-base md:text-lg font-semibold">${goal.toLocaleString()}</div>
           <div className="text-sm text-primary-600 mt-1">
-            {(goal / (journeyData.monthlyExpenses || 1)).toFixed(1)} months of expenses
+            {(goal / (getTotalExpenses(journeyData) || 1)).toFixed(1)} months of expenses
           </div>
         </SummaryRow>
 
