@@ -34,12 +34,15 @@ const Login = () => {
   // Signing up/in is the moment a guest's flight plan actually gets saved —
   // worth the same dawn warmth as the marketing hero, and a quiet plane
   // touch instead of the old flat dark background this page shared with
-  // Home. A brief pulsing glyph replaces the previous blank `return null`
-  // while auth status resolves, so there's no stark flash before the form.
+  // Home. A glyph idling like it's ready for takeoff replaces the previous
+  // blank `return null` while auth status resolves, so there's no stark
+  // flash before the form.
   if (loading || user) {
     return (
       <div className="journey-theme min-h-screen dawn-background flex items-center justify-center">
-        <PlaneGlyph className="w-16 h-9 text-primary-300 animate-pulse" />
+        <span className="plane-ready-for-takeoff-wrap">
+          <PlaneGlyph className="w-16 h-9 text-primary-300 plane-ready-for-takeoff" />
+        </span>
       </div>
     )
   }

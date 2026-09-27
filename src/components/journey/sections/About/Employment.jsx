@@ -5,6 +5,7 @@ import StepContainer from '@/components/ui/StepContainer'
 import OptionGrid from '@/components/ui/OptionGrid'
 import StepNavigation from '@/components/ui/StepNavigation'
 import useStepTransition from '@/hooks/useStepTransition'
+import { clearEmployer401kFields } from '@/utils/retirementMath'
 
 const EmploymentStatus = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const [employment, setEmployment] = useState(journeyData.employment || '')
@@ -16,6 +17,10 @@ const EmploymentStatus = ({ journeyData, updateJourneyData, nextStep, prevStep }
     // Only update for employed people
     if (['self-employed', 'unemployed'].includes(employment)) {
       updateJourneyData('hasEmployer401k', false)
+      // Someone switching from "employed at a company" back here could
+      // otherwise leave a stale match/contribution/Roth answer behind —
+      // see clearEmployer401kFields.
+      clearEmployer401kFields(updateJourneyData)
     }
 
     transitionTo(nextStep)

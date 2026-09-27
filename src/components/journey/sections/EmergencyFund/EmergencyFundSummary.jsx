@@ -6,7 +6,7 @@ import StepNavigation from '@/components/ui/StepNavigation'
 import InfoBox from '@/components/ui/InfoBox'
 import OptionGrid from '@/components/ui/OptionGrid'
 import useStepTransition from '@/hooks/useStepTransition'
-import { ACCOUNT_TYPES, EXISTING_ACCOUNT_TYPES, FIDELITY, BROKERAGES, accountTypeLabel } from './accountTypes'
+import { ACCOUNT_TYPES, EXISTING_ACCOUNT_TYPES, FIDELITY, accountTypeLabel } from './accountTypes'
 import { getTotalExpenses } from '@/utils/budgetMath'
 
 const digitsOnly = (value) => value.replace(/[^\d]/g, '')
@@ -74,9 +74,15 @@ const EmergencyFundSummary = ({ journeyData, updateJourneyData, nextStep, prevSt
 
 /* ---------- "I already have one" branch ---------- */
 
+const MOVE_TO_FIDELITY_OPTIONS = [
+  { value: true, label: 'Yes', description: 'Walk me through moving it to Fidelity' },
+  { value: false, label: 'No', description: "I'll keep it where it is for now" },
+]
+
 const ExistingFundSummary = ({ journeyData, updateJourneyData }) => {
   const [institution, setInstitution] = useState(journeyData.existingEmergencyFundInstitution || '')
   const [type, setType] = useState(journeyData.existingEmergencyFundType || '')
+  const [moveToFidelity, setMoveToFidelity] = useState(journeyData.moveToFidelity ?? null)
 
   // Saves as they type/select instead of behind a separate "Save Details"
   // button — these fields aren't an optional add-on (they're what the
@@ -102,10 +108,21 @@ const ExistingFundSummary = ({ journeyData, updateJourneyData }) => {
       setType('')
       updateJourneyData('existingEmergencyFundType', '')
     }
+
+    // Already at Fidelity (or no longer told us where it is) — "move to
+    // Fidelity" no longer makes sense as a question, so drop any answer.
+    if (isFidelity(value) || value.trim() === '') {
+      setMoveToFidelity(null)
+      updateJourneyData('moveToFidelity', null)
+    }
   }
   const handleTypeChange = (value) => {
     setType(value)
     updateJourneyData('existingEmergencyFundType', value)
+  }
+  const handleMoveToFidelityChange = (value) => {
+    setMoveToFidelity(value)
+    updateJourneyData('moveToFidelity', value)
   }
 
   const institutionEntered = institution.trim() !== ''
@@ -114,6 +131,13 @@ const ExistingFundSummary = ({ journeyData, updateJourneyData }) => {
   const needsManualType = institutionEntered && !institutionIsFidelity && !institutionIsVanguard
 
   const guidance = needsManualType ? getExistingFundGuidance(type, institution) : null
+
+  // Ask once we actually have enough of the picture to make the case —
+  // institution plus (for anything that isn't Fidelity/Vanguard) the
+  // account type, so this comes right after the rate/guidance callouts
+  // above rather than before someone has a reason to say yes. Never shown
+  // once they're already at Fidelity.
+  const canOfferMove = institutionEntered && !institutionIsFidelity && (institutionIsVanguard || (needsManualType && !!type))
 
   const goal = journeyData.emergencyFundGoal || 0
   const savedAmount = journeyData.emergencyFundCurrentAmount || 0
@@ -135,21 +159,11 @@ const ExistingFundSummary = ({ journeyData, updateJourneyData }) => {
         <label className="block text-sm font-semibold text-primary-700 mb-2">Where do you keep it?</label>
         <input
           type="text"
-          list="existing-fund-brokerages"
           placeholder="e.g., Chase Bank, Ally, Fidelity"
           value={institution}
           onChange={(e) => handleInstitutionChange(e.target.value)}
           className="w-full p-2 border-2 border-primary-300 rounded-lg focus:border-accent-green-500 focus:outline-none"
         />
-        {/* A datalist, not a closed dropdown: brokerages are a known,
-            short list worth suggesting, but banks/credit unions aren't (no
-            database backs this yet — see project discussion), so free text
-            still has to work for those. */}
-        <datalist id="existing-fund-brokerages">
-          {BROKERAGES.map((name) => (
-            <option key={name} value={name} />
-          ))}
-        </datalist>
       </div>
 
       {/* Fidelity and Vanguard each get their own take instead of a generic
@@ -181,6 +195,21 @@ const ExistingFundSummary = ({ journeyData, updateJourneyData }) => {
             className="mb-0"
           />
           {guidance && <InfoBox type={guidance.type} message={guidance.message} className="mt-4" />}
+        </div>
+      )}
+
+      {canOfferMove && (
+        <div className="mb-6">
+          <label className="block text-sm font-semibold text-primary-700 mb-3">
+            Would you like to move it to Fidelity?
+          </label>
+          <OptionGrid
+            options={MOVE_TO_FIDELITY_OPTIONS}
+            selectedValue={moveToFidelity}
+            onChange={handleMoveToFidelityChange}
+            columns={2}
+            className="mb-0"
+          />
         </div>
       )}
 

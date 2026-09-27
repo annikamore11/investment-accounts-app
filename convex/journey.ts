@@ -1,6 +1,12 @@
 import { mutation, query, QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 
+// Bump this by hand whenever journeyData's shape changes in a way old saved
+// data won't match (a field rename/removal) — see the schemaVersion comment
+// in schema.ts. Nothing currently reads this back; it exists so a future
+// migration has a real signal to key off of instead of guessing.
+export const CURRENT_SCHEMA_VERSION = 1;
+
 // All three functions derive the user from the authenticated request
 // (ctx.auth) rather than trusting a client-supplied id — unlike the old
 // Supabase version, which took `userId` as a plain argument and relied on
@@ -46,6 +52,7 @@ export const save = mutation({
       currentSection: args.currentSection,
       currentStep: args.currentStep,
       lastUpdated: Date.now(),
+      schemaVersion: CURRENT_SCHEMA_VERSION,
     };
 
     if (existing) {

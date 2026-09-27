@@ -22,12 +22,22 @@ import { useId } from 'react'
 // full-size instance for desktop and one compact instance for mobile/
 // tablet). `useId` keeps the two instances' internal mask ids from
 // colliding when both are mounted at once.
+//
+// The svg itself is `overflow-visible` and nothing in here clips: the path
+// climbs to y=-50/x=1150 (well outside the 0-400/0-1000 viewBox) on
+// purpose, banking the plane up and off the frame at the end of its climb.
+// On the compact mobile strip that box is short relative to the artwork's
+// intended travel, so clipping at the svg/wrapper's own box edge cut the
+// plane off mid-climb, well inside the visible page rather than at an
+// actual screen edge. Leaving overflow visible here and clipping only at
+// the much larger hero `<section>` (see MarketingLanding.jsx) lets the
+// plane fly its full arc and disappear only once it's genuinely off-frame.
 const FLIGHT_PATH =
   'M -150 420 C -36 325.1 169.3 301.3 351.8 271.6 C 534.2 242 659.6 180.3 602.6 120.9 C 552.5 68.7 415.6 71.1 388.2 130.4 C 356.3 201.6 511.4 268.1 671.1 244.3 C 842.1 218.2 803.3 111.4 844.4 54.4 C 890 -7.3 1013.2 -31 1150 -50'
 const FLIGHT_PATH_LENGTH = 2062 // unchanged
 
 export default function HeroPlaneFlight({
-  className = 'hidden xl:block absolute inset-0 pointer-events-none overflow-hidden',
+  className = 'hidden xl:block absolute inset-0 pointer-events-none',
   // The artwork's own scale within the 1000x400 viewBox — independent of
   // the wrapper's box size. The mobile rendition's container is much
   // shorter/squatter than the desktop full-hero one, so the same 0.065
@@ -42,7 +52,7 @@ export default function HeroPlaneFlight({
         viewBox="0 0 1000 400"
         preserveAspectRatio="none"
         aria-hidden="true"
-        className="w-full h-full"
+        className="w-full h-full overflow-visible"
       >
       <defs>
         <mask id={maskId} maskUnits="userSpaceOnUse" x="-300" y="-300" width="1700" height="1000">

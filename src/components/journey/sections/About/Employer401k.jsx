@@ -7,6 +7,7 @@ import OptionGrid from '@/components/ui/OptionGrid'
 import StepNavigation from '@/components/ui/StepNavigation'
 import InfoBox from '@/components/ui/InfoBox'
 import useStepTransition from '@/hooks/useStepTransition'
+import { clearEmployer401kFields } from '@/utils/retirementMath'
 
 const Employer401k = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const [has401k, setHas401k] = useState(journeyData.hasEmployer401k ?? null)
@@ -14,6 +15,7 @@ const Employer401k = ({ journeyData, updateJourneyData, nextStep, prevStep }) =>
 
   const handleNext = () => {
     updateJourneyData('hasEmployer401k', has401k)
+    if (has401k === false) clearEmployer401kFields(updateJourneyData)
     transitionTo(nextStep)
   }
 

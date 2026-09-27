@@ -5,7 +5,7 @@ import BudgetDonutChart from '@/components/charts/BudgetDonutChart'
 import IncomeExpensesBar from '@/components/charts/IncomeExpensesBar'
 import StepNavigation from '@/components/ui/StepNavigation'
 import useStepTransition from '@/hooks/useStepTransition'
-import { getDebtMinPayments, getLeftover } from '@/utils/budgetMath'
+import { getDebtMinPayments, getLeftover, getMonthlyIncome, hasTaxesWithheld } from '@/utils/budgetMath'
 
 const PAY_FREQUENCY_LABELS = {
   weekly: 'Weekly',
@@ -21,9 +21,10 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
   const expenses = journeyData.monthlyExpenses || 0
   const taxes = journeyData.estimatedTaxDollarAmount || 0
   const netIncomeSelfEmployed = journeyData.netIncomeSelfEmployed || 0
+  const withheld = hasTaxesWithheld(journeyData)
   // Includes minimum debt payments, collected on their own step — see budgetMath.js
   const leftover = getLeftover(journeyData)
-  const effectiveIncome = journeyData.employment === 'self-employed' ? netIncomeSelfEmployed : income
+  const effectiveIncome = getMonthlyIncome(journeyData)
   const savingsRate = effectiveIncome > 0 ? ((leftover / effectiveIncome) * 100).toFixed(1) : 0
 
   const debts = journeyData.debts || []
@@ -53,10 +54,10 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
             <div className="grid grid-cols-3 py-3 border-b border-primary-200 hover:bg-primary-50 transition-colors">
               <div className="flex items-center space-x-2 col-span-2">
                 <TrendingUp className="w-4 h-4 text-primary-500" />
-                {journeyData.employment === 'self-employed' ? (
-                  <span className="font-semibold text-primary-700 text-sm">Monthly Gross Income</span>
-                ) : (
+                {withheld ? (
                   <span className="font-semibold text-primary-700 text-sm">Monthly Net Income</span>
+                ) : (
+                  <span className="font-semibold text-primary-700 text-sm">Monthly Gross Income</span>
                 )}
               </div>
               <div className="text-right text-primary-900 font-bold text-base">
@@ -64,8 +65,8 @@ const BudgetSummary = ({ journeyData, nextStep, prevStep }) => {
               </div>
             </div>
 
-            {/* Estimated Taxes - Only show for self-employed */}
-            {journeyData.employment === 'self-employed' && (
+            {/* Estimated Taxes - only shown when taxes aren't withheld */}
+            {!withheld && (
               <>
                 <div className="grid grid-cols-3 py-4 border-b border-primary-200 hover:bg-primary-50 transition-colors">
                   <div className="flex items-center space-x-2 col-span-2">

@@ -3,33 +3,42 @@
 import { useState } from 'react'
 import StepContainer from '@/components/ui/StepContainer'
 import StepNavigation from '@/components/ui/StepNavigation'
+import OptionGrid from '@/components/ui/OptionGrid'
 import InfoBox from '@/components/ui/InfoBox'
 import useStepTransition from '@/hooks/useStepTransition'
-import { getDebtMinPayments } from '@/utils/budgetMath'
+import { getDebtMinPayments, PAYCHECKS_PER_MONTH } from '@/utils/budgetMath'
 
-const PAYCHECKS_PER_MONTH = {
-  weekly: 4.33,
-  biweekly: 2.17,
-  semimonthly: 2,
-  monthly: 1,
-  irregular: 1,
-}
+const TAXES_WITHHELD_OPTIONS = [
+  { value: true, label: 'Yes', description: 'Taxes are already taken out before I get paid' },
+  { value: false, label: 'No', description: 'I get the full amount and handle taxes myself' },
+]
+
+const RETIREMENT_DEDUCTED_OPTIONS = [
+  { value: true, label: 'Yes', description: 'My 401(k) contribution is already subtracted from that amount' },
+  { value: false, label: 'No', description: "That amount is before my 401(k) contribution comes out" },
+]
 
 const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
   const [frequency, setFrequency] = useState(journeyData.payFrequency || '')
   const [paycheckAmount, setPaycheckAmount] = useState(journeyData.paycheckAmount || 0)
   const [customPaycheck, setCustomPaycheck] = useState('')
+  // Not inferred from employment — asked explicitly, like every other
+  // yes/no question in this journey, since employment alone doesn't
+  // reliably say whether a given paycheck has taxes withheld (e.g. some
+  // 1099 contractors are "employed at a company").
+  const [taxesWithheld, setTaxesWithheld] = useState(journeyData.taxesWithheld ?? null)
   const [taxPercentage, setTaxPercentage] = useState(journeyData.estimatedTaxPercentage || 25)
+  const [retirementDeducted, setRetirementDeducted] = useState(journeyData.retirementDeductedFromPaycheck ?? null)
+  const hasEmployer401k = journeyData.hasEmployer401k === true
   const { isExiting, transitionTo } = useStepTransition()
 
-  const isSelfEmployed = journeyData.employment === 'self-employed'
   const displayPaycheck = customPaycheck || paycheckAmount
 
   const monthlyIncome = Math.round(displayPaycheck * (PAYCHECKS_PER_MONTH[frequency] || 1))
-  const afterTaxMonthly = isSelfEmployed
+  const afterTaxMonthly = taxesWithheld === false
     ? monthlyIncome * (1 - taxPercentage / 100)
     : monthlyIncome
-  const taxAmount = isSelfEmployed ? monthlyIncome - afterTaxMonthly : 0
+  const taxAmount = taxesWithheld === false ? monthlyIncome - afterTaxMonthly : 0
   const debtMinPayments = getDebtMinPayments(journeyData)
   const totalExpenses = (journeyData.monthlyExpenses || 0) + debtMinPayments
   const leftover = afterTaxMonthly - totalExpenses
@@ -38,12 +47,18 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
     updateJourneyData('payFrequency', frequency)
     updateJourneyData('paycheckAmount', displayPaycheck)
     updateJourneyData('monthlyIncome', monthlyIncome)
+    updateJourneyData('taxesWithheld', taxesWithheld)
+    updateJourneyData('retirementDeductedFromPaycheck', hasEmployer401k ? retirementDeducted : null)
 
-    if (isSelfEmployed) {
+    if (taxesWithheld === false) {
       updateJourneyData('estimatedTaxPercentage', taxPercentage)
       updateJourneyData('estimatedTaxDollarAmount', Math.round(taxAmount))
       updateJourneyData('netIncomeSelfEmployed', afterTaxMonthly)
     }
+
+    // Snapshot so Retirement can tell if employment gets changed later
+    // without this step being revisited — see incomeConfirmedEmployment.
+    updateJourneyData('incomeConfirmedEmployment', journeyData.employment)
 
     transitionTo(nextStep)
   }
@@ -64,17 +79,16 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
     { value: 'irregular', label: 'Irregular', description: 'Estimate monthly' },
   ]
 
-  const isComplete = frequency && displayPaycheck > 0
+  const isComplete = frequency && taxesWithheld !== null && displayPaycheck > 0
+    && (!hasEmployer401k || retirementDeducted !== null)
 
   return (
     <StepContainer
       title="Income & Pay Schedule"
-      subtitle={isSelfEmployed
-        ? "Let's figure out your monthly income and set aside money for taxes"
-        : "Tell us about your pay schedule so we can calculate monthly income"}
+      subtitle="Tell us about your pay schedule so we can calculate your monthly income"
       isExiting={isExiting}
     >
-      
+
       {/* Pay Frequency */}
       <div className="mb-8">
         <label className="block text-base sm:text-lg font-semibold text-primary-700 mb-4">
@@ -103,11 +117,26 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
         </div>
       </div>
 
-      {/* Paycheck Amount */}
+      {/* Taxes Withheld */}
       {frequency && (
+        <div className="mb-8 animate-fadeIn">
+          <label className="block text-base sm:text-lg font-semibold text-primary-700 mb-4">
+            Do you have taxes automatically taken out of your paycheck?
+          </label>
+
+          <OptionGrid
+            options={TAXES_WITHHELD_OPTIONS}
+            selectedValue={taxesWithheld}
+            onChange={setTaxesWithheld}
+          />
+        </div>
+      )}
+
+      {/* Paycheck Amount */}
+      {frequency && taxesWithheld !== null && (
         <div className="mb-6 animate-fadeIn">
           <label className="block text-base sm:text-lg font-semibold text-primary-700 mb-4">
-            {journeyData.employment === 'self-employed'
+            {taxesWithheld === false
               ? 'How much gross per paycheck (before taxes and deductions)?'
               : frequency === 'irregular'
               ? 'What income do you estimate per month (after deductions like taxes)?'
@@ -150,12 +179,32 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
         </div>
       )}
 
-      {/* Self-Employed Tax Estimation */}
-      {isSelfEmployed && frequency && displayPaycheck > 0 && (
+      {/* Retirement Deduction — only matters if there's a 401(k) contribution
+          that could already be baked into the paycheck amount above; feeds
+          Retirement's dollar/percent conversions (see retirementMath.js). */}
+      {hasEmployer401k && frequency && taxesWithheld !== null && displayPaycheck > 0 && (
+        <div className="mb-8 animate-fadeIn">
+          <label className="block text-base sm:text-lg font-semibold text-primary-700 mb-4">
+            Is your 401(k) contribution already taken out of the amount above?
+          </label>
+          <OptionGrid
+            options={RETIREMENT_DEDUCTED_OPTIONS}
+            selectedValue={retirementDeducted}
+            onChange={setRetirementDeducted}
+          />
+        </div>
+      )}
+
+      {/* Tax Estimation — shown whenever nothing is withheld, not just for
+          the self-employed, since that's what actually determines whether
+          this money needs to be set aside. */}
+      {taxesWithheld === false && frequency && displayPaycheck > 0 && (
         <div className="bg-amber-50 border-2 border-amber-300 rounded-xl p-4 sm:p-6 mb-6 animate-fadeIn">
           <h3 className="font-bold text-primary-900 mb-3">Estimated Tax Percentage</h3>
           <p className="text-sm text-primary-700 mb-4">
-            Self-employment taxes are typically 25-35% of your income. Choose the percentage you set aside.
+            Since taxes aren&apos;t withheld from your paycheck, you&apos;ll want to set money aside
+            yourself — otherwise you could owe a large amount when you file. A common range is
+            25-35% of your income. Choose the percentage you plan to set aside.
           </p>
 
           <div className="flex items-center gap-2 sm:gap-4 mb-6">
@@ -218,7 +267,7 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
       )}
 
       {/* Leftover Preview */}
-      {journeyData.monthlyExpenses && frequency && displayPaycheck > 0 && (
+      {journeyData.monthlyExpenses && frequency && taxesWithheld !== null && displayPaycheck > 0 && (
         <div className={`rounded-xl p-4 mb-6 border-2 ${
           leftover >= 0
             ? 'bg-gradient-to-r from-accent-green-50 to-accent-green-100 border-accent-green-700'
@@ -227,7 +276,7 @@ const Income = ({ journeyData, updateJourneyData, nextStep, prevStep }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-primary-700 mb-1">
-                After {isSelfEmployed && `taxes and `}expenses{debtMinPayments > 0 ? ' & minimum debt payments' : ''} of ${totalExpenses.toLocaleString()}
+                After {taxesWithheld === false && `taxes and `}expenses{debtMinPayments > 0 ? ' & minimum debt payments' : ''} of ${totalExpenses.toLocaleString()}
               </p>
               <p className="text-xl font-bold">
                 {leftover >= 0 ? (

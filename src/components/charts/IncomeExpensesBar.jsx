@@ -2,7 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { AlertCircle, CheckCircle } from 'lucide-react'
-import { getMonthlyIncome, getTotalExpenses, getLeftover } from '@/utils/budgetMath'
+import { getMonthlyIncome, getTotalExpenses, getLeftover, hasTaxesWithheld } from '@/utils/budgetMath'
 
 const CustomTooltip = ({ active, payload }) => {
   if (!active || !payload?.length) return null
@@ -19,7 +19,7 @@ const CustomTooltip = ({ active, payload }) => {
 
 const IncomeExpensesBar = ({ journeyData }) => {
   const netIncomeSelfEmployed = journeyData.netIncomeSelfEmployed || 0
-  const isSelfEmployed = journeyData.employment === 'self-employed'
+  const withheld = hasTaxesWithheld(journeyData)
 
   const income = getMonthlyIncome(journeyData)
   // Includes minimum debt payments, collected on their own step — see budgetMath.js
@@ -112,15 +112,15 @@ const IncomeExpensesBar = ({ journeyData }) => {
         {/* Summary */}
         <div className="mt-4 grid grid-cols-2 gap-4 text-center pt-4 border-t border-primary-200">
           <div>
-            {isSelfEmployed ? (
-              <div>
-                <p className="text-xs text-primary-600 mb-1">Monthly Est. Net Income</p>
-                <p className="text-base font-bold text-accent-green-700 tabular-nums">${netIncomeSelfEmployed.toLocaleString()}</p>
-              </div>
-            ) : (
+            {withheld ? (
               <div>
                 <p className="text-xs text-primary-600 mb-1">Monthly Net Income</p>
                 <p className="text-base font-bold text-accent-green-700 tabular-nums">${income.toLocaleString()}</p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-xs text-primary-600 mb-1">Monthly Est. Net Income</p>
+                <p className="text-base font-bold text-accent-green-700 tabular-nums">${netIncomeSelfEmployed.toLocaleString()}</p>
               </div>
             )}
           </div>

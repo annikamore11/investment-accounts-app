@@ -41,6 +41,59 @@ const Reveal = ({ children, className = '', delayMs = 0 }) => {
   )
 }
 
+// Types `text` in one character at a time with a steadily-blinking cursor
+// left behind at the end, in the style of lincolnproject.us's hero. Driven
+// by `playKey` so it restarts in lockstep with the hero flight animation
+// every time the hero scrolls back into view, rather than only once on
+// first load. Respects prefers-reduced-motion by rendering the full text
+// immediately instead of animating it in.
+const TypewriterText = ({ text, playKey, startDelayMs = 0, speedMs = 16, onComplete }) => {
+  const [charCount, setCharCount] = useState(0)
+  const intervalRef = useRef(null)
+  // Stashed in a ref so a caller passing a fresh arrow function each render
+  // doesn't restart the typing effect below — only text/playKey/timing should.
+  const onCompleteRef = useRef(onComplete)
+  onCompleteRef.current = onComplete
+
+  useEffect(() => {
+    const prefersReducedMotion =
+      typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) {
+      setCharCount(text.length)
+      onCompleteRef.current?.()
+      return
+    }
+
+    setCharCount(0)
+    let typed = 0
+    const startTimeout = setTimeout(() => {
+      intervalRef.current = setInterval(() => {
+        typed += 1
+        setCharCount(typed)
+        if (typed >= text.length) {
+          clearInterval(intervalRef.current)
+          onCompleteRef.current?.()
+        }
+      }, speedMs)
+    }, startDelayMs)
+
+    return () => {
+      clearTimeout(startTimeout)
+      clearInterval(intervalRef.current)
+    }
+  }, [text, playKey, startDelayMs, speedMs])
+
+  return (
+    <span aria-hidden="true">
+      {text.slice(0, charCount)}
+      <span
+        className="inline-block w-[0.55ch] -mb-[0.1em] ml-0.5 bg-amber-400"
+        style={{ height: '1em', animation: 'cursorBlink 0.9s step-end infinite' }}
+      />
+    </span>
+  )
+}
+
 // Replays the hero flight animation — both the full desktop version and the
 // compact mobile one — every time the hero scrolls back into view, not just
 // once on first load. Keying <HeroPlaneFlight> on this counter forces a
@@ -120,6 +173,17 @@ const FEATURES = [
  */
 export default function MarketingLanding() {
   const [heroRef, flightPlayKey] = useReplayOnView()
+  // The plane used to launch alongside the headline/typing, which read as
+  // too much happening at once. Now it waits offstage until the body copy
+  // finishes typing, so the hero plays as one beat at a time: headline,
+  // then copy, then flight. Reset whenever the hero replays (flightPlayKey
+  // bumps) so re-scrolling into view gets the same held-back plane instead
+  // of it launching immediately on the replay.
+  const [planeReady, setPlaneReady] = useState(false)
+  useEffect(() => {
+    setPlaneReady(false)
+  }, [flightPlayKey])
+
   return (
     <div className="journey-theme">
       {/* ── Hero ── */}
@@ -127,7 +191,7 @@ export default function MarketingLanding() {
         ref={heroRef}
         className="relative dawn-background min-h-screen flex items-center pt-40 pb-16 overflow-hidden"
       >
-        <HeroPlaneFlight key={`desktop-flight-${flightPlayKey}`} />
+        {planeReady && <HeroPlaneFlight key={`desktop-flight-${flightPlayKey}`} />}
         <div className="max-w-4xl mx-auto px-10 md:px-12 w-full">
           <div className="relative isolate">
             {/* Compact rendition of the same hero flight animation, sized for
@@ -145,29 +209,47 @@ export default function MarketingLanding() {
                 all the way to the document root, rendering behind the
                 entire page — including this section's own opaque
                 background — which makes it fully invisible rather than
-                just mis-stacked. */}
-            <div className="absolute inset-x-0 -top-8 h-60 sm:h-72 xl:hidden pointer-events-none overflow-hidden -z-10">
-              <HeroPlaneFlight
-                key={`mobile-flight-${flightPlayKey}`}
-                className="absolute inset-0 pointer-events-none overflow-hidden"
-                planeScale={0.11}
-              />
+                just mis-stacked.
+
+                No `overflow-hidden` here on purpose: this strip only sets
+                the plane's scale, it isn't meant to be its clip box — the
+                flight path banks up well past this short box's top edge
+                by design, and clipping to the strip cut the plane off
+                mid-climb, well inside the visible page instead of at an
+                actual edge. The hero `<section>` above already clips at
+                its own (much larger) bounds, so that's the only clip that
+                should apply. */}
+            <div className="absolute inset-x-0 -top-8 h-60 sm:h-72 xl:hidden pointer-events-none -z-10">
+              {planeReady && (
+                <HeroPlaneFlight
+                  key={`mobile-flight-${flightPlayKey}`}
+                  className="absolute inset-0 pointer-events-none"
+                  planeScale={0.11}
+                />
+              )}
             </div>
 
             <Reveal>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-50 mb-7 sm:mb-6 leading-[1.15] sm:leading-[1.05]">
                 From learning to{' '}
                 <span
-                  className="inline-block leading-[1.3] pb-1 font-display italic bg-gradient-to-r from-amber-300 via-amber-400 to-amber-600 bg-clip-text text-transparent"
+                  className="inline-block mr-1.5 font-display italic text-amber-400"
                   style={{ animation: 'fadeIn 0.6s ease-out 0.5s backwards' }}
                 >
                   earning
                 </span>
                 .
               </h1>
-              <p className="max-w-xl text-primary-300 text-lg md:text-xl mb-10 sm:mb-8">
-                Simple, personalized to your numbers, and actually actionable. From retirement to
-                savings, we'll help you feel confident and get set up. Watch money start working for you.
+              <p
+                className="max-w-xl text-primary-300 text-lg md:text-xl mb-10 sm:mb-8"
+                aria-label="Simple, personalized to your numbers, and actually actionable. From retirement to savings, we'll help you feel confident and get set up. Watch money start working for you."
+              >
+                <TypewriterText
+                  text="Simple, personalized to your numbers, and actually actionable. From retirement to savings, we'll help you feel confident and get set up. Watch money start working for you."
+                  playKey={flightPlayKey}
+                  startDelayMs={1100}
+                  onComplete={() => setPlaneReady(true)}
+                />
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
